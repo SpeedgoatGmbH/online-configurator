@@ -46,13 +46,21 @@ function getConditionalOptions(
   return conditions || []
 }
 
-// Helper to create spec summary text
-function createSpecSummary(sub: SubCategory, specs: Record<FieldKey, string>): string {
-  return sub.fields
-    .slice(0, 3) // Show first 3 fields
-    .map((f) => specs[f.key])
-    .filter(Boolean)
-    .join(' | ')
+// Helper to create spec summary text with labels
+function createSpecSummary(sub: SubCategory, specs: Record<FieldKey, string>): JSX.Element {
+  const fieldsToShow = sub.fields.slice(0, 3) // Show first 3 fields
+  
+  return (
+    <>
+      {fieldsToShow.map((field, idx) => (
+        <span key={field.key}>
+          {idx > 0 && <span className="mx-1.5 text-slate-300">•</span>}
+          <span className="font-semibold text-[rgb(var(--speedgoat-blue))]/70">{field.label}:</span>{' '}
+          <span className="text-slate-700">{specs[field.key]}</span>
+        </span>
+      ))}
+    </>
+  )
 }
 
 export default function ConfiguratorV2({ title, description }: ConfiguratorProps) {
@@ -259,9 +267,12 @@ export default function ConfiguratorV2({ title, description }: ConfiguratorProps
               <button
                 type="button"
                 onClick={() => toggleRowExpansion(categoryId, sub.id, row.id)}
-                className="flex-1 rounded border border-slate-200 bg-slate-50/50 px-3 py-1.5 text-left text-xs text-slate-700 transition hover:border-slate-300 hover:bg-slate-50"
+                className="flex-1 rounded-lg border border-slate-200 bg-gradient-to-r from-slate-50 to-white px-4 py-2 text-left text-xs transition hover:border-slate-300 hover:shadow-sm"
               >
-                {summary} <span className="text-slate-400">▼</span>
+                <div className="flex items-center justify-between">
+                  <span className="flex-1">{summary}</span>
+                  <span className="ml-2 text-slate-400 text-[10px]">▼</span>
+                </div>
               </button>
               {signalRows[categoryId][sub.id].length > 1 && (
                 <button
