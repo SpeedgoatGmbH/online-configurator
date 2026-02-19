@@ -30,15 +30,15 @@ export default function EditRowCard({
   onCancel,
 }: EditRowCardProps) {
   return (
-    <div className="rounded-lg border-2 border-[rgb(var(--speedgoat-blue))] bg-blue-50/60 p-3">
-      <div className="mb-2 flex items-center justify-between">
-        <label className="text-xs font-semibold text-slate-700">Edit Configuration</label>
+    <div className="rounded-xl border-2 border-[rgb(var(--speedgoat-blue))]/30 bg-gradient-to-br from-blue-50/90 to-white p-4 shadow-md">
+      <div className="mb-3 flex items-center justify-between">
+        <label className="text-sm font-bold uppercase tracking-wide text-slate-700">Edit Configuration</label>
         <div className="flex items-center gap-2">
-          <label className="text-xs text-slate-500">Channels:</label>
+          <label className="text-xs font-semibold text-slate-600">Channels:</label>
           <select
             value={data.quantity}
             onChange={(e) => onChange({ ...data, quantity: Number(e.target.value) })}
-            className="w-16 rounded border border-slate-300 px-2 py-1 text-xs text-slate-700 outline-none ring-[rgb(var(--speedgoat-blue))] focus:ring-1"
+            className="w-20 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 shadow-sm transition outline-none hover:border-slate-400 focus:border-[rgb(var(--speedgoat-blue))] focus:ring-2 focus:ring-[rgb(var(--speedgoat-blue))]/20"
             aria-label="Edit channels"
           >
             <option value={4}>4</option>
@@ -50,12 +50,12 @@ export default function EditRowCard({
         </div>
       </div>
 
-      <div className="mb-3 grid grid-cols-2 gap-2 lg:grid-cols-5">
+      <div className="mb-4 grid grid-cols-2 gap-4 lg:grid-cols-5">
         {sub.fields.map((field) => {
           const fieldOptions = getFieldOptions(field, data.specs)
           return (
             <div key={field.key}>
-              <label className="mb-1 block text-xs font-medium text-slate-600">
+              <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-700">
                 {field.label}
               </label>
               <select
@@ -66,7 +66,7 @@ export default function EditRowCard({
                     specs: { ...data.specs, [field.key]: e.target.value },
                   })
                 }
-                className="w-full rounded border border-slate-300 bg-white px-2 py-1 text-xs text-slate-700 outline-none ring-[rgb(var(--speedgoat-blue))] focus:ring-1"
+                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm transition outline-none hover:border-slate-400 focus:border-[rgb(var(--speedgoat-blue))] focus:ring-2 focus:ring-[rgb(var(--speedgoat-blue))]/20"
                 aria-label={`Edit ${field.label}`}
               >
                 {fieldOptions.map((option) => (
@@ -80,18 +80,18 @@ export default function EditRowCard({
         })}
       </div>
 
-      <div className="flex gap-2">
+      <div className="flex gap-3 border-t border-slate-200/50 pt-3">
         <button
           type="button"
           onClick={onSave}
-          className="flex-1 rounded-lg border border-[rgb(var(--speedgoat-blue))] bg-[rgb(var(--speedgoat-blue))] px-3 py-2 text-xs font-semibold text-white transition hover:bg-blue-700"
+          className="flex-1 rounded-lg border border-[rgb(var(--speedgoat-blue))] bg-[rgb(var(--speedgoat-blue))] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 hover:shadow-md"
         >
-          Save Changes
+          ✓ Save Changes
         </button>
         <button
           type="button"
           onClick={onCancel}
-          className="flex-1 rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-600 transition hover:bg-slate-50"
+          className="flex-1 rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-600 shadow-sm transition hover:bg-slate-50 hover:border-slate-400"
         >
           Cancel
         </button>
