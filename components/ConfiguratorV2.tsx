@@ -10,7 +10,11 @@ type SignalRow = {
   quantity: number
   specs: Record<FieldKey, string>
   expanded: boolean
+  isCustomQuantity?: boolean
 }
+
+// Common channel count options
+const CHANNEL_COUNT_OPTIONS = [1, 2, 4, 8, 16, 32, 64, 128]
 
 // Application presets
 const APPLICATION_PRESETS = {
@@ -82,6 +86,7 @@ export default function ConfiguratorV2({ title, description }: ConfiguratorProps
       quantity: 32, // Default from best-selling modules
       specs: { ...sub.defaults },
       expanded: false,
+      isCustomQuantity: false,
     }
 
     setSignalRows((prev) => ({
@@ -177,6 +182,10 @@ export default function ConfiguratorV2({ title, description }: ConfiguratorProps
   ) => {
     const summary = createSpecSummary(sub, row.specs)
     const hasQuantity = row.quantity > 0
+    
+    // Determine if using custom quantity
+    const isPresetQuantity = CHANNEL_COUNT_OPTIONS.includes(row.quantity)
+    const showCustomInput = row.isCustomQuantity || !isPresetQuantity
 
     return (
       <div key={row.id} className="group">
@@ -187,17 +196,61 @@ export default function ConfiguratorV2({ title, description }: ConfiguratorProps
             <span className="text-xs text-slate-500 min-w-[60px]">
               {rowIndex === 0 ? sub.label : `${sub.label} ${String.fromCharCode(65 + rowIndex)}`}
             </span>
-            <input
-              type="number"
-              min="0"
-              max="999"
-              value={row.quantity}
-              onChange={(e) =>
-                updateQuantity(categoryId, sub.id, row.id, parseInt(e.target.value) || 0)
-              }
-              className="w-16 rounded border border-slate-300 px-2 py-1 text-sm text-center focus:border-[rgb(var(--speedgoat-blue))] focus:outline-none focus:ring-1 focus:ring-[rgb(var(--speedgoat-blue))]"
-              placeholder="0"
-            />
+            
+            {/* Dropdown for preset quantities */}
+            <select
+              value={showCustomInput ? 'custom' : row.quantity}
+              onChange={(e) => {
+                const value = e.target.value
+                if (value === 'custom') {
+                  setSignalRows((prev) => ({
+                    ...prev,
+                    [categoryId]: {
+                      ...prev[categoryId],
+                      [sub.id]: prev[categoryId][sub.id].map((r) =>
+                        r.id === row.id ? { ...r, isCustomQuantity: true } : r
+                      ),
+                    },
+                  }))
+                } else {
+                  updateQuantity(categoryId, sub.id, row.id, parseInt(value))
+                  setSignalRows((prev) => ({
+                    ...prev,
+                    [categoryId]: {
+                      ...prev[categoryId],
+                      [sub.id]: prev[categoryId][sub.id].map((r) =>
+                        r.id === row.id ? { ...r, isCustomQuantity: false } : r
+                      ),
+                    },
+                  }))
+                }
+              }}
+              className="w-20 rounded-lg border border-slate-300 bg-white px-2 py-1.5 text-sm text-center font-medium shadow-sm transition focus:border-[rgb(var(--speedgoat-blue))] focus:outline-none focus:ring-2 focus:ring-[rgb(var(--speedgoat-blue))]/20 hover:border-slate-400"
+              aria-label="Channel count"
+            >
+              {CHANNEL_COUNT_OPTIONS.map((count) => (
+                <option key={count} value={count}>
+                  {count}
+                </option>
+              ))}
+              <option value="custom">Custom</option>
+            </select>
+            
+            {/* Custom number input (shown when Custom is selected) */}
+            {showCustomInput && (
+              <input
+                type="number"
+                min="1"
+                max="999"
+                value={row.quantity}
+                onChange={(e) =>
+                  updateQuantity(categoryId, sub.id, row.id, parseInt(e.target.value) || 0)
+                }
+                className="w-20 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm text-center font-medium shadow-sm transition focus:border-[rgb(var(--speedgoat-blue))] focus:outline-none focus:ring-2 focus:ring-[rgb(var(--speedgoat-blue))]/20 hover:border-slate-400"
+                placeholder="Enter"
+                aria-label="Custom channel count"
+              />
+            )}
           </div>
 
           {/* Right: Spec summary (expandable) */}
@@ -255,6 +308,7 @@ export default function ConfiguratorV2({ title, description }: ConfiguratorProps
                         updateSpec(categoryId, sub.id, row.id, field.key, e.target.value)
                       }
                       className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm transition focus:border-[rgb(var(--speedgoat-blue))] focus:outline-none focus:ring-2 focus:ring-[rgb(var(--speedgoat-blue))]/20 hover:border-slate-400"
+                      aria-label={field.label}
                     >
                       {options.map((opt) => (
                         <option key={opt} value={opt}>
@@ -383,6 +437,7 @@ export default function ConfiguratorV2({ title, description }: ConfiguratorProps
             value={applicationPreset}
             onChange={(e) => setApplicationPreset(e.target.value)}
             className="w-full max-w-md rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm focus:border-[rgb(var(--speedgoat-blue))] focus:outline-none focus:ring-2 focus:ring-[rgb(var(--speedgoat-blue))]/20"
+            aria-label="Application Preset"
           >
             {Object.entries(APPLICATION_PRESETS).map(([key, preset]) => (
               <option key={key} value={key}>
