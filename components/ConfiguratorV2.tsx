@@ -46,20 +46,24 @@ function getConditionalOptions(
   return conditions || []
 }
 
-// Helper to create spec summary text with labels
+// Helper to create spec summary with structured chips
 function createSpecSummary(sub: SubCategory, specs: Record<FieldKey, string>): JSX.Element {
   const fieldsToShow = sub.fields.slice(0, 3) // Show first 3 fields
   
   return (
-    <>
-      {fieldsToShow.map((field, idx) => (
-        <span key={field.key}>
-          {idx > 0 && <span className="mx-1.5 text-slate-300">•</span>}
-          <span className="font-semibold text-[rgb(var(--speedgoat-blue))]/70">{field.label}:</span>{' '}
-          <span className="text-slate-700">{specs[field.key]}</span>
+    <div className="flex flex-wrap items-center gap-2">
+      {fieldsToShow.map((field) => (
+        <span
+          key={field.key}
+          className="inline-flex items-center gap-1.5 rounded-md bg-white border border-slate-200 px-2.5 py-1"
+        >
+          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
+            {field.label}
+          </span>
+          <span className="text-xs font-semibold text-slate-800">{specs[field.key]}</span>
         </span>
       ))}
-    </>
+    </div>
   )
 }
 
@@ -267,11 +271,11 @@ export default function ConfiguratorV2({ title, description }: ConfiguratorProps
               <button
                 type="button"
                 onClick={() => toggleRowExpansion(categoryId, sub.id, row.id)}
-                className="flex-1 rounded-lg border border-slate-200 bg-gradient-to-r from-slate-50 to-white px-4 py-2 text-left text-xs transition hover:border-slate-300 hover:shadow-sm"
+                className="flex-1 rounded-lg border border-slate-200 bg-slate-50/30 px-3 py-2.5 text-left transition hover:border-slate-300 hover:bg-slate-50/50 hover:shadow-sm"
               >
-                <div className="flex items-center justify-between">
-                  <span className="flex-1">{summary}</span>
-                  <span className="ml-2 text-slate-400 text-[10px]">▼</span>
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex-1 min-w-0">{summary}</div>
+                  <span className="flex-shrink-0 text-slate-400 text-xs">▼</span>
                 </div>
               </button>
               {signalRows[categoryId][sub.id].length > 1 && (
