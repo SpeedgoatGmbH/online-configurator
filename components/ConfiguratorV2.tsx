@@ -55,8 +55,8 @@ function createSpecSummary(sub: SubCategory, specs: Record<FieldKey, string>): J
     <div className="flex flex-wrap items-center gap-2">
       {fieldsToShow.map((field) => {
         const value = specs[field.key]
-        // Value-first for obvious properties (Range, Type, Speed, Protocol, etc.)
-        const isObvious = ['Type', 'Protocol', 'Range', 'Speed', 'Logic Level', 'Sensor Type', 'Bridge Type', 'Contact Type', 'Driver Type', 'I/O Type', 'Performance', 'Sensitivity'].includes(field.label)
+        // Value-first for obvious properties (Range, Type, Speed, Protocol, Wiring, Isolation, etc.)
+        const isObvious = ['Type', 'Wiring', 'Protocol', 'Range', 'Speed', 'Logic Level', 'Isolation', 'Sensor Type', 'Bridge Type', 'Contact Type', 'Driver Type', 'I/O Type', 'Performance', 'Sensitivity'].includes(field.label)
         
         return (
           <span
