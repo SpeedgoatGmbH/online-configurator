@@ -1,0 +1,58 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+  overflow-x: clip;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  scroll-behavior: smooth;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+:root {
+  --foreground-rgb: 0, 42, 72;
+  --background-start-rgb: 245, 247, 250;
+  --background-end-rgb: 255, 255, 255;
+  --speedgoat-blue: 0, 105, 180;
+  --speedgoat-blue-light: 226, 236, 246;
+  --speedgoat-accent: 208, 78, 7;
+  --text-strong: #002a48;
+  --text-sub: #525866;
+  --stroke-soft: #e1e4ea;
+  --surface-gray: #f5f7fa;
+}
+
+body {
+  color: var(--text-strong);
+  font-family: var(--font-archivo), Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: var(--surface-gray);
+  min-height: 100vh;
+}
+
+/* Speedgoat palette overrides for common Tailwind slate utilities */
+.text-slate-900 { color: #002a48; }
+.text-slate-800 { color: #181b25; }
+.text-slate-700 { color: #2b303b; }
+.text-slate-600 { color: #525866; }
+.text-slate-500 { color: #717784; }
+.text-slate-400 { color: #99a0ae; }
+
+.border-slate-300 { border-color: #cacfd8; }
+.border-slate-200 { border-color: #e1e4ea; }
+
+.bg-slate-100 { background-color: #f2f5f8; }
+.bg-slate-50 { background-color: #f5f7fa; }
