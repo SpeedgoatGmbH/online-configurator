@@ -46,23 +46,38 @@ function getConditionalOptions(
   return conditions || []
 }
 
-// Helper to create spec summary with structured chips
+// Helper to create spec summary with structured chips (value-first for obvious specs)
 function createSpecSummary(sub: SubCategory, specs: Record<FieldKey, string>): JSX.Element {
-  const fieldsToShow = sub.fields.slice(0, 3) // Show first 3 fields
+  // Show first 2-3 most important fields
+  const fieldsToShow = sub.fields.slice(0, Math.min(sub.fields.length, 3))
   
   return (
     <div className="flex flex-wrap items-center gap-2">
-      {fieldsToShow.map((field) => (
-        <span
-          key={field.key}
-          className="inline-flex items-center gap-1.5 rounded-md bg-white border border-slate-200 px-2.5 py-1"
-        >
-          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
-            {field.label}
+      {fieldsToShow.map((field) => {
+        const value = specs[field.key]
+        // Value-first for obvious properties (Range, Type, Speed, Protocol, etc.)
+        const isObvious = ['Type', 'Protocol', 'Range', 'Speed', 'Logic Level', 'Sensor Type', 'Bridge Type', 'Contact Type', 'Driver Type', 'I/O Type', 'Performance', 'Sensitivity'].includes(field.label)
+        
+        return (
+          <span
+            key={field.key}
+            className="inline-flex items-center gap-1 rounded-md bg-white border border-slate-200 px-2.5 py-1 whitespace-nowrap"
+          >
+            {isObvious ? (
+              // Value-first for obvious things
+              <span className="text-xs font-semibold text-slate-800">{value}</span>
+            ) : (
+              // Label:Value for ambiguous properties
+              <>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                  {field.label}:
+                </span>
+                <span className="text-xs font-semibold text-slate-800">{value}</span>
+              </>
+            )}
           </span>
-          <span className="text-xs font-semibold text-slate-800">{specs[field.key]}</span>
-        </span>
-      ))}
+        )
+      })}
     </div>
   )
 }
@@ -364,13 +379,13 @@ export default function ConfiguratorV2({ title, description }: ConfiguratorProps
       <div key={sub.id} className="space-y-2">
         {rows.map((row, idx) => renderSignalRow(categoryId, sub, row, idx))}
         
-        {/* + Add variant button */}
+        {/* + Add different spec button */}
         <button
           type="button"
           onClick={() => addSignalRow(categoryId, sub.id)}
           className="ml-[76px] flex items-center gap-1 text-xs text-slate-500 transition hover:text-[rgb(var(--speedgoat-blue))]"
         >
-          <span className="text-sm">+</span> Add variant
+          <span className="text-sm">+</span> Add different spec
         </button>
       </div>
     )
