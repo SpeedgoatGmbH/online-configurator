@@ -20,11 +20,6 @@ import type {
   SubCategoryState,
 } from './configurator/types'
 
-interface PendingSwitch {
-  fromCategoryId: string
-  toCategoryId: string
-}
-
 function createInitialStateWithDefaults(categories: typeof CATEGORIES) {
   // Return clean state with no default rows - cards will be collapsed
   return createInitialState(categories)
@@ -40,7 +35,6 @@ export default function Configurator({}: ConfiguratorProps = {}) {
   const [editingRow, setEditingRow] = useState<string | null>(null)
   const [editRowData, setEditRowData] = useState<EditRowData | null>(null)
   const [warningMessage, setWarningMessage] = useState<string | null>(null)
-  const [pendingSwitch, setPendingSwitch] = useState<PendingSwitch | null>(null)
   const [showSummary, setShowSummary] = useState(false)
   const [expandedAdditionalIO, setExpandedAdditionalIO] = useState(false)
   const [state, setState] = useState(() => createInitialStateWithDefaults(CATEGORIES))
@@ -51,15 +45,6 @@ export default function Configurator({}: ConfiguratorProps = {}) {
   }
 
   const addCategory = (categoryId: string) => {
-    // Check if a category is currently open and has changes
-    const currentlyEnabledId = Object.keys(enabledCategories).find((id) => enabledCategories[id])
-    
-    if (currentlyEnabledId && currentlyEnabledId !== categoryId) {
-      // Show smooth modal instead of browser confirm
-      setPendingSwitch({ fromCategoryId: currentlyEnabledId, toCategoryId: categoryId })
-      return
-    }
-
     const category = CATEGORIES.find((c) => c.id === categoryId)
     if (!category) return
 
@@ -278,24 +263,6 @@ export default function Configurator({}: ConfiguratorProps = {}) {
   const totalForCategory = (categoryId: string) =>
     getTotalChannelsForCategory(state, categoryId)
 
-  const handleSaveAndSwitch = () => {
-    if (!pendingSwitch) return
-    removeCategory(pendingSwitch.fromCategoryId)
-    addCategory(pendingSwitch.toCategoryId)
-    setPendingSwitch(null)
-  }
-
-  const handleDiscardAndSwitch = () => {
-    if (!pendingSwitch) return
-    cancelCategory(pendingSwitch.fromCategoryId)
-    addCategory(pendingSwitch.toCategoryId)
-    setPendingSwitch(null)
-  }
-
-  const handleKeepEditing = () => {
-    setPendingSwitch(null)
-  }
-
   const getConfiguredCategories = () => {
     return CATEGORIES.filter((cat) => getTotalChannelsForCategory(state, cat.id) > 0)
   }
@@ -488,55 +455,25 @@ export default function Configurator({}: ConfiguratorProps = {}) {
         )}
       </div>
 
-      {/* Switch Category Modal */}
-      {pendingSwitch && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/20 p-4">
-          <div className="w-full max-w-md rounded-xl border border-slate-200 bg-white shadow-lg">
-            <div className="border-b border-slate-200/70 px-6 py-4">
-              <p className="text-sm font-semibold text-slate-900">
-                Save changes to <span className="text-[rgb(var(--speedgoat-blue))]">{CATEGORIES.find((c) => c.id === pendingSwitch.fromCategoryId)?.label}</span>?
-              </p>
-              <p className="mt-1 text-xs text-slate-500">
-                You are about to switch to <span className="font-medium">{CATEGORIES.find((c) => c.id === pendingSwitch.toCategoryId)?.label}</span>
-              </p>
-            </div>
-            <div className="flex gap-2 px-6 py-4">
+      {/* Fixed Footer Button */}
+      {getConfiguredCategories().length > 0 && (
+        <div className="pointer-events-none fixed inset-x-0 bottom-4 z-40 flex justify-center px-4 md:bottom-6 md:px-6">
+          <div className="pointer-events-auto w-full rounded-2xl border border-slate-200/80 bg-white/90 shadow-[0_20px_45px_-25px_rgba(15,23,42,0.45)] backdrop-blur-xl">
+            <div className="flex items-center justify-between gap-3 px-4 py-3 md:px-5">
+              <div className="text-xs text-slate-600 md:text-sm">
+                <span className="font-semibold text-slate-800">{getTotalAllChannels()}</span> channels
+                <span className="mx-2 text-slate-400">•</span>
+                <span>{getConfiguredCategories().length} categories</span>
+              </div>
               <button
                 type="button"
-                onClick={handleKeepEditing}
-                className="flex-1 rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-600 transition hover:bg-slate-50"
+                onClick={() => setShowSummary(true)}
+                className="rounded-xl border border-[rgb(var(--speedgoat-blue))] bg-[rgb(var(--speedgoat-blue))] px-4 py-2 text-xs font-semibold text-white transition hover:bg-blue-700 md:px-5 md:text-sm"
               >
-                Keep Editing
-              </button>
-              <button
-                type="button"
-                onClick={handleDiscardAndSwitch}
-                className="flex-1 rounded-lg border border-slate-300 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-600 transition hover:bg-slate-100"
-              >
-                Discard
-              </button>
-              <button
-                type="button"
-                onClick={handleSaveAndSwitch}
-                className="flex-1 rounded-lg border border-[rgb(var(--speedgoat-blue))] bg-[rgb(var(--speedgoat-blue))] px-3 py-2 text-xs font-semibold text-white transition hover:bg-blue-700"
-              >
-                Save & Switch
+                Review Configuration
               </button>
             </div>
           </div>
-        </div>
-      )}
-
-      {/* Fixed Footer Button */}
-      {getConfiguredCategories().length > 0 && !pendingSwitch && (
-        <div className="fixed bottom-0 left-0 right-0 border-t border-slate-200 bg-white px-4 py-4 md:px-6 md:py-5">
-          <button
-            type="button"
-            onClick={() => setShowSummary(true)}
-            className="w-full rounded-lg border border-[rgb(var(--speedgoat-blue))] bg-[rgb(var(--speedgoat-blue))] px-4 py-3 text-sm font-semibold text-white transition hover:bg-blue-700"
-          >
-            Review Configuration ({getTotalAllChannels()} Channels)
-          </button>
         </div>
       )}
 
@@ -561,7 +498,6 @@ export default function Configurator({}: ConfiguratorProps = {}) {
             </div>
 
             <div className="space-y-4 px-6 py-5">
-              {/* Summary Section */}
               <div className="rounded-lg border border-slate-200/80 bg-slate-50/50 p-4">
                 <p className="text-xs font-semibold uppercase tracking-wide text-slate-600">Summary</p>
                 <div className="mt-3 grid grid-cols-2 gap-3 md:grid-cols-3">
@@ -578,7 +514,6 @@ export default function Configurator({}: ConfiguratorProps = {}) {
                 </div>
               </div>
 
-              {/* Detailed Section */}
               <div className="space-y-3">
                 <p className="text-xs font-semibold uppercase tracking-wide text-slate-600">Details</p>
                 {getConfiguredCategories().map((cat) => (

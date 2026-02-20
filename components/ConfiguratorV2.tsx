@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { CATEGORIES } from './configurator/data'
 import type { ConfiguratorProps, FieldKey, SpecsRecord, SubCategory } from './configurator/types'
 
@@ -48,25 +48,50 @@ function getConditionalOptions(
 }
 
 // Helper to create spec summary with structured chips (value-first for obvious specs)
-function createSpecSummary(sub: SubCategory, specs: SpecsRecord): JSX.Element {
+function createSpecSummary(
+  sub: SubCategory,
+  specs: SpecsRecord,
+  context?: { categoryId: string; subId: string }
+): JSX.Element {
+  const isProtocolGroup = context?.categoryId === 'communication' && context?.subId === 'protocols'
+  const protocolName = isProtocolGroup ? (specs.range ?? 'Protocol') : null
+
   // Show first 2-3 most important fields (skip internal signal type chip like "Voltage")
   const fieldsToShow = sub.fields
     .filter((field) => field.key !== 'signalType')
+    .filter((field) => !(isProtocolGroup && field.key === 'range'))
     .slice(0, Math.min(sub.fields.length, 3))
   
   return (
-    <div className="flex flex-wrap items-center gap-2">
-      {fieldsToShow.map((field) => {
-        const value = specs[field.key] ?? 'Default'
-        return (
-          <span
-            key={field.key}
-            className="inline-flex items-center rounded-md border border-slate-200 bg-white px-2.5 py-1 whitespace-nowrap"
-          >
-            <span className="text-xs font-semibold text-slate-800">{value}</span>
-          </span>
-        )
-      })}
+    <div className="flex min-w-0 flex-col gap-2">
+      {isProtocolGroup && (
+        <div className="inline-flex w-fit items-center rounded-md bg-[rgb(var(--speedgoat-blue))]/10 px-2.5 py-1">
+          <span className="text-xs font-semibold text-[rgb(var(--speedgoat-blue))]">{protocolName}</span>
+        </div>
+      )}
+      <div className="flex flex-wrap items-center gap-2">
+        {fieldsToShow.map((field) => {
+          const value = specs[field.key] ?? 'Default'
+          const isProtocolMeta =
+            isProtocolGroup && (field.key === 'resolution' || field.key === 'speed')
+          const protocolMetaLabel =
+            field.key === 'resolution' ? 'Link' : field.key === 'speed' ? 'Rate' : field.label
+          return (
+            <span
+              key={field.key}
+              className="inline-flex items-center rounded-md border border-slate-200 bg-white px-2.5 py-1 whitespace-nowrap"
+            >
+              {isProtocolMeta ? (
+                <span className="text-xs font-semibold text-slate-800">
+                  {protocolMetaLabel}: {value}
+                </span>
+              ) : (
+                <span className="text-xs font-semibold text-slate-800">{value}</span>
+              )}
+            </span>
+          )
+        })}
+      </div>
     </div>
   )
 }
@@ -85,13 +110,33 @@ export default function ConfiguratorV2({}: ConfiguratorProps = {}) {
     return initial
   })
   const [expandedTiers, setExpandedTiers] = useState<Record<string, boolean>>({})
-  const [pendingProtocolSelections, setPendingProtocolSelections] = useState<Record<string, Record<string, string>>>({})
   const [protocolPickerOpen, setProtocolPickerOpen] = useState<Record<string, Record<string, boolean>>>({})
+  const protocolSelectRefs = useRef<Record<string, HTMLSelectElement | null>>({})
 
   // Tier 1: Core signal types (always visible)
   const TIER1_IDS = ['analog', 'digital', 'communication', 'motion']
   const tier1Categories = CATEGORIES.filter((c) => TIER1_IDS.includes(c.id))
   const tier2Categories = CATEGORIES.filter((c) => !TIER1_IDS.includes(c.id))
+
+  const openProtocolPicker = (categoryId: string, subId: string) => {
+    setProtocolPickerOpen((prev) => ({
+      ...prev,
+      [categoryId]: { ...(prev[categoryId] || {}), [subId]: true },
+    }))
+
+    // Open native select menu immediately where supported (Chromium showPicker)
+    setTimeout(() => {
+      const key = `${categoryId}:${subId}`
+      const el = protocolSelectRefs.current[key]
+      if (!el) return
+      const anyEl = el as HTMLSelectElement & { showPicker?: () => void }
+      if (typeof anyEl.showPicker === 'function') {
+        anyEl.showPicker()
+      } else {
+        el.focus()
+      }
+    }, 0)
+  }
 
   // Add new signal row
   const addSignalRow = (categoryId: string, subId: string, presetSpecs?: Partial<SpecsRecord>) => {
@@ -209,7 +254,7 @@ export default function ConfiguratorV2({}: ConfiguratorProps = {}) {
     row: SignalRow,
     rowIndex: number
   ) => {
-    const summary = createSpecSummary(sub, row.specs)
+    const summary = createSpecSummary(sub, row.specs, { categoryId, subId: sub.id })
     const hasQuantity = row.quantity > 0
     
     // Determine if using custom quantity
@@ -219,11 +264,13 @@ export default function ConfiguratorV2({}: ConfiguratorProps = {}) {
     return (
       <div key={row.id} className="group">
         {/* Two-column layout: Quantity | Specs */}
-        <div className="flex items-start gap-3">
+        <div className="flex items-center gap-3">
           {/* Left: Quantity input */}
-          <div className="flex items-center gap-2">
+          <div className="flex min-w-[170px] items-center gap-2">
             <span className="text-xs text-slate-500 min-w-[60px]">
-              {rowIndex === 0 ? sub.label : `${sub.label} ${String.fromCharCode(65 + rowIndex)}`}
+              {rowIndex === 0
+                ? (categoryId === 'communication' && sub.id === 'protocols' ? 'Ports' : sub.label)
+                : `${categoryId === 'communication' && sub.id === 'protocols' ? 'Port' : sub.label} ${String.fromCharCode(65 + rowIndex)}`}
             </span>
             
             {/* Dropdown for preset quantities */}
@@ -325,6 +372,10 @@ export default function ConfiguratorV2({}: ConfiguratorProps = {}) {
             </p>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
               {sub.fields.map((field) => {
+                // Protocol is chosen when adding a row and should stay fixed.
+                if (categoryId === 'communication' && sub.id === 'protocols' && field.key === 'range') {
+                  return null
+                }
                 const options = getConditionalOptions(sub, field.key, row.specs)
                 if (!options || options.length === 0) return null
 
@@ -376,7 +427,6 @@ export default function ConfiguratorV2({}: ConfiguratorProps = {}) {
       const protocolField = sub.fields.find((f) => f.key === 'range')
       const protocolOptions =
         protocolField && Array.isArray(protocolField.options) ? protocolField.options : []
-      const selectedProtocol = pendingProtocolSelections[categoryId]?.[sub.id] || ''
       const isPickerOpen = protocolPickerOpen[categoryId]?.[sub.id] ?? false
 
       return (
@@ -400,74 +450,46 @@ export default function ConfiguratorV2({}: ConfiguratorProps = {}) {
                 {!isPickerOpen && (
                   <button
                     type="button"
-                    onClick={() =>
-                      setProtocolPickerOpen((prev) => ({
-                        ...prev,
-                        [categoryId]: { ...(prev[categoryId] || {}), [sub.id]: true },
-                      }))
-                    }
+                    onClick={() => openProtocolPicker(categoryId, sub.id)}
                     className="rounded border border-slate-200 bg-white px-2.5 py-1 text-xs font-semibold text-slate-600 transition hover:border-slate-300 hover:bg-slate-50"
                   >
                     + Add Protocol
                   </button>
                 )}
                 {isPickerOpen && (
-                  <div className="flex items-center gap-2">
-                    <select
-                      value={selectedProtocol}
-                      onChange={(e) =>
-                        setPendingProtocolSelections((prev) => ({
-                          ...prev,
-                          [categoryId]: {
-                            ...(prev[categoryId] || {}),
-                            [sub.id]: e.target.value,
-                          },
-                        }))
-                      }
-                      className="rounded border border-slate-300 bg-white px-2 py-1 text-xs text-slate-700"
-                      aria-label="Select protocol"
-                    >
-                      <option value="" disabled>
-                        Select protocol...
+                  <select
+                    ref={(el) => {
+                      protocolSelectRefs.current[`${categoryId}:${sub.id}`] = el
+                    }}
+                    defaultValue=""
+                    onBlur={() =>
+                      setProtocolPickerOpen((prev) => ({
+                        ...prev,
+                        [categoryId]: { ...(prev[categoryId] || {}), [sub.id]: false },
+                      }))
+                    }
+                    onChange={(e) => {
+                      const value = e.target.value
+                      if (!value) return
+                      addSignalRow(categoryId, sub.id, { range: value })
+                      setProtocolPickerOpen((prev) => ({
+                        ...prev,
+                        [categoryId]: { ...(prev[categoryId] || {}), [sub.id]: false },
+                      }))
+                    }}
+                    className="rounded border border-slate-300 bg-white px-2 py-1 text-xs text-slate-700"
+                    aria-label="Select protocol"
+                    autoFocus
+                  >
+                    <option value="" disabled>
+                      Select protocol...
+                    </option>
+                    {protocolOptions.map((opt) => (
+                      <option key={opt} value={opt}>
+                        {opt}
                       </option>
-                      {protocolOptions.map((opt) => (
-                        <option key={opt} value={opt}>
-                          {opt}
-                        </option>
-                      ))}
-                    </select>
-                    <button
-                      type="button"
-                      disabled={!selectedProtocol}
-                      onClick={() => {
-                        if (!selectedProtocol) return
-                        addSignalRow(categoryId, sub.id, { range: selectedProtocol })
-                        setPendingProtocolSelections((prev) => ({
-                          ...prev,
-                          [categoryId]: { ...(prev[categoryId] || {}), [sub.id]: '' },
-                        }))
-                        setProtocolPickerOpen((prev) => ({
-                          ...prev,
-                          [categoryId]: { ...(prev[categoryId] || {}), [sub.id]: false },
-                        }))
-                      }}
-                      className="rounded border border-slate-200 bg-white px-2 py-1 text-xs text-slate-600 transition hover:border-slate-300 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
-                    >
-                      Add
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setProtocolPickerOpen((prev) => ({
-                          ...prev,
-                          [categoryId]: { ...(prev[categoryId] || {}), [sub.id]: false },
-                        }))
-                      }
-                      className="rounded border border-slate-200 bg-white px-2 py-1 text-xs text-slate-500 transition hover:border-slate-300 hover:bg-slate-50"
-                    >
-                      Cancel
-                    </button>
-                  </div>
+                    ))}
+                  </select>
                 )}
               </div>
             </div>
@@ -480,7 +502,6 @@ export default function ConfiguratorV2({}: ConfiguratorProps = {}) {
     const protocolField = sub.fields.find((f) => f.key === 'range')
     const protocolOptions =
       protocolField && Array.isArray(protocolField.options) ? protocolField.options : []
-    const selectedProtocol = pendingProtocolSelections[categoryId]?.[sub.id] || ''
     const isPickerOpen = protocolPickerOpen[categoryId]?.[sub.id] ?? false
 
     return (
@@ -502,74 +523,46 @@ export default function ConfiguratorV2({}: ConfiguratorProps = {}) {
             {!isPickerOpen && (
               <button
                 type="button"
-                onClick={() =>
-                  setProtocolPickerOpen((prev) => ({
-                    ...prev,
-                    [categoryId]: { ...(prev[categoryId] || {}), [sub.id]: true },
-                  }))
-                }
+                onClick={() => openProtocolPicker(categoryId, sub.id)}
                 className="flex items-center gap-1 text-xs text-slate-500 transition hover:text-[rgb(var(--speedgoat-blue))]"
               >
                 <span className="text-sm">+</span> Add protocol
               </button>
             )}
             {isPickerOpen && (
-              <>
-                <select
-                  value={selectedProtocol}
-                  onChange={(e) =>
-                    setPendingProtocolSelections((prev) => ({
-                      ...prev,
-                      [categoryId]: {
-                        ...(prev[categoryId] || {}),
-                        [sub.id]: e.target.value,
-                      },
-                    }))
-                  }
-                  className="rounded border border-slate-300 bg-white px-2 py-1 text-xs text-slate-700"
-                  aria-label="Select additional protocol"
-                >
-                  <option value="" disabled>
-                    Select protocol...
+              <select
+                ref={(el) => {
+                  protocolSelectRefs.current[`${categoryId}:${sub.id}`] = el
+                }}
+                defaultValue=""
+                onBlur={() =>
+                  setProtocolPickerOpen((prev) => ({
+                    ...prev,
+                    [categoryId]: { ...(prev[categoryId] || {}), [sub.id]: false },
+                  }))
+                }
+                onChange={(e) => {
+                  const value = e.target.value
+                  if (!value) return
+                  addSignalRow(categoryId, sub.id, { range: value })
+                  setProtocolPickerOpen((prev) => ({
+                    ...prev,
+                    [categoryId]: { ...(prev[categoryId] || {}), [sub.id]: false },
+                  }))
+                }}
+                className="rounded border border-slate-300 bg-white px-2 py-1 text-xs text-slate-700"
+                aria-label="Select additional protocol"
+                autoFocus
+              >
+                <option value="" disabled>
+                  Select protocol...
+                </option>
+                {protocolOptions.map((opt) => (
+                  <option key={opt} value={opt}>
+                    {opt}
                   </option>
-                  {protocolOptions.map((opt) => (
-                    <option key={opt} value={opt}>
-                      {opt}
-                    </option>
-                  ))}
-                </select>
-                <button
-                  type="button"
-                  disabled={!selectedProtocol}
-                  onClick={() => {
-                    if (!selectedProtocol) return
-                    addSignalRow(categoryId, sub.id, { range: selectedProtocol })
-                    setPendingProtocolSelections((prev) => ({
-                      ...prev,
-                      [categoryId]: { ...(prev[categoryId] || {}), [sub.id]: '' },
-                    }))
-                    setProtocolPickerOpen((prev) => ({
-                      ...prev,
-                      [categoryId]: { ...(prev[categoryId] || {}), [sub.id]: false },
-                    }))
-                  }}
-                  className="rounded border border-slate-200 bg-white px-2 py-1 text-xs text-slate-600 transition hover:border-slate-300 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                  Add
-                </button>
-                <button
-                  type="button"
-                  onClick={() =>
-                    setProtocolPickerOpen((prev) => ({
-                      ...prev,
-                      [categoryId]: { ...(prev[categoryId] || {}), [sub.id]: false },
-                    }))
-                  }
-                  className="rounded border border-slate-200 bg-white px-2 py-1 text-xs text-slate-500 transition hover:border-slate-300 hover:bg-slate-50"
-                >
-                  Cancel
-                </button>
-              </>
+                ))}
+              </select>
             )}
           </div>
         )}
