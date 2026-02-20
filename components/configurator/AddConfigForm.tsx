@@ -1,4 +1,4 @@
-import type { FieldKey, SubCategory, TempSpecState, ConditionalOptions } from './types'
+import type { FieldKey, SubCategory, TempSpecState, ConditionalOptions, SpecsRecord } from './types'
 
 interface AddConfigFormProps {
   sub: SubCategory
@@ -12,7 +12,7 @@ interface AddConfigFormProps {
 // Helper function to get options for a field, handling conditional options
 function getFieldOptions(
   field: { key: FieldKey; label: string; options: string[] | ConditionalOptions },
-  currentSpecs: Record<FieldKey, string>
+  currentSpecs: SpecsRecord
 ): string[] {
   if (Array.isArray(field.options)) {
     return field.options
@@ -20,6 +20,7 @@ function getFieldOptions(
   
   // Handle conditional options
   const dependentValue = currentSpecs[field.options.dependsOn]
+  if (!dependentValue) return []
   return field.options.conditions[dependentValue] || []
 }
 

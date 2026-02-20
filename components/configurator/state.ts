@@ -1,4 +1,4 @@
-import type { Category, FieldKey, SubCategoryState, TempSpecState } from './types'
+import type { Category, SpecsRecord, SubCategoryState, TempSpecState } from './types'
 
 export function createInitialState(categories: Category[]) {
   const initialState: Record<string, Record<string, SubCategoryState>> = {}
@@ -44,14 +44,14 @@ export function getTotalChannelsForCategory(
 }
 
 export function isDuplicateRow(
-  rows: Array<{ id?: string; quantity: number; specs: Record<FieldKey, string> }>,
-  candidate: { id?: string; quantity: number; specs: Record<FieldKey, string> }
+  rows: Array<{ id?: string; quantity: number; specs: SpecsRecord }>,
+  candidate: { id?: string; quantity: number; specs: SpecsRecord }
 ) {
   return rows.some((row) => {
     if (candidate.id && row.id === candidate.id) return false
     if (row.quantity !== candidate.quantity) return false
     return Object.keys(candidate.specs).every(
-      (key) => row.specs[key as FieldKey] === candidate.specs[key as FieldKey]
+      (key) => row.specs[key as keyof SpecsRecord] === candidate.specs[key as keyof SpecsRecord]
     )
   })
 }

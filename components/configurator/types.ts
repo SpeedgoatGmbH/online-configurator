@@ -1,4 +1,5 @@
 export type FieldKey = 'range' | 'resolution' | 'speed' | 'signalType' | 'signalRange' | 'inputMode' | 'outputMode'
+export type SpecsRecord = Partial<Record<FieldKey, string>>
 
 export interface ConditionalOptions {
   dependsOn: FieldKey
@@ -15,7 +16,7 @@ export interface SubCategory {
   id: string
   label: string
   fields: FieldDefinition[]
-  defaults: Record<FieldKey, string>
+  defaults: SpecsRecord
 }
 
 export interface Category {
@@ -27,7 +28,7 @@ export interface Category {
 export interface RowData {
   id: string
   quantity: number
-  specs: Record<FieldKey, string>
+  specs: SpecsRecord
 }
 
 export interface SubCategoryState {
@@ -41,12 +42,10 @@ export interface ConfiguratorProps {
 
 export interface EditRowData {
   quantity: number
-  specs: Record<FieldKey, string>
+  specs: SpecsRecord
 }
 
 export interface TempSpecState {
   quantity: number
-  specs: Record<FieldKey, string>
+  specs: SpecsRecord
 }
-
-export type SpecsRecord = Record<FieldKey, string>

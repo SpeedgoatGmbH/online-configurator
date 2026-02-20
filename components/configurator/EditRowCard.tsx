@@ -1,4 +1,4 @@
-import type { EditRowData, SubCategory, FieldKey, ConditionalOptions } from './types'
+import type { EditRowData, SubCategory, FieldKey, ConditionalOptions, SpecsRecord } from './types'
 
 interface EditRowCardProps {
   sub: SubCategory
@@ -11,7 +11,7 @@ interface EditRowCardProps {
 // Helper function to get options for a field, handling conditional options
 function getFieldOptions(
   field: { key: FieldKey; label: string; options: string[] | ConditionalOptions },
-  currentSpecs: Record<FieldKey, string>
+  currentSpecs: SpecsRecord
 ): string[] {
   if (Array.isArray(field.options)) {
     return field.options
@@ -19,6 +19,7 @@ function getFieldOptions(
   
   // Handle conditional options
   const dependentValue = currentSpecs[field.options.dependsOn]
+  if (!dependentValue) return []
   return field.options.conditions[dependentValue] || []
 }
 

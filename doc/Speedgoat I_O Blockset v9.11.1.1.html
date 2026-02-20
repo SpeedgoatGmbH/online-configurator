@@ -1,0 +1,882 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0046)https://www.speedgoat.com/help/slrt/page/index -->
+<html lang="en-US" dir="ltr" class=""><head id="Head"><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="REVISIT-AFTER" content="1 DAYS">
+<meta name="RATING" content="GENERAL">
+<meta name="RESOURCE-TYPE" content="DOCUMENT">
+<meta content="text/javascript" http-equiv="Content-Script-Type">
+<meta content="text/css" http-equiv="Content-Style-Type">
+<meta name="msvalidate.01" content="03C0E4A8147909606F4C80424E65C49D">
+<title>
+	Speedgoat I/O Blockset v9.11.1.1
+        
+</title><meta id="MetaDescription" name="description" content="Leading provider of x86 / FPGA real-time computers with I/O, to test applications created from Simulink."><meta id="MetaKeywords" name="keywords" content="Speedgoat, hardware, real-time, target machines, FPGA, I/O modules, Simulink, simulation, performance, hardware-in-the-loop, communications protocols,simulink testing, simulink real-time"><meta id="MetaRobots" name="robots" content="INDEX, FOLLOW"><link href="./Speedgoat I_O Blockset v9.11.1.1_files/dnn-css-variables.css" type="text/css" rel="stylesheet"><link href="./Speedgoat I_O Blockset v9.11.1.1_files/default.css" type="text/css" rel="stylesheet"><link href="./Speedgoat I_O Blockset v9.11.1.1_files/portal.css" type="text/css" rel="stylesheet"><link href="./Speedgoat I_O Blockset v9.11.1.1_files/fonts.css" type="text/css" rel="stylesheet"><link href="./Speedgoat I_O Blockset v9.11.1.1_files/theme.min.css" type="text/css" rel="stylesheet"><link href="./Speedgoat I_O Blockset v9.11.1.1_files/style.min.css" type="text/css" rel="stylesheet"><script type="text/javascript" async="" src="./Speedgoat I_O Blockset v9.11.1.1_files/insight.min.js.download"></script><script async="" src="./Speedgoat I_O Blockset v9.11.1.1_files/gtm.js.download"></script><script src="./Speedgoat I_O Blockset v9.11.1.1_files/jquery.js.download" type="text/javascript"></script><script src="./Speedgoat I_O Blockset v9.11.1.1_files/jquery-migrate.js.download" type="text/javascript"></script><script src="./Speedgoat I_O Blockset v9.11.1.1_files/2sxc.api.min.js.download" type="text/javascript"></script><script src="./Speedgoat I_O Blockset v9.11.1.1_files/turn-on.js.download" type="text/javascript"></script><link rel="icon" href="https://www.speedgoat.com/Portals/0/favicon.ico?ver=uzRLWpFGEnbNfBvCA7O9rw%3d%3d" type="image/x-icon"><meta property="og:image" content="https://www.speedgoat.com/help/slrt/page/icon_documentation.jpg"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no"><!--[if lt IE 9]><script type='text/javascript' src='https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js'></script><script type='text/javascript' src='https://oss.maxcdn.com/respond/1.4.2/respond.min.js'></script><![endif]--><script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-T5G3TH9');</script><meta name="_jsApi" content="{&quot;platform&quot;:&quot;dnn&quot;,&quot;page&quot;:3472,&quot;root&quot;:&quot;/&quot;,&quot;api&quot;:&quot;/api/e.x.t/&quot;,&quot;appApi&quot;:&quot;/api/2sxc/&quot;,&quot;uiRoot&quot;:&quot;/desktopmodules/tosic_sexycontent/&quot;,&quot;rvtHeader&quot;:&quot;RequestVerificationToken&quot;,&quot;rvt&quot;:&quot;hXx43Coz-HO_Zz9Zqpy1rEQEsdWjiiv1OfMSuJfbYfZ3IduzUVWC_SfswN1EJFZGdz-57g2&quot;,&quot;dialogQuery&quot;:&quot;portalId=0&quot;}"><link rel="stylesheet" href="./Speedgoat I_O Blockset v9.11.1.1_files/addsearch-ui.min.css"><style type="text/css">.fancybox-margin{margin-right:0px;}</style></head>
+<body id="Body" class="tab-3472 tab-level-1 root-2435 lang-root-2435 lang-en  portal-0">
+
+    <form method="post" action="https://www.speedgoat.com/help/slrt/page/index" id="Form" enctype="multipart/form-data">
+<div class="aspNetHidden">
+<input type="hidden" name="__EVENTTARGET" id="__EVENTTARGET" value="">
+<input type="hidden" name="__EVENTARGUMENT" id="__EVENTARGUMENT" value="">
+<input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="Fyls+r0c2rYLEbSj/TCh7u9CmlEz3Rtjt2G3hxSYA+HiJS652MNOnisbDnr8rI6rqRPXSyIaFpqHqA7WD3fulrTJhuE3knZG/oTjo6xG5X+1bCDniQErMhDCr0FNH14sVqQTQkcr32j1rDzfKD6+AR9rpF8hPfQrM/br35iNAZ32xnOyRExXZbn8jJkg1OdKWknKFn4EM31Zmmhd">
+</div>
+
+<script type="text/javascript">
+//<![CDATA[
+var theForm = document.forms['Form'];
+if (!theForm) {
+    theForm = document.Form;
+}
+function __doPostBack(eventTarget, eventArgument) {
+    if (!theForm.onsubmit || (theForm.onsubmit() != false)) {
+        theForm.__EVENTTARGET.value = eventTarget;
+        theForm.__EVENTARGUMENT.value = eventArgument;
+        theForm.submit();
+    }
+}
+//]]>
+</script>
+
+
+<script src="./Speedgoat I_O Blockset v9.11.1.1_files/WebResource.axd" type="text/javascript"></script>
+
+
+<script src="./Speedgoat I_O Blockset v9.11.1.1_files/ScriptResource.axd" type="text/javascript"></script>
+<script src="./Speedgoat I_O Blockset v9.11.1.1_files/ScriptResource(1).axd" type="text/javascript"></script>
+<div class="aspNetHidden">
+
+	<input type="hidden" name="__VIEWSTATEGENERATOR" id="__VIEWSTATEGENERATOR" value="CA0B0334">
+	<input type="hidden" name="__VIEWSTATEENCRYPTED" id="__VIEWSTATEENCRYPTED" value="">
+	<input type="hidden" name="__EVENTVALIDATION" id="__EVENTVALIDATION" value="eH4plFw+7849AE0m9CZFXHgb0RkJF+3tvjsw1+yhy1J9IyqFunK89pwONTTzdj6C5747mNnyW0LQ/0Wil7ts43mftbx4vrTqUml2XMK6et133ueM">
+</div><script src="./Speedgoat I_O Blockset v9.11.1.1_files/dnn.js.download" type="text/javascript"></script><script src="./Speedgoat I_O Blockset v9.11.1.1_files/dnncore.js.download" type="text/javascript"></script><script src="./Speedgoat I_O Blockset v9.11.1.1_files/dnn.servicesframework.js.download" type="text/javascript"></script><script src="./Speedgoat I_O Blockset v9.11.1.1_files/smoke.min.js.download" type="text/javascript"></script><script src="./Speedgoat I_O Blockset v9.11.1.1_files/app-pc.min.js.download" type="text/javascript"></script>
+<script type="text/javascript">
+//<![CDATA[
+Sys.WebForms.PageRequestManager._initialize('ScriptManager', 'Form', [], [], [], 5400, '');
+//]]>
+</script>
+
+        
+        
+        
+<!--CDF(JS-LIBRARY|jQuery,,)-->
+
+
+<!-- Google Tag Manager -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-T5G3TH9"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager -->
+
+
+
+
+<a class="sr-only sr-only-focusable" href="https://www.speedgoat.com/help/slrt/page/index#content"></a>
+
+
+
+
+<header>
+	<div class="header-background">
+		<div class="container-fluid clearfix">
+			<div class="ly-container-inner">
+				<div class="row">
+					<div class="col-xs-3 visible-xs-block visible-sm-block">
+    				<a href="https://www.speedgoat.com/help/slrt/page/index#" class="ly-nav-mobile-trigger pull-left" title="Menu"></a>
+					</div>
+					<div class="col-xs-6 col-md-2">
+						<a class="ly-logo" href="https://www.speedgoat.com/" title="">
+							<img alt="" src="./Speedgoat I_O Blockset v9.11.1.1_files/speedgoat-logo.svg">
+						</a>
+					</div>
+					<div class="col-xs-7 hidden-xs hidden-sm">
+						<nav id="nav-desktop" role="navigation">
+							
+
+		<ul class="ly-nav ly-nav-main">
+				<li class="nav-227 ly-depth0-index0 first inactive">
+						<a href="https://www.speedgoat.com/solutions">
+							Solutions
+						</a>
+				</li>
+				<li class="nav-217 ly-depth0-index1 inactive">
+						<a href="https://www.speedgoat.com/products-services">
+							Products &amp; Services
+						</a>
+				</li>
+				<li class="nav-5728 ly-depth0-index2 inactive">
+						<a href="https://www.speedgoat.com/knowledge-center">
+							Knowledge Center
+						</a>
+				</li>
+				<li class="nav-5859 ly-depth0-index3 inactive">
+						<a href="https://www.speedgoat.com/success-stories">
+							Success Stories
+						</a>
+				</li>
+				<li class="nav-235 ly-depth0-index4 last inactive">
+						<a href="https://www.speedgoat.com/company/about-speedgoat">
+							Company
+						</a>
+				</li>
+		</ul>
+
+
+
+						</nav>
+					</div>
+					<div class="col-xs-3 hidden-xs hidden-sm">
+						<nav id="nav-sys" class="ly-sysnav pull-right" role="navigation">
+							
+
+		<ul class="ly-nav">
+				<li class="nav-277 first inactive">
+						<a href="https://www.speedgoat.com/company/contact-us">Contact Us</a>
+					
+				</li>
+				<li class="nav-377 last inactive dropdown is-authenticated">
+						<a href="https://www.speedgoat.com/extranet" data-toggle="dropdown">DH</a>
+					
+				<ul class="dropdown-menu cp-user-menu">
+            <li><a href="https://www.speedgoat.com/extranet/home">My Account</a></li>
+            <li><a href="https://www.speedgoat.com/help">Documentation</a></li>
+            <li><a href="https://www.speedgoat.com/extranet/downloads">Downloads</a></li>
+            <li><a href="https://www.speedgoat.com/extranet/logout">Sign Out</a></li>
+        </ul></li>
+		</ul>
+
+						</nav>
+					</div>
+					<div class="col-xs-3 visible-xs-block visible-sm-block">
+						<a href="https://www.speedgoat.com/company/contact-us" class="ly-nav-mobile-trigger-right pull-right" title="Menu"><img src="./Speedgoat I_O Blockset v9.11.1.1_files/icon-contact-us.svg" style="width: 30px"></a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</header>
+
+<div class="sticky-header hidden-xs hidden-sm">
+	<div class="header-title-container">
+		<div class="container-fluid clearfix">
+			<div class="ly-container-inner">
+				<div class="row">
+					<div class="col-sm-8">
+						<h1 class="header-page-title ">
+							<a href="https://www.speedgoat.com/help/slrt/page/help_home">Documentation</a>
+						</h1>
+					</div>
+
+					<div class="col-sm-4">
+						
+						<div class="d-flex align-items-center">
+							<div class="ly-addsearch">						
+								<script>
+									window.addsearch_settings = {
+										"asw_01": {
+											"placeholder": "Search Documentation",
+											"show_search_suggestions": false,
+											"search_suggestion_position": "left",
+											"default_sortby": "relevance",
+											"display_date": false,
+											"display_meta_description": false,
+											"display_result_image": true,
+											"link_target": "_self",
+											"hide_logo": true,
+											"direction": "ltr",
+											"analytics_enabled": false,
+											"automatic_filter_results_by_site_language": false,
+											"search_results_page_url": "/help/searchresults",
+											"baseFilters": {
+												"and": [
+													{
+														"category": "1xhelp"
+													},
+													{
+														"not": {
+															"category": "2xarchive"
+														}
+													}
+												]
+											}
+										}
+									}
+								</script>
+								<div class="adds-components-widget-search-field"> <div id="searchfield-container-asw_01" class="addsWg-searchfield-container-class"><div class="addsWg-searchfield-container">
+  
+    <input type="search" placeholder="Search Documentation" data-container="addsWg-widget-asw_01" aria-label="Search field" class="icon" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-haspopup="listbox" aria-controls="addsWg-autocomplete-listbox-asw_01">
+  
+</div>
+</div> </div><script src="./Speedgoat I_O Blockset v9.11.1.1_files/addsearch-ui.min.js.download"></script>
+								<a href="javascript:void(0)" title="Search" class="input-group-addon primary" data-searchbaseurl="/help/searchresults" id="sizing-addon2"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a>
+							</div>
+							<a href="https://www.speedgoat.com/company/contact-us" class="sticky-contact-us" title="Menu">Contact us</a>
+						</div>	
+						
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="submenu-container">
+		<div class="container-fluid clearfix hidden-xs hidden-sm d-flex align-items-center empty-subnav">
+		
+
+
+
+	<script>
+		$('.submenu-container').find('.container-fluid').addClass('empty-subnav')
+	</script>
+
+		
+		
+		</div>
+	</div>
+</div>
+
+<nav id="nav-mobile" role="navigation">
+	<div class="nav-mobile-customer-portal is-authenticated">
+		<div class="first-line">
+			<a href="https://www.speedgoat.com/extranet"><span class="profile-circle">DH</span><div class="name">Daniel</div></a>			
+		</div>
+		<!-- <ul>
+			<li><a href="/extranet#/Home">My Account</a></li>
+			<li><a href="/help">Documentation</a></li>
+			<li><a href="/extranet#/Downloads">Downloads</a></li>
+			<li><a href="/extranet#/Logout">Sign Out</a></li>
+		</ul> -->
+	</div>
+	<div class="ly-nav-mobile-main">
+		
+
+		<ul class="ly-nav ly-nav-mobile">
+				<li class="nav-227 first inactive">
+						<div class="ly-linkwrapper">
+                            <a href="https://www.speedgoat.com/solutions">Solutions</a>
+                        </div>
+                    
+				</li>
+				<li class="nav-217 inactive">
+						<div class="ly-linkwrapper">
+                            <a href="https://www.speedgoat.com/products-services">Products &amp; Services</a>
+                        </div>
+                    
+				</li>
+				<li class="nav-5728 inactive">
+						<div class="ly-linkwrapper">
+                            <a href="https://www.speedgoat.com/knowledge-center">Knowledge Center</a>
+                        </div>
+                    
+				</li>
+				<li class="nav-5859 inactive">
+						<div class="ly-linkwrapper">
+                            <a href="https://www.speedgoat.com/success-stories">Success Stories</a>
+                        </div>
+                    
+				</li>
+				<li class="nav-235 last inactive">
+						<div class="ly-linkwrapper">
+                            <a href="https://www.speedgoat.com/company/about-speedgoat">Company</a>
+                        </div>
+                    
+				</li>
+		</ul>
+
+	</div>
+</nav>
+
+<div id="header-page-title-with-nav" class="visible-xs visible-sm">
+	<div class="header-page-title  ">
+		Documentation
+		<span class="mobile-search">
+			<img src="./Speedgoat I_O Blockset v9.11.1.1_files/icon_search_white.png" alt="search">
+			<img src="./Speedgoat I_O Blockset v9.11.1.1_files/icon_close.svg" alt="search close" style="display: none">
+		</span>
+
+		<div class="ly-nav-mobile-footer">
+			<div class="ly-addsearch input-group input-group-sm">
+				<input type="search" class="form-control" placeholder="Search Speedgoat.com">
+				<a href="javascript:void(0)" title="Search" class="input-group-addon primary" data-searchbaseurl="/help/searchresults" id="sizing-addon2"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a>
+			</div>
+		</div>
+	</div>
+	
+	
+
+
+
+
+</div>
+
+<div class="container-fluid clearfix">
+<div id="dnn_ContentProtectionPane"><div class="DnnModule DnnModule-2sxc-app DnnModule-12630 DnnVersionableControl"><a name="12630"></a><div id="dnn_ctr12630_ContentPane"><!-- Start_Module_12630 --><div id="dnn_ctr12630_ModuleContent" class="DNNModuleContent Mod2sxcappC">
+	<div class="sc-content-block" data-cb-instance="12630" data-cb-id="12630">
+
+
+
+
+
+<div class="app-pc">
+  
+    </div>
+
+
+
+
+
+<script src="./Speedgoat I_O Blockset v9.11.1.1_files/js.cookie.min.js.download"></script>
+
+
+
+
+
+
+<script>
+  $(document).ready(function () {
+    var contentProtection = $('.pc-overlay').detach();
+    $('#content .container-fluid .ly-container-inner').prepend(contentProtection);
+  });
+</script>
+
+</div>
+</div><!-- End_Module_12630 --></div></div></div>
+</div>
+
+
+
+<div class="ly-fullheader-pane">
+	<div id="dnn_FullHeaderPane" class="DNNEmptyPane"></div>
+</div>
+<div class="container-fluid ly-header-pane ly-header-pane-empty">
+	<div class="ly-container-inner">
+		<div id="dnn_HeaderPane" class="DNNEmptyPane"></div>
+	</div>
+</div>
+
+<div id="content">
+    <div class="container-fluid">
+        <div class="ly-container-inner">
+			<div class="ly-contentpane-full">
+				<div id="dnn_ContentPane"><div class="DnnModule DnnModule-2sxc-app DnnModule-8222 DnnVersionableControl"><a name="8222"></a><div id="dnn_ctr8222_ContentPane"><!-- Start_Module_8222 --><div id="dnn_ctr8222_ModuleContent" class="DNNModuleContent Mod2sxcappC">
+	<div class="sc-content-block" data-cb-instance="8222" data-cb-id="8222">
+
+
+
+<link rel="stylesheet" href="./Speedgoat I_O Blockset v9.11.1.1_files/style.css">
+
+<script defer="" src="./Speedgoat I_O Blockset v9.11.1.1_files/script.js.download"></script>
+
+
+
+
+
+
+<div class="horizontal_nav_container">
+    <div class="toggle-menu show">
+        <div class="nav-btn">
+            <img src="./Speedgoat I_O Blockset v9.11.1.1_files/ic_menu_black_24px.svg">
+        </div>
+        <span>CONTENTS</span>
+    </div>
+    <div class="offcanvas_horizontal_nav">
+    </div>
+</div>
+<div class="show row-offcanvas row-offcanvas-left active">
+    
+
+
+<div class="sidebar-offcanvas" id="sidebar">
+    <nav id="nav">
+        <ul class="nav_breadcrumb"></ul><ul class="nav_toc"><li class=""><a title="Help Homepage" href="https://www.speedgoat.com/help/slrt/page/help_home">Help Homepage</a><ul></ul></li><li class="active"><a title="Speedgoat I/O Blockset v9.11.1.1
+        " href="https://www.speedgoat.com/help/slrt/page/index">Speedgoat I/O Blockset v9.11.1.1
+        </a><ul><li class=""><a title="Getting Started" href="https://www.speedgoat.com/help/slrt/page/refentry_getting_started">Getting Started</a><ul></ul></li><li class=""><a title="Speedgoat Tools
+            " href="https://www.speedgoat.com/help/slrt/page/io_main/refentry_speedgoat_tools">Speedgoat Tools
+            </a><ul></ul></li><li class=""><a title="Simulink-Programmable FPGA I/O
+        " href="https://www.speedgoat.com/help/slrt/page/refentry_simulink_programmable_fpga_io">Simulink-Programmable FPGA I/O
+        </a><ul></ul></li><li class=""><a title="Configurable I/O
+            " href="https://www.speedgoat.com/help/slrt/page/refentry_configurable_io">Configurable I/O
+            </a><ul></ul></li><li class=""><a title="I/O Connectivity
+            " href="https://www.speedgoat.com/help/slrt/page/refentry_io_connectivity">I/O Connectivity
+            </a><ul></ul></li><li class=""><a title="Communication Protocols
+            " href="https://www.speedgoat.com/help/slrt/page/io_main/refentry_comms_landing">Communication Protocols
+            </a><ul></ul></li><li class=""><a title="Utilities
+            " href="https://www.speedgoat.com/help/slrt/page/io_main/refentry_utilities_landing">Utilities
+            </a><ul></ul></li><li class=""><a title="Examples
+            " href="https://www.speedgoat.com/help/slrt/page/refentry_examples">Examples
+            </a><ul></ul></li><li class=""><a title="Release Notes" href="https://www.speedgoat.com/help/slrt/page/refentry_release_notes">Release Notes</a><ul></ul></li><li class=""><a title="PDF Documentation" href="https://www.speedgoat.com/help/slrt/page/refentry_portal">PDF Documentation</a><ul></ul></li><li class=""><a title="Other Versions" href="https://www.speedgoat.com/help/refentry_archive_sgiob">Other Versions</a><ul></ul></li></ul></li><li class=""><a title="I/O Configuration Packages
+        " href="https://www.speedgoat.com/help/slrt/page/io_configuration_package/index">I/O Configuration Packages
+        </a><ul></ul></li><li class=""><a title="HDL Coder™ Integration Packages
+        " href="https://www.speedgoat.com/help/hdlcoder/page/index_hdlcoder">HDL Coder™ Integration Packages
+        </a><ul></ul></li><li class=""><a title="HDL I/O Blockset
+        " href="https://www.speedgoat.com/help/hdlcoder/page/index_hiob">HDL I/O Blockset
+        </a><ul></ul></li></ul>
+    </nav>
+</div>
+
+
+    
+
+<div class="content-container">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-12">
+        <div class="row-offcanvas row-offcanvas-left">
+            <div class="content_container" id="content_container" itemprop="content">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <section xmlns="http://www.w3.org/1999/xhtml" id="doc_center_content" lang="en">
+                                <div id="pgtype-landingpage">
+                                    <div style="margin-top: 0; margin-bottom: -25px; display: flex; flex-direction: column; align-items: flex-end; text-align: right;"><div style="background-color: white; border-radius: 6px; width: 200px; box-sizing: border-box; border: none; text-align: right; margin-top: 12px; margin-bottom: 0px; padding: 8px 0px 0px 10px;"><div style="color: #000000; font-family: Arial, sans-serif; font-size: 16px; margin-bottom: 4px; padding: 0; text-align: right;"><span style="font-weight: bold;">v9.11.1.x</span><span style="font-weight: normal; font-size: 16px; letter-spacing: -0.5px;"> for R2025b</span></div><a href="https://www.speedgoat.com/help/slrt/page/refentry_archive_sgiob" style="font-size: 13px; color: #007cba; text-decoration: none; cursor: pointer;" onmouseover="this.style.textDecoration=&#39;underline&#39;" onmouseout="this.style.textDecoration=&#39;none&#39;">View other versions</a></div></div><div style="clear: both;"></div><h1 itemprop="title content" class="r2017b">Speedgoat - The
+                                        Quickest Path from Desktop to Real-Time Simulation and
+                                        Testing</h1>
+                                    <div class="doc_topic_desc" itemprop="content purpose"></div>
+                                    <div class="row add_margin_20">
+                                        <div class="col-sm-4 col-sm-push-8 add_border_left">
+                                            <ul class="list-unstyled">
+                                                <li>
+                                                  <a href="https://www.speedgoat.com/help/slrt/page/refentry_product_examples">
+                                                  <strong>Product Examples</strong>
+                                                  </a>
+                                                </li>
+                                                <li>
+                                                  <a href="https://www.speedgoat.com/help/slrt/page/refentry_release_notes">
+                                                  <strong>Release Notes</strong>
+                                                  </a>
+                                                </li>
+                                                <li>
+                                                  <a href="https://www.speedgoat.com/help/slrt/page/refentry_portal">
+                                                  <strong>PDF Documentation</strong>
+                                                  </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <div class="col-sm-8 col-sm-pull-4"><p>Speedgoat Real-time
+                                                target machines work seamlessly with
+                                                  Simulink<sup>®</sup> Real-Time<sup>™</sup>
+                                                to create real-time systems for desktop, lab and
+                                                field environments. Typical applications include
+                                                rapid control prototyping, DSP and vision system
+                                                prototyping, and hardware-in the loop (HIL)
+                                                simulation.</p><p>Simulink Real-Time empowers you to
+                                                extend your Simulink models with driver blocks,
+                                                automatically generate real-time applications,
+                                                define instrumentation, and perform interactive or
+                                                automated runs on Speedgoat target computers
+                                                equipped with a real-time operating system (RTOS), a
+                                                multicore CPU, and I/O and protocol
+                                                interfaces.</p><p><b>For online Speedgoat help</b>, if you are using an earlier MATLAB<sup>®</sup> release and/or Speedgoat I/O Blockset version, open the <a href="https://www.speedgoat.com/help/slrt/page/refentry_archive_sgiob">Help History</a> page and select the MATLAB release and Blockset version you are using.</p>
+												<p><b>For local Speedgoat help</b>, set the MATLAB Help Preferences to <b>Installed locally</b>. In MATLAB R2023a and later, also install the MathWorks<sup>®</sup> Simulink Real-Time documentation.
+												To open the local Speedgoat documentation, enter <code>speedgoat.doc</code> in the MATLAB command window.</p></div>
+                                    </div>
+                                    <h3><a href="https://www.speedgoat.com/help/slrt/page/refentry_getting_started">Getting
+                                        Started</a></h3>
+                                    <p class="category_desc">How to setup and configure your
+                                        real-time target machine and development computer</p>
+                                    <h3><a href="https://www.speedgoat.com/help/slrt/page/io_main/refentry_speedgoat_tools">Speedgoat
+                                            Tools</a></h3>
+                                    <p class="category_desc">How to configure your real-time target
+                                        machine's Ethernet interfaces and basic software
+                                        installation</p>
+                                    <h3><a href="https://www.speedgoat.com/help/slrt/page/refentry_simulink_programmable_fpga_io">Simulink-Programmable FPGA I/O Modules</a></h3>
+                                    <p class="category_desc">Simulink-programmable FPGA I/O modules
+                                        are part of the HDL Coder<sup>™</sup> Integration
+                                        Package (HCIP). For more information, refer to the <a href="https://www.speedgoat.com/help/hdlcoder/page/refentry_interfaces#refsect1_Interfaces_IO_Modules"> HCIP help</a></p>
+                                    <h3><a href="https://www.speedgoat.com/help/slrt/page/refentry_configurable_io">Configurable I/O
+                                            Modules</a></h3>
+                                    <p class="category_desc">How to use Speedgoat driver blocks for
+                                        configurable I/O modules and corresponding <a href="https://www.speedgoat.com/help/slrt/page/refentry_configuration_files">configuration
+                                            files</a></p>
+                                    <h3><a href="https://www.speedgoat.com/help/slrt/page/refentry_io_connectivity">I/O
+                                        Connectivity</a></h3>
+                                    <p>How to use Speedgoat driver blocks for I/O connectivity, e.g.
+                                        analog, video, vibration</p>
+                                    <h3><a href="https://www.speedgoat.com/help/slrt/page/io_main/refentry_comms_landing">Communications
+                                            Protocols</a></h3>
+                                    <p>How to use Speedgoat driver blocks for communications
+                                        protocols, e.g. CAN, LIN, PROFIBUS, SPI</p>
+                                    <h3><a href="https://www.speedgoat.com/help/slrt/page/io_main/refentry_utilities_landing">Utilities</a></h3>
+                                    <p>A collection of utility blocks to configure referenced models
+                                        or access resources on the target machine</p>
+                                    <h3><a href="https://www.speedgoat.com/help/slrt/page/refentry_product_examples">Product
+                                            Examples</a></h3>
+                                    <p>The product examples show you how to build and load Simulink
+                                        models using a specific interface to your Speedgoat
+                                        real-time target machine.<br>They demonstrate the best
+                                        approach to get started with your system and provide
+                                        information on using the interfaces in the most suitable
+                                        way.</p>
+                                </div>
+                            </section>
+                            <div xmlns="http://www.w3.org/1999/xhtml" class="clearfix"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <footer xmlns="http://www.w3.org/1999/xhtml" class="bs-footer">
+                <div class="container-fluid">
+                    <div class="footer">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <p class="copyright">© 2007 -
+                                    <script>document.write(new Date().getFullYear());</script>2026
+                                    Speedgoat GmbH</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+        </div>
+    </div>
+</div>
+
+
+</div>
+
+
+
+
+</div>
+</div><!-- End_Module_8222 --></div></div></div>
+			</div>
+        </div>
+		<a class="ly-top" href="https://www.speedgoat.com/help/slrt/page/index#" title="Nach oben"><span class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span></a>
+	</div>
+</div>
+
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-xs-12">
+			<div class="ly-social">
+				<span>Follow Speedgoat</span>
+				<a class="ly-linkedin" href="https://www.linkedin.com/company/speedgoat" target="_blank" title="LinkedIn"><img src="./Speedgoat I_O Blockset v9.11.1.1_files/icon_linkedin.svg" alt="LinkedIn"></a>
+				<a class="ly-wechat" data-toggle="modal" data-target="#wechat-qr-modal" href="javascript:void(0)"><img src="./Speedgoat I_O Blockset v9.11.1.1_files/icon_wechat.png" alt="WeChat"></a>
+			</div>
+		</div>
+	</div>
+</div>
+
+<footer>
+	<div class="container-fluid">
+			<div class="ly-container-inner">
+				<div id="dnn_FooterPane"><div class="DnnModule DnnModule-2sxc-app DnnModule-17456 DnnVersionableControl"><a name="17456"></a><div id="dnn_ctr17456_ContentPane"><!-- Start_Module_17456 --><div id="dnn_ctr17456_ModuleContent" class="DNNModuleContent Mod2sxcappC">
+	<div class="sc-content-block" data-cb-instance="17456" data-cb-id="17456">
+<div>
+  <div class="container-footer-content">
+    <div class="row">
+      <div class="col-content col-md-12 col-lg-3">
+        <h2>About Speedgoat<br>Test Systems</h2>
+<p>Speedgoat Test Systems Accelerate Real-Time Testing of Control Designs and Embedded Controllers with MATLAB<sup>®</sup> &amp; Simulink<sup>®</sup>.</p>
+<p>&nbsp;</p>
+      </div>
+
+        <div class="col">
+          <strong class="footer-link-list-title">Testing Solutions</strong>
+          <ul class="footer-link-list">
+              <li><a href="https://www.speedgoat.com/solutions">Speedgoat Solutions</a></li>
+              <li><a href="https://www.speedgoat.com/solutions/simulink-real-time-workflow">Simulink®-enabled</a></li>
+              <li><a href="https://www.speedgoat.com/solutions/testing-workflows/hardware-in-the-loop">Hardware-in-the-Loop</a></li>
+              <li><a href="https://www.speedgoat.com/solutions/testing-workflows/rapid-control-prototyping">Rapid Control Prototyping</a></li>
+          </ul>
+        </div>
+        <div class="col">
+          <strong class="footer-link-list-title">Industries &amp; Academia</strong>
+          <ul class="footer-link-list">
+              <li><a href="https://www.speedgoat.com/solutions/industries/automotive">Automotive</a></li>
+              <li><a href="https://www.speedgoat.com/solutions/industries/aerospace">Aerospace</a></li>
+              <li><a href="https://www.speedgoat.com/solutions/industries/power-electronics">Power Electronics</a></li>
+              <li><a href="https://www.speedgoat.com/industry-automation-machinery">Industrial Automation &amp; Machinery</a></li>
+              <li><a href="https://www.speedgoat.com/solutions/academia">Academia</a></li>
+              <li><a href="https://www.speedgoat.com/solutions/industries">Other Industries</a></li>
+          </ul>
+        </div>
+        <div class="col">
+          <strong class="footer-link-list-title">Products &amp; Services</strong>
+          <ul class="footer-link-list">
+              <li><a href="https://www.speedgoat.com/products-services/real-time-target-machines">Real-time target machines</a></li>
+              <li><a href="https://www.speedgoat.com/products-services/rack-systems">Rack Systems</a></li>
+              <li><a href="https://www.speedgoat.com/products-services/i-o-connectivity">I/O Connectivity</a></li>
+              <li><a href="https://www.speedgoat.com/products-services/i-o-connectivity/communications-protocols">Communications Protocols</a></li>
+              <li><a href="https://www.speedgoat.com/products-services/services/engineering-services">Engineering Services</a></li>
+          </ul>
+        </div>
+        <div class="col">
+          <strong class="footer-link-list-title">Knowledge Center</strong>
+          <ul class="footer-link-list">
+              <li><a href="https://www.speedgoat.com/success-stories">Success Stories</a></li>
+              <li><a href="https://www.speedgoat.com/knowledge-center?tag=recorded%20webinars">Recorded Webinars</a></li>
+              <li><a href="https://www.speedgoat.com/knowledge-center?tag=whitepapers,published%20papers">Whitepapers &amp; Published Papers</a></li>
+              <li><a href="https://www.speedgoat.com/knowledge-center?tag=reference%20examples">Reference Examples</a></li>
+              <li><a href="https://www.speedgoat.com/products-services/software">Documentation</a></li>
+          </ul>
+        </div>
+        <div class="col">
+          <strong class="footer-link-list-title">Company</strong>
+          <ul class="footer-link-list">
+              <li><a href="https://www.speedgoat.com/company/about-speedgoat">About Speedgoat</a></li>
+              <li><a href="https://www.speedgoat.com/company/news-media">News &amp; Media</a></li>
+              <li><a href="https://www.speedgoat.com/company/events">Events</a></li>
+              <li><a href="https://www.speedgoat.com/company/sponsoring">Sponsoring</a></li>
+              <li><a href="https://www.speedgoat.com/company/careers">Job Openings</a></li>
+              <li><a href="https://www.speedgoat.com/company/contact-us">Contact Speedgoat</a></li>
+          </ul>
+        </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  footer .container-footer-content .row {
+    font-family: 'Hind', sans-serif;
+    display: flex;
+    align-items: flex-start;
+  }
+
+  footer .container-footer-content .row .col {
+    flex: 1 0 0%;   
+    padding: 0 15px !important;
+    color: #212121;
+  }
+
+  @media(max-width: 768px){
+    footer .container-footer-content .row .col {
+      flex: 1 0 100%;   
+      margin-bottom: 32px;
+    }
+  }
+
+  footer .container-footer-content .row .col-content h2,
+  footer .container-footer-content .row .col-content h3 {
+    font-family: 'Hind', sans-serif;
+    color: #000000;
+    margin-top: 0;
+  }
+
+  footer .container-footer-content .row .col-content h2 {
+    font-size: 22px;
+    font-weight: 500;
+  }
+
+  footer .container-footer-content .row .col-content h3 {
+    font-size: 17px;
+    font-weight: 300;
+  }
+
+  footer .container-footer-content .row .col-content p {
+    font-size: 14px;
+    font-weight: 300;
+    color: #000000;
+  }
+
+  footer .container-footer-content strong.footer-link-list-title {    
+    font-family: 'Hind', sans-serif;
+    font-weight: 500;
+    font-size: 13px;
+    display: block;
+    border-bottom: 1px solid #212121;
+    padding-bottom: 4px;
+    margin-bottom: 4px;
+
+  }
+
+  @media(max-width: 768px){
+    footer .container-footer-content strong.footer-link-list-title:after {
+      display: inline-block;
+      content: '';
+      background-image: url(/Portals/0/2sxc/FooterContent/images/icon_arrow_full_dark.png);
+      width: 15px;
+      height: 15px;
+      background-size: cover;
+      position: relative;
+      top: 2px;
+      left: 5px;
+    }
+  }
+
+  footer .container-footer-content ul.footer-link-list {
+    list-style: none;
+    margin: 0;
+  }
+
+  @media(max-width: 768px){
+    footer .container-footer-content ul.footer-link-list {
+      display: none;
+    }
+  }
+
+  footer .container-footer-content ul.footer-link-list a {
+    display: block;
+    margin: 8px 0 4px;
+    color: #212121;
+    font-size: 13px;
+  }
+
+  footer .container-footer-content ul.footer-link-list a:hover {
+    color: #212121;
+  }
+</style>
+
+<script>
+  $(document).ready(function(){
+    $('.footer-link-list-title').on('click', function(){
+      if($(window).width() <= 768) {
+        var elem = $(this);
+        if(elem.hasClass('active')) {
+          $('.footer-link-list-title').removeClass('active');
+          $('.footer-link-list-title').next('ul').slideUp('active');
+        } else {
+          $('.footer-link-list-title').removeClass('active');
+          $('.footer-link-list-title').next('ul').slideUp('active');
+          elem.addClass('active');
+          elem.next('ul').slideDown();
+        }
+        
+      }
+    })
+    
+  })
+</script>
+</div>
+</div><!-- End_Module_17456 --></div></div></div>
+
+				<div class="row" style="margin-top: 32px;">
+					<div class="col-xs-12 col-md-8 order-1 order-md-0">
+						<div style="flex: 100%; margin-bottom: 4px">
+								<a href="javascript:Cookiebot.renew()" style="color: #212121">Your Privacy Settings</a>
+							</div>
+						<div class="ly-footer-content-bottom">
+							© 2006-2026 Speedgoat GmbH <span class="ly-footernav-service">
+
+		<ul class="ly-nav">
+				<li class="nav-5784 first inactive">
+						<a href="https://www.speedgoat.com/privacy">Privacy</a>
+					
+				</li>
+				<li class="nav-5785 inactive">
+						<a href="https://www.speedgoat.com/company/legal-information">Terms and Conditions</a>
+					
+				</li>
+				<li class="nav-5786 inactive">
+						<a href="https://www.speedgoat.com/impressum">Impressum</a>
+					
+				</li>
+				<li class="nav-5787 last inactive">
+						<a href="https://www.speedgoat.com/company/about-speedgoat#ISOCertifiedQuality">ISO 9001 / 14001 / 27001 / 45001 / TISAX®</a>
+					
+				</li>
+		</ul>
+</span> 
+						</div>
+					</div>
+
+					<div class="col-xs-12 col-md-4">
+						<div class="newsletter-col">
+							<span class="ly-footertitle hidden-xs hidden-sm">Subscribe to our Newsletter</span>
+							<div class="ly-newsletter input-group input-group-sm">
+								<input type="text" id="ly-newsletter-email" class="form-control" placeholder="E-Mail Address" aria-describedby="ly-newsletter">
+								<a href="https://www.speedgoat.com/help/slrt/page/index#" class="input-group-addon warning" id="ly-newsletter">Sign up</a>
+							</div>
+						</div>
+					</div>
+
+					<a id="dnn_DnnLogin_loginLink" title="Login" class="ly-login hidden-xs" rel="nofollow" onclick="this.disabled=true;" href="https://www.speedgoat.com/?ctl=login">Login</a>
+				</div>
+			</div>
+	</div>
+</footer>
+
+<div class="modal fade" tabindex="-1" role="dialog" id="wechat-qr-modal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="float: right;"><span aria-hidden="true">×</span></button>
+        <h4 class="modal-title">WeChat</h4>
+      </div>
+      <div class="modal-body text-center">
+        <img src="./Speedgoat I_O Blockset v9.11.1.1_files/wechat-QR.jpg" alt="WeChat QR Code" style="max-width: 100%;">
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container-fluid">
+<div id="dnn_CachePane"><div class="DnnModule DnnModule-2sxc-app DnnModule-24862 DnnVersionableControl"><a name="24862"></a><div id="dnn_ctr24862_ContentPane"><!-- Start_Module_24862 --><div id="dnn_ctr24862_ModuleContent" class="DNNModuleContent Mod2sxcappC">
+	<div class="sc-content-block" data-cb-instance="24862" data-cb-id="24862">
+
+
+
+
+
+<!-- Server Timestamp: 2026-02-20 08:35:04 -->
+
+
+<script src="./Speedgoat I_O Blockset v9.11.1.1_files/index.js.download"></script>
+
+
+
+
+<turnon turn-on="{&quot;await&quot;:[&quot;window.appCdn.initCacheStatus&quot;],&quot;debug&quot;:false,&quot;run&quot;:&quot;window.appCdn.initCacheStatus()&quot;,&quot;progress&quot;:&quot;4-completed&quot;,&quot;data&quot;:{&quot;domId&quot;:24862,&quot;isEnabled&quot;:&quot;false&quot;,&quot;header&quot;:&quot;&quot;,&quot;cacheTag&quot;:&quot;helppages&quot;,&quot;serverTime&quot;:&quot;2026-02-20 08:35:04&quot;},&quot;settings&quot;:{&quot;interval&quot;:100,&quot;attempts&quot;:100,&quot;log&quot;:&quot;error&quot;,&quot;failure&quot;:&quot;reject&quot;,&quot;name&quot;:&quot;turnOn&quot;},&quot;addContext&quot;:true}" turn-on-skip="skip"></turnon>
+</div>
+</div><!-- End_Module_24862 --></div></div></div>
+</div>
+
+<script type="text/javascript">
+	_linkedin_partner_id = "4628665";
+	window._linkedin_data_partner_ids = window._linkedin_data_partner_ids || [];
+	window._linkedin_data_partner_ids.push(_linkedin_partner_id); 
+</script>
+<script type="text/javascript">
+	(function(l) {
+		if (!l){
+			window.lintrk = function(a,b){window.lintrk.q.push([a,b])};
+			window.lintrk.q=[]
+		}
+		var s = document.getElementsByTagName("script")[0];
+		var b = document.createElement("script");
+		b.type = "text/javascript";
+		b.async = true;
+		b.src = "https://snap.licdn.com/li.lms-analytics/insight.min.js";
+		s.parentNode.insertBefore(b, s);
+	})(window.lintrk); 
+</script>
+<noscript><img height="1" width="1" style="display:none;" alt="" src="https://px.ads.linkedin.com/collect/?pid=4628665&fmt=gif" /></noscript>
+
+<!-- include files in head -->
+<!--CDF(Css|/Portals/_default/skins/speedgoat2016/dist/fonts.css?cdv=369|DnnPageHeaderProvider|100)-->
+<!--CDF(Css|/Portals/_default/skins/speedgoat2016/dist/theme.min.css?cdv=369|DnnPageHeaderProvider|100)-->
+
+
+
+
+
+
+
+<!--CDF(Javascript|/Portals/_default/skins/speedgoat2016/node_modules/bootstrap-sass/assets/javascripts/bootstrap.min.js?cdv=369|DnnFormBottomProvider|100)-->
+
+
+
+<!--CDF(Javascript|/Portals/_default/skins/speedgoat2016/lib/fancybox/jquery.fancybox.pack.js?cdv=369|DnnFormBottomProvider|120)-->
+<!--CDF(Javascript|/Portals/_default/skins/speedgoat2016/lib/syncHeightResponsive/jquery.syncHeightResponsive.js?cdv=369|DnnFormBottomProvider|125)-->
+<!--CDF(Javascript|/Portals/_default/skins/speedgoat2016/lib/cookie/js.cookie-2.1.3.min.js?cdv=369|DnnFormBottomProvider|130)-->
+<!--CDF(Javascript|/Portals/_default/skins/speedgoat2016/dist/theme.min.js?cdv=369|DnnFormBottomProvider|140)-->
+
+
+        <input name="ScrollTop" type="hidden" id="ScrollTop">
+        <input name="__dnnVariable" type="hidden" id="__dnnVariable" autocomplete="off" value="`{`__scdoff`:`1`,`sf_siteRoot`:`/`,`sf_tabId`:`3472`}">
+        <input name="__RequestVerificationToken" type="hidden" value="51a3Eu-OPjgs8NALIssSvheXc3lyI6k8CEZFDSFwZTC9GHBIZtBWV3gjqjuce-fB6DIaLw2"><script src="./Speedgoat I_O Blockset v9.11.1.1_files/bootstrap.min.js.download" type="text/javascript"></script><script src="./Speedgoat I_O Blockset v9.11.1.1_files/jquery.fancybox.pack.js.download" type="text/javascript"></script><script src="./Speedgoat I_O Blockset v9.11.1.1_files/jquery.syncHeightResponsive.js.download" type="text/javascript"></script><script src="./Speedgoat I_O Blockset v9.11.1.1_files/js.cookie-2.1.3.min.js.download" type="text/javascript"></script><script src="./Speedgoat I_O Blockset v9.11.1.1_files/theme.min.js.download" type="text/javascript"></script>
+    </form><div class="adds-components-widget-results addsWg-hidden" id="addsWg-results-asw_01" style="width: 850px;"> <div class="addsWg-widget-main-wrapper"> <div id="addsWg-widget-asw_01" class="addsWg-widget-container-class addsWg--no-suggestions"> <div class="addsWg-widget-wrapper">  <div id="addsWg-searchresults-container-asw_01" class="addsWg-searchresults-container-class" tabindex="0"><div class="addsWg--searchresults" role="region" aria-label="Search results">
+  <div role="status" aria-live="polite" aria-atomic="true" class="addsWg-sr-only"></div>
+
+  <ol role="list" aria-label="Search result items">
+  </ol>
+</div>
+</div> </div> <div class="addsWg--footer">  <div class="adds-footer-cell"> <div id="addsWg-loadmore-asw_01" class="addsWg-loadmore-container-class"><div class="addsearch-loadmore">
+</div>
+</div> <button aria-label="Close button" class="addsWg-close-btn">x</button> </div> </div> </div> </div> </div> 
+    <!--CDF(Javascript|/js/dnncore.js?cdv=369|DnnBodyProvider|100)--><!--CDF(Css|/Portals/0-System/dnn-css-variables.css?cdv=369|DnnPageHeaderProvider|5)--><!--CDF(Css|/Resources/Shared/stylesheets/dnndefault/10.0.0/default.css?cdv=369|DnnPageHeaderProvider|5)--><!--CDF(Css|/Portals/0/portal.css?cdv=369|DnnPageHeaderProvider|35)--><!--CDF(Javascript|/js/dnn.js?cdv=369|DnnBodyProvider|12)--><!--CDF(Javascript|/js/dnn.servicesframework.js?cdv=369|DnnBodyProvider|100)--><!--CDF(Css|/Portals/0/2sxc/ProtectedContent/live/dist/style.min.css?cdv=369|DnnPageHeaderProvider|100)--><!--CDF(Javascript|/desktopmodules/tosic_sexycontent/js/2sxc.api.min.js?v=19.3.5.1771428289&cdv=369|DnnPageHeaderProvider|98)--><!--CDF(Javascript|/desktopmodules/tosic_sexycontent/dist/turnOn/turn-on.js?v=19.3.5.1771428289&cdv=369|DnnPageHeaderProvider|108)--><!--CDF(Javascript|/Resources/libraries/jQuery/03_07_01/jquery.js?cdv=369|DnnPageHeaderProvider|5)--><!--CDF(Javascript|/Resources/libraries/jQuery-Migrate/03_04_01/jquery-migrate.js?cdv=369|DnnPageHeaderProvider|6)-->
+    
+<script defer="" src="./Speedgoat I_O Blockset v9.11.1.1_files/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon="{&quot;version&quot;:&quot;2024.11.0&quot;,&quot;token&quot;:&quot;2e528ea611734cd78c87579d69917875&quot;,&quot;server_timing&quot;:{&quot;name&quot;:{&quot;cfCacheStatus&quot;:true,&quot;cfEdge&quot;:true,&quot;cfExtPri&quot;:true,&quot;cfL4&quot;:true,&quot;cfOrigin&quot;:true,&quot;cfSpeedBrain&quot;:true},&quot;location_startswith&quot;:null}}" crossorigin="anonymous"></script>
+
+
+<scribe-shadow id="crxjs-ext" data-crx="ejommccbnocgekjphflienmbmkallcef" style="position: fixed; width: 0px; height: 0px; top: 0px; left: 0px; z-index: 2147483647; overflow: visible; visibility: visible;"><template shadowrootmode="open"><div id="root-scribe-elem" style="position: fixed; width: 0px; height: 0px; top: 0px; left: 0px; overflow: visible; color: rgb(21, 24, 30);"><div role="region" aria-label="Notifications (F8)" tabindex="-1" style="pointer-events: none;"><ol tabindex="-1" class="fixed bottom-auto right-0 top-0 z-[999999] flex max-h-screen w-[400px] max-w-full p-4"></ol></div></div><link rel="stylesheet" href="chrome-extension://ejommccbnocgekjphflienmbmkallcef/assets/style.css"></template></scribe-shadow></body></html>

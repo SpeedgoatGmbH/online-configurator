@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { CATEGORIES } from './configurator/data'
 import SubCategoryCard from './configurator/SubCategoryCard'
 import WarningBanner from './configurator/WarningBanner'
+import MachineSelection from './configurator/MachineSelection'
 import {
   createInitialState,
   createInitialTempSpecs,
@@ -15,6 +16,7 @@ import type {
   EditRowData,
   FieldKey,
   RowData,
+  SpecsRecord,
   SubCategoryState,
 } from './configurator/types'
 
@@ -29,6 +31,10 @@ function createInitialStateWithDefaults(categories: typeof CATEGORIES) {
 }
 
 export default function Configurator({ title, description }: ConfiguratorProps) {
+  // Machine selection state
+  const [selectedMachineType, setSelectedMachineType] = useState<string>('')
+  const [selectedMachineModel, setSelectedMachineModel] = useState<string>('')
+  
   const [enabledCategories, setEnabledCategories] = useState<Record<string, boolean>>({})
   const [showingConfig, setShowingConfig] = useState<Record<string, Record<string, boolean>>>({})
   const [editingRow, setEditingRow] = useState<string | null>(null)
@@ -38,6 +44,11 @@ export default function Configurator({ title, description }: ConfiguratorProps) 
   const [showSummary, setShowSummary] = useState(false)
   const [expandedAdditionalIO, setExpandedAdditionalIO] = useState(false)
   const [state, setState] = useState(() => createInitialStateWithDefaults(CATEGORIES))
+
+  const handleMachineSelect = (machineType: string, machineModel: string) => {
+    setSelectedMachineType(machineType)
+    setSelectedMachineModel(machineModel)
+  }
 
   const addCategory = (categoryId: string) => {
     // Check if a category is currently open and has changes
@@ -227,7 +238,7 @@ export default function Configurator({ title, description }: ConfiguratorProps) 
     }))
   }
 
-  const updateRow = (categoryId: string, subId: string, rowId: string, quantity: number, specs: Record<FieldKey, string>): boolean => {
+  const updateRow = (categoryId: string, subId: string, rowId: string, quantity: number, specs: SpecsRecord): boolean => {
     // Check for duplicate configuration (excluding the row being edited)
     const existingRows = state[categoryId][subId].rows
     const isDuplicate = isDuplicateRow(existingRows, { id: rowId, quantity, specs })

@@ -1,0 +1,46 @@
+﻿$(function () {
+    var toggled = false, width = $(document).width();
+	if (width <= 640) $('.row-offcanvas, .toggle-menu').toggleClass('show');
+    $('.toggle-menu')
+		.click(function() {
+			$('.row-offcanvas, .toggle-menu').toggleClass('show');
+		});
+
+	// function customAutoRenderFunction(document_type, item) {
+	// 	var titleParts = item['title'].split(' / ');
+	// 	var mainTitle = titleParts[0];
+	// 	titleParts.splice(0, 1);
+	// 	var secondaryInfo = titleParts.join(' / ');
+	// 	if (secondaryInfo) secondaryInfo = '(' + secondaryInfo + ')';
+	// 	// var title = item.sections.join(' ');
+	// 	return '<div title="' + mainTitle + ' ' + secondaryInfo + '" style="line-height:24px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"><div style="vertical-align:top;display:inline-block;width:24px;background:rgba(0,0,0,.2);border-radius:2px;margin-right:4px;height:24px;background-size:cover;background-position:center;background-repeat:no-repeat;background-image: url(' + item['image'] + ')"></div>' + '<span><b>' + mainTitle + '</b>&nbsp;' + secondaryInfo + '<span></div>';
+	// }
+	
+	// $('#search-help-input').swiftype({
+	// 	renderFunction: customAutoRenderFunction,
+	// 	// fetchFields: {'books': ['title','genre','published_on']},
+	// 	engineKey: 'KZLuQJ8sxsjt55aThGd6'
+	// });
+
+	// $('.search-help-toggle')
+	// 	.click(function() {
+	// 		$('.search-box').toggleClass('show');
+	// 	});
+
+	// // Search action
+	// $(".ly-search-help a").click(function() {
+	// 	var searchLocation = $(this).attr("data-searchbaseurl");
+	// 	window.location = searchLocation + "#stq=" + encodeURIComponent($(this).prev("input").val()).replace(/\./g, '%2E');
+	// });
+	// $(".ly-search-help input").keydown(function(e) {
+	// 	if (e.keyCode == 13) {
+	// 		e.preventDefault();
+	// 		$(this).next("a").trigger("click");
+	// 	}
+	// });
+	
+	// var a = $('#nav .active > a')[0];
+	// if (a) {
+		// document.title = $('#nav .active > a')[0].innerText;
+	// }
+});

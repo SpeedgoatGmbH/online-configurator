@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "clean": "node -e \"const fs=require('fs');['.next','node_modules/.cache'].forEach(p=>{try{fs.rmSync(p,{recursive:true,force:true});console.log('removed',p)}catch(e){}})\"",
+    "dev:clean": "npm run clean && npm run dev"
   },
   "dependencies": {
     "next": "^14.2.0",

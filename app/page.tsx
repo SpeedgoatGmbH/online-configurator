@@ -167,10 +167,10 @@ export default function Home() {
                 </span>
               </div>
               <h1 className="mb-4 text-4xl font-bold leading-tight text-slate-900 md:text-5xl">
-                Solution Configurator
+                Configure Your Target Machine with Precision
               </h1>
               <p className="text-lg text-slate-600">
-                Real-time test systems for your use case. Configure your target machine, select I/O modules, and get a specification ready for production—simpler, faster, powerful.
+                Select I/O modules that match your testing requirements and accelerate your development cycle.
               </p>
               
               {/* Partner Logos */}
@@ -192,14 +192,14 @@ export default function Home() {
             {/* Configurator Component */}
             {version === 'v1' && (
               <Configurator
-                title="Your Test System, Configured in Minutes"
-                description="Configure your target machine with precision. Select I/O modules that match your testing requirements and accelerate your development cycle."
+                title="Configure with Precision"
+                description="Select I/O modules that match your testing requirements and accelerate your development cycle."
               />
             )}
             {version === 'v2' && (
               <ConfiguratorV2
-                title="Your Test System, Configured in Minutes"
-                description="Configure your target machine with precision. Select I/O modules that match your testing requirements and accelerate your development cycle."
+                title="Configure with Precision"
+                description="Select I/O modules that match your testing requirements and accelerate your development cycle."
               />
             )}
           </div>

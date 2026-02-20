@@ -2,13 +2,13 @@
 
 import { useState } from 'react'
 import { CATEGORIES } from './configurator/data'
-import type { ConfiguratorProps, FieldKey, SubCategory } from './configurator/types'
+import type { ConfiguratorProps, FieldKey, SpecsRecord, SubCategory } from './configurator/types'
 
 // Signal row type
 type SignalRow = {
   id: string
   quantity: number
-  specs: Record<FieldKey, string>
+  specs: SpecsRecord
   expanded: boolean
   isCustomQuantity?: boolean
 }
@@ -30,7 +30,7 @@ const APPLICATION_PRESETS = {
 function getConditionalOptions(
   sub: SubCategory,
   fieldKey: FieldKey,
-  currentSpecs: Record<FieldKey, string>
+  currentSpecs: SpecsRecord
 ): string[] | undefined {
   const field = sub.fields.find((f) => f.key === fieldKey)
   if (!field) return undefined
@@ -42,39 +42,28 @@ function getConditionalOptions(
   // Conditional options
   const dependsOnKey = field.options.dependsOn
   const dependsOnValue = currentSpecs[dependsOnKey]
+  if (!dependsOnValue) return []
   const conditions = field.options.conditions[dependsOnValue]
   return conditions || []
 }
 
 // Helper to create spec summary with structured chips (value-first for obvious specs)
-function createSpecSummary(sub: SubCategory, specs: Record<FieldKey, string>): JSX.Element {
-  // Show first 2-3 most important fields
-  const fieldsToShow = sub.fields.slice(0, Math.min(sub.fields.length, 3))
+function createSpecSummary(sub: SubCategory, specs: SpecsRecord): JSX.Element {
+  // Show first 2-3 most important fields (skip internal signal type chip like "Voltage")
+  const fieldsToShow = sub.fields
+    .filter((field) => field.key !== 'signalType')
+    .slice(0, Math.min(sub.fields.length, 3))
   
   return (
     <div className="flex flex-wrap items-center gap-2">
       {fieldsToShow.map((field) => {
-        const value = specs[field.key]
-        // Value-first for obvious properties (Range, Type, Speed, Protocol, Wiring, Isolation, etc.)
-        const isObvious = ['Type', 'Wiring', 'Protocol', 'Range', 'Speed', 'Logic Level', 'Isolation', 'Sensor Type', 'Bridge Type', 'Contact Type', 'Driver Type', 'I/O Type', 'Performance', 'Sensitivity'].includes(field.label)
-        
+        const value = specs[field.key] ?? 'Default'
         return (
           <span
             key={field.key}
-            className="inline-flex items-center gap-1 rounded-md bg-white border border-slate-200 px-2.5 py-1 whitespace-nowrap"
+            className="inline-flex items-center rounded-md border border-slate-200 bg-white px-2.5 py-1 whitespace-nowrap"
           >
-            {isObvious ? (
-              // Value-first for obvious things
-              <span className="text-xs font-semibold text-slate-800">{value}</span>
-            ) : (
-              // Label:Value for ambiguous properties
-              <>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
-                  {field.label}:
-                </span>
-                <span className="text-xs font-semibold text-slate-800">{value}</span>
-              </>
-            )}
+            <span className="text-xs font-semibold text-slate-800">{value}</span>
           </span>
         )
       })}
@@ -293,19 +282,18 @@ export default function ConfiguratorV2({ title, description }: ConfiguratorProps
                   <span className="flex-shrink-0 text-slate-400 text-xs">▼</span>
                 </div>
               </button>
-              {signalRows[categoryId][sub.id].length > 1 && (
-                <button
-                  type="button"
-                  onClick={() => removeSignalRow(categoryId, sub.id, row.id)}
-                  className="rounded border border-slate-200 bg-white px-2 py-1 text-xs text-slate-500 transition hover:border-red-300 hover:bg-red-50 hover:text-red-600"
-                >
-                  ×
-                </button>
-              )}
+              <button
+                type="button"
+                onClick={() => removeSignalRow(categoryId, sub.id, row.id)}
+                className="rounded border border-slate-200 bg-white px-2 py-1 text-xs text-slate-500 transition hover:border-red-300 hover:bg-red-50 hover:text-red-600"
+                aria-label={`Remove ${sub.label}`}
+              >
+                Remove
+              </button>
             </div>
           )}
 
-          {!hasQuantity && signalRows[categoryId][sub.id].length > 1 && (
+          {!hasQuantity && (
             <button
               type="button"
               onClick={() => removeSignalRow(categoryId, sub.id, row.id)}
@@ -333,7 +321,7 @@ export default function ConfiguratorV2({ title, description }: ConfiguratorProps
                       {field.label}
                     </label>
                     <select
-                      value={row.specs[field.key]}
+                      value={row.specs[field.key] ?? options[0] ?? ''}
                       onChange={(e) =>
                         updateSpec(categoryId, sub.id, row.id, field.key, e.target.value)
                       }
@@ -369,10 +357,22 @@ export default function ConfiguratorV2({ title, description }: ConfiguratorProps
   const renderSubCategory = (categoryId: string, sub: SubCategory) => {
     const rows = signalRows[categoryId][sub.id]
     
-    // Always show at least one row
+    // Empty by default: user explicitly adds first variant
     if (rows.length === 0) {
-      addSignalRow(categoryId, sub.id)
-      return null
+      return (
+        <div key={sub.id} className="space-y-2">
+          <div className="flex items-center justify-between rounded-lg border border-dashed border-slate-300 bg-slate-50/50 px-3 py-2">
+            <span className="text-xs text-slate-600">{sub.label}</span>
+            <button
+              type="button"
+              onClick={() => addSignalRow(categoryId, sub.id)}
+              className="rounded border border-slate-200 bg-white px-2.5 py-1 text-xs font-semibold text-slate-600 transition hover:border-slate-300 hover:bg-slate-50"
+            >
+              + Add
+            </button>
+          </div>
+        </div>
+      )
     }
 
     return (
@@ -420,7 +420,7 @@ export default function ConfiguratorV2({ title, description }: ConfiguratorProps
           onClick={() =>
             setExpandedTiers((prev) => ({ ...prev, [category.id]: !prev[category.id] }))
           }
-          className={`w-full rounded-lg border p-4 text-left transition hover:shadow-sm ${
+          className={`w-full rounded-lg border px-4 py-3 text-left transition hover:shadow-sm ${
             isExpanded
               ? 'border-[rgb(var(--speedgoat-blue))] bg-blue-50/50 shadow-sm'
               : hasSignals
@@ -428,13 +428,21 @@ export default function ConfiguratorV2({ title, description }: ConfiguratorProps
               : 'border-slate-200 bg-white hover:border-slate-300'
           }`}
         >
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between gap-3">
             <span className="text-sm font-semibold text-slate-700">{category.label}</span>
-            {hasSignals && !isExpanded && (
-              <span className="rounded-full bg-[rgb(var(--speedgoat-blue))]/10 px-2.5 py-1 text-xs font-semibold text-[rgb(var(--speedgoat-blue))]">
-                •
+            <div className="flex items-center gap-2">
+              {hasSignals && !isExpanded && (
+                <span className="rounded-full bg-[rgb(var(--speedgoat-blue))]/10 px-2.5 py-1 text-xs font-semibold text-[rgb(var(--speedgoat-blue))]">
+                  •
+                </span>
+              )}
+              <span
+                className={`text-xs text-slate-500 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
+                aria-hidden="true"
+              >
+                ▼
               </span>
-            )}
+            </div>
           </div>
         </button>
 
@@ -488,7 +496,7 @@ export default function ConfiguratorV2({ title, description }: ConfiguratorProps
             <h3 className="mb-4 text-sm font-semibold uppercase tracking-wide text-slate-700">
               Additional Signal Types
             </h3>
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-2">
               {tier2Categories.map((cat) => renderTier2Tile(cat))}
             </div>
           </div>
