@@ -167,10 +167,10 @@ export default function Home() {
                 </span>
               </div>
               <h1 className="mb-4 text-4xl font-bold leading-tight text-slate-900 md:text-5xl">
-                Configure Your Target Machine with Precision
+                Specify Your Test System in Minutes
               </h1>
               <p className="text-lg text-slate-600">
-                Select I/O modules that match your testing requirements and accelerate your development cycle.
+                Get the exact I/O configuration you need, ready for your quote or project proposal.
               </p>
               
               {/* Partner Logos */}
@@ -192,14 +192,14 @@ export default function Home() {
             {/* Configurator Component */}
             {version === 'v1' && (
               <Configurator
-                title="Configure with Precision"
-                description="Select I/O modules that match your testing requirements and accelerate your development cycle."
+                title="Specify Your Test System in Minutes"
+                description="Get the exact I/O configuration you need, ready for your quote or project proposal."
               />
             )}
             {version === 'v2' && (
               <ConfiguratorV2
-                title="Configure with Precision"
-                description="Select I/O modules that match your testing requirements and accelerate your development cycle."
+                title="Specify Your Test System in Minutes"
+                description="Get the exact I/O configuration you need, ready for your quote or project proposal."
               />
             )}
           </div>
