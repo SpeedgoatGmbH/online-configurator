@@ -167,10 +167,10 @@ export default function Home() {
                 </span>
               </div>
               <h1 className="mb-4 text-4xl font-bold leading-tight text-slate-900 md:text-5xl">
-                From Use Case to Proposal
+                From Requirements to Real-Time Testing
               </h1>
               <p className="text-lg text-slate-600">
-                Get the exact I/O configuration you need, ready for your quote or project proposal.
+                Specify your I/O needs and get a Speedgoat configuration that fits your use case.
               </p>
               
               {/* Partner Logos */}
