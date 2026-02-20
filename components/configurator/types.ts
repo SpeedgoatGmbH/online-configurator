@@ -36,7 +36,7 @@ export interface SubCategoryState {
 }
 
 export interface ConfiguratorProps {
-  title: string
+  title?: string
   description?: string
 }
 

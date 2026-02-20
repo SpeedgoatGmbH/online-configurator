@@ -71,7 +71,7 @@ function createSpecSummary(sub: SubCategory, specs: SpecsRecord): JSX.Element {
   )
 }
 
-export default function ConfiguratorV2({ title, description }: ConfiguratorProps) {
+export default function ConfiguratorV2({}: ConfiguratorProps = {}) {
   const [applicationPreset, setApplicationPreset] = useState<string>('general-control')
   const [signalRows, setSignalRows] = useState<Record<string, Record<string, SignalRow[]>>>(() => {
     // Initialize empty state for all categories
@@ -85,6 +85,7 @@ export default function ConfiguratorV2({ title, description }: ConfiguratorProps
     return initial
   })
   const [expandedTiers, setExpandedTiers] = useState<Record<string, boolean>>({})
+  const [pendingProtocolSelections, setPendingProtocolSelections] = useState<Record<string, Record<string, string>>>({})
 
   // Tier 1: Core signal types (always visible)
   const TIER1_IDS = ['analog', 'digital', 'communication', 'motion']
@@ -92,15 +93,26 @@ export default function ConfiguratorV2({ title, description }: ConfiguratorProps
   const tier2Categories = CATEGORIES.filter((c) => !TIER1_IDS.includes(c.id))
 
   // Add new signal row
-  const addSignalRow = (categoryId: string, subId: string) => {
+  const addSignalRow = (categoryId: string, subId: string, presetSpecs?: Partial<SpecsRecord>) => {
     const category = CATEGORIES.find((c) => c.id === categoryId)
     const sub = category?.subCategories.find((s) => s.id === subId)
     if (!sub) return
 
+    const specs: SpecsRecord = { ...sub.defaults, ...(presetSpecs || {}) }
+    // Normalize dependent fields if a preset changed dependencies (e.g., protocol selection)
+    sub.fields.forEach((field) => {
+      const options = getConditionalOptions(sub, field.key, specs)
+      if (!options || options.length === 0) return
+      const current = specs[field.key]
+      if (!current || !options.includes(current)) {
+        specs[field.key] = options[0]
+      }
+    })
+
     const newRow: SignalRow = {
       id: `${categoryId}-${subId}-${Date.now()}-${Math.random()}`,
       quantity: 32, // Default from best-selling modules
-      specs: { ...sub.defaults },
+      specs,
       expanded: false,
       isCustomQuantity: false,
     }
@@ -359,34 +371,120 @@ export default function ConfiguratorV2({ title, description }: ConfiguratorProps
     
     // Empty by default: user explicitly adds first variant
     if (rows.length === 0) {
+      const isCommunicationProtocols = categoryId === 'communication' && sub.id === 'protocols'
+      const protocolField = sub.fields.find((f) => f.key === 'range')
+      const protocolOptions =
+        protocolField && Array.isArray(protocolField.options) ? protocolField.options : []
+      const selectedProtocol =
+        pendingProtocolSelections[categoryId]?.[sub.id] ||
+        (protocolOptions.length > 0 ? protocolOptions[0] : '')
+
       return (
         <div key={sub.id} className="space-y-2">
-          <div className="flex items-center justify-between rounded-lg border border-dashed border-slate-300 bg-slate-50/50 px-3 py-2">
-            <span className="text-xs text-slate-600">{sub.label}</span>
-            <button
-              type="button"
-              onClick={() => addSignalRow(categoryId, sub.id)}
-              className="rounded border border-slate-200 bg-white px-2.5 py-1 text-xs font-semibold text-slate-600 transition hover:border-slate-300 hover:bg-slate-50"
-            >
-              + Add
-            </button>
-          </div>
+          {!isCommunicationProtocols && (
+            <div className="flex items-center justify-between rounded-lg border border-dashed border-slate-300 bg-slate-50/50 px-3 py-2">
+              <span className="text-xs text-slate-600">{sub.label}</span>
+              <button
+                type="button"
+                onClick={() => addSignalRow(categoryId, sub.id)}
+                className="rounded border border-slate-200 bg-white px-2.5 py-1 text-xs font-semibold text-slate-600 transition hover:border-slate-300 hover:bg-slate-50"
+              >
+                + Add
+              </button>
+            </div>
+          )}
+          {isCommunicationProtocols && (
+            <div className="rounded-lg border border-dashed border-slate-300 bg-slate-50/50 p-3">
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                <span className="text-xs text-slate-600">{sub.label}</span>
+                <div className="flex items-center gap-2">
+                  <select
+                    value={selectedProtocol}
+                    onChange={(e) =>
+                      setPendingProtocolSelections((prev) => ({
+                        ...prev,
+                        [categoryId]: {
+                          ...(prev[categoryId] || {}),
+                          [sub.id]: e.target.value,
+                        },
+                      }))
+                    }
+                    className="rounded border border-slate-300 bg-white px-2 py-1 text-xs text-slate-700"
+                    aria-label="Select protocol"
+                  >
+                    {protocolOptions.map((opt) => (
+                      <option key={opt} value={opt}>
+                        {opt}
+                      </option>
+                    ))}
+                  </select>
+                  <button
+                    type="button"
+                    onClick={() => addSignalRow(categoryId, sub.id, { range: selectedProtocol })}
+                    className="rounded border border-slate-200 bg-white px-2.5 py-1 text-xs font-semibold text-slate-600 transition hover:border-slate-300 hover:bg-slate-50"
+                  >
+                    + Add Protocol
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       )
     }
+
+    const isCommunicationProtocols = categoryId === 'communication' && sub.id === 'protocols'
+    const protocolField = sub.fields.find((f) => f.key === 'range')
+    const protocolOptions =
+      protocolField && Array.isArray(protocolField.options) ? protocolField.options : []
+    const selectedProtocol =
+      pendingProtocolSelections[categoryId]?.[sub.id] || (protocolOptions.length > 0 ? protocolOptions[0] : '')
 
     return (
       <div key={sub.id} className="space-y-2">
         {rows.map((row, idx) => renderSignalRow(categoryId, sub, row, idx))}
         
         {/* + Add different spec button */}
-        <button
-          type="button"
-          onClick={() => addSignalRow(categoryId, sub.id)}
-          className="ml-[76px] flex items-center gap-1 text-xs text-slate-500 transition hover:text-[rgb(var(--speedgoat-blue))]"
-        >
-          <span className="text-sm">+</span> Add different spec
-        </button>
+        {!isCommunicationProtocols && (
+          <button
+            type="button"
+            onClick={() => addSignalRow(categoryId, sub.id)}
+            className="ml-[76px] flex items-center gap-1 text-xs text-slate-500 transition hover:text-[rgb(var(--speedgoat-blue))]"
+          >
+            <span className="text-sm">+</span> Add different spec
+          </button>
+        )}
+        {isCommunicationProtocols && (
+          <div className="ml-[76px] flex flex-wrap items-center gap-2">
+            <select
+              value={selectedProtocol}
+              onChange={(e) =>
+                setPendingProtocolSelections((prev) => ({
+                  ...prev,
+                  [categoryId]: {
+                    ...(prev[categoryId] || {}),
+                    [sub.id]: e.target.value,
+                  },
+                }))
+              }
+              className="rounded border border-slate-300 bg-white px-2 py-1 text-xs text-slate-700"
+              aria-label="Select additional protocol"
+            >
+              {protocolOptions.map((opt) => (
+                <option key={opt} value={opt}>
+                  {opt}
+                </option>
+              ))}
+            </select>
+            <button
+              type="button"
+              onClick={() => addSignalRow(categoryId, sub.id, { range: selectedProtocol })}
+              className="flex items-center gap-1 text-xs text-slate-500 transition hover:text-[rgb(var(--speedgoat-blue))]"
+            >
+              <span className="text-sm">+</span> Add protocol
+            </button>
+          </div>
+        )}
       </div>
     )
   }
@@ -459,12 +557,6 @@ export default function ConfiguratorV2({ title, description }: ConfiguratorProps
 
   return (
     <section className="rounded-3xl border border-slate-200/80 bg-white/90 shadow-[0_25px_70px_-45px_rgba(15,23,42,0.35)] backdrop-blur">
-      <div className="border-b border-slate-200/70 px-5 py-5 md:px-7">
-        <p className="text-xs uppercase tracking-[0.3em] text-slate-500">Configuration</p>
-        <h2 className="mt-2 text-2xl font-semibold text-slate-900 md:text-3xl">{title}</h2>
-        {description && <p className="mt-2 text-sm text-slate-600 md:text-base">{description}</p>}
-      </div>
-
       <div className="space-y-5 px-5 py-5 md:px-7 md:py-6">
         {/* Application Preset Selector */}
         <div>

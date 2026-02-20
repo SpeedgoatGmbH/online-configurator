@@ -190,18 +190,8 @@ export default function Home() {
             </div>
 
             {/* Configurator Component */}
-            {version === 'v1' && (
-              <Configurator
-                title="Specify Your Test System in Minutes"
-                description="Get the exact I/O configuration you need, ready for your quote or project proposal."
-              />
-            )}
-            {version === 'v2' && (
-              <ConfiguratorV2
-                title="Specify Your Test System in Minutes"
-                description="Get the exact I/O configuration you need, ready for your quote or project proposal."
-              />
-            )}
+            {version === 'v1' && <Configurator />}
+            {version === 'v2' && <ConfiguratorV2 />}
           </div>
         </section>
 

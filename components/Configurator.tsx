@@ -30,7 +30,7 @@ function createInitialStateWithDefaults(categories: typeof CATEGORIES) {
   return createInitialState(categories)
 }
 
-export default function Configurator({ title, description }: ConfiguratorProps) {
+export default function Configurator({}: ConfiguratorProps = {}) {
   // Machine selection state
   const [selectedMachineType, setSelectedMachineType] = useState<string>('')
   const [selectedMachineModel, setSelectedMachineModel] = useState<string>('')
@@ -320,12 +320,6 @@ export default function Configurator({ title, description }: ConfiguratorProps) 
           onDismiss={() => setWarningMessage(null)}
         />
       )}
-      <div className="border-b border-slate-200/70 px-5 py-5 md:px-7">
-        <p className="text-xs uppercase tracking-[0.3em] text-slate-500">Configuration</p>
-        <h2 className="mt-2 text-2xl font-semibold text-slate-900 md:text-3xl">{title}</h2>
-        {description && <p className="mt-2 text-sm text-slate-600 md:text-base">{description}</p>}
-      </div>
-
       <div className="space-y-6 px-4 py-5 md:px-6 md:py-6">
         {/* Primary I/O Categories (Analog, Digital, Communication) */}
         {getPrimaryCategories().map((category) => (
