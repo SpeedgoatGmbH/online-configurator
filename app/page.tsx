@@ -8,9 +8,10 @@ import ConfiguratorV3_3 from '@/components/ConfiguratorV3_3'
 import ProposalResultCard from '@/components/ProposalResultCard'
 import { CompactButton, CompactCard, CompactChip, CompactSectionLabel } from '@/components/ui/compact'
 import type { ProposalGenerateRequest, ProposalGenerateResponse, RequirementRow } from '@/components/configurator/proposalTypes'
+import { getSimulationDelayMs, simulateProposal } from '@/lib/proposal/simulator'
 import { cn } from '@/lib/cn'
 import Image from 'next/image'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 const MACHINE_OPTIONS = [
   {
@@ -128,14 +129,13 @@ export default function Home() {
     setProposalError(null)
   }
 
-  const handleRequirementsChange = (payload: { rows: RequirementRow[] }) => {
+  const handleRequirementsChange = useCallback((payload: { rows: RequirementRow[] }) => {
     setRequirementsRows(payload.rows)
-    if (proposalStatus !== 'idle') {
-      setProposalStatus('idle')
-      setProposalResult(null)
-      setProposalError(null)
-    }
-  }
+    // Always reset — React bails out if value is already 'idle' / null
+    setProposalStatus('idle')
+    setProposalResult(null)
+    setProposalError(null)
+  }, [])
 
   const handleGenerateProposal = async () => {
     if (!canGenerateProposal || isGenerating) return
@@ -158,18 +158,10 @@ export default function Home() {
     setProposalError(null)
 
     try {
-      const response = await fetch('/api/proposal/generate', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
-      })
-      const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error(typeof data?.error === 'string' ? data.error : 'Failed to generate proposal.')
-      }
+      // Run proposal simulation client-side (no API route needed for static export)
+      const delayMs = getSimulationDelayMs(payload)
+      await new Promise((resolve) => setTimeout(resolve, delayMs))
+      const data = simulateProposal(payload)
 
       setProposalResult(data as ProposalGenerateResponse)
       setProposalStatus('success')

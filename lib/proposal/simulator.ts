@@ -114,7 +114,7 @@ export function simulateProposal(request: ProposalGenerateRequest): ProposalGene
     if (moduleState) {
       moduleState.quantity += candidate.units
       moduleState.coveredChannels += row.quantity
-      moduleState.coveredRows.add(`${row.categoryLabel} / ${row.subLabel} (${row.quantity})`)
+      moduleState.coveredRows.add(row.rowId)
       moduleState.confidenceSum += confidence
       moduleState.confidenceCount += 1
       moduleState.rationale.add(rationale)
@@ -123,7 +123,7 @@ export function simulateProposal(request: ProposalGenerateRequest): ProposalGene
         module: candidate.module,
         quantity: candidate.units,
         coveredChannels: row.quantity,
-        coveredRows: new Set([`${row.categoryLabel} / ${row.subLabel} (${row.quantity})`]),
+        coveredRows: new Set([row.rowId]),
         confidenceSum: confidence,
         confidenceCount: 1,
         rationale: new Set([rationale]),

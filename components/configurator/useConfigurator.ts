@@ -219,6 +219,13 @@ export function getAddLabel(categoryId: string, subLabel: string): string {
   return `+ Add ${normalized} type`
 }
 
+/** Returns true when the row's specs match the subcategory defaults (after normalization). */
+export function isSpecsDefault(sub: SubCategory, specs: SpecsRecord): boolean {
+  const defaultSpecs = normalizeSpecsForSub(sub, sub.defaults)
+  const currentSpecs = normalizeSpecsForSub(sub, specs)
+  return sub.fields.every((field) => (currentSpecs[field.key] ?? '') === (defaultSpecs[field.key] ?? ''))
+}
+
 export function getBasicFieldKey(categoryId: string, sub: SubCategory): FieldKey | undefined {
   const hasField = (key: FieldKey) => sub.fields.some((field) => field.key === key)
 
@@ -524,7 +531,7 @@ export function useConfigurator(options: UseConfiguratorOptions): UseConfigurato
 
     const row: SignalRow = {
       id: `${categoryId}-${subId}-${Date.now()}-${Math.random().toString(36).slice(2)}`,
-      quantity: 32,
+      quantity: 1,
       specs: normalizeSpecsForSub(sub, {
         ...sub.defaults,
         ...(presetSpecs || {}),

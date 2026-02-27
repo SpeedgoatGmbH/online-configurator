@@ -24,6 +24,7 @@ import {
   getSpecSummaryText,
   getSpecSummaryTokens,
   getSubCategory,
+  isSpecsDefault,
   useConfigurator,
 } from './configurator/useConfigurator'
 
@@ -390,6 +391,7 @@ export default function ConfiguratorV3({ onSummaryChange, onRequirementsChange }
       subId: sub.id,
     })
     const summaryText = summaryTokens.length > 0 ? summaryTokens.join(' · ') : 'Default'
+    const specsAreDefault = isSpecsDefault(sub, row.specs)
     const channelOptions = CHANNEL_PRESET_COUNTS.includes(row.quantity)
       ? CHANNEL_PRESET_COUNTS
       : [...CHANNEL_PRESET_COUNTS, row.quantity].sort((a, b) => a - b)
@@ -446,7 +448,12 @@ export default function ConfiguratorV3({ onSummaryChange, onRequirementsChange }
           )}
         </td>
         <td className="px-1.5 py-1.5 text-xs leading-5 text-slate-600 whitespace-normal break-words" title={summaryText}>
-          {summaryText}
+          <span className="inline-flex items-center gap-1">
+            {!specsAreDefault && (
+              <span className="inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-[rgb(var(--speedgoat-blue))]" title="Customized" />
+            )}
+            {summaryText}
+          </span>
         </td>
         <td className="px-1.5 py-1.5">
           <div className="flex items-center justify-end gap-0.5">
@@ -531,11 +538,24 @@ export default function ConfiguratorV3({ onSummaryChange, onRequirementsChange }
     )
   }
 
+  const getTier1ActiveRows = (category: (typeof CATEGORIES)[number]) => {
+    return category.subCategories.flatMap((sub) =>
+      (signalRows[category.id]?.[sub.id] || [])
+        .filter((row) => row.quantity > 0)
+        .map((row) => ({
+          sub,
+          row,
+          summaryText: getSpecSummaryText(sub, row.specs, { categoryId: category.id, subId: sub.id }),
+        }))
+    )
+  }
+
   const renderTier1Category = (category: (typeof CATEGORIES)[number]) => {
     const isOpen = tier1Open[category.id] ?? false
     const totalSignals = getCategoryTotal(category.id)
     const hasConfiguredRows = category.subCategories.some((sub) => (signalRows[category.id]?.[sub.id] || []).length > 0)
     const collapsedActionLabel = hasConfiguredRows ? 'Show' : '+ Add'
+    const activeRows = getTier1ActiveRows(category)
 
     return (
       <CompactCard key={category.id} variant="outlined" className="self-start p-[var(--ui-pad-2)]">
@@ -558,6 +578,22 @@ export default function ConfiguratorV3({ onSummaryChange, onRequirementsChange }
             <span className="text-xs text-slate-500">{isOpen ? 'Hide' : collapsedActionLabel}</span>
           </div>
         </button>
+
+        {!isOpen && activeRows.length > 0 && (
+          <div className="mt-[var(--ui-gap-1)] space-y-0.5">
+            {activeRows.slice(0, 4).map((item) => {
+              const line = `${item.sub.label}: ${item.row.quantity} ch${item.summaryText ? ` · ${item.summaryText}` : ''}`
+              return (
+                <p key={`${item.sub.id}-${item.row.id}`} className="truncate text-xs text-slate-500" title={line}>
+                  {line}
+                </p>
+              )
+            })}
+            {activeRows.length > 4 && (
+              <p className="text-xs text-slate-400">+{activeRows.length - 4} more</p>
+            )}
+          </div>
+        )}
 
         {isOpen && (
           <div id={`tier1-${category.id}`} className="mt-[var(--ui-gap-2)] space-y-3 border-t border-slate-200 pt-[var(--ui-gap-2)]">

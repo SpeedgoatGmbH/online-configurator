@@ -4,7 +4,6 @@ import {
   CompactAddLink,
   CompactButton,
   CompactCard,
-  CompactChip,
   CompactField,
   CompactIconButton,
   CompactInspectorBlock,
@@ -15,6 +14,7 @@ import { cn } from '@/lib/cn'
 import { CATEGORIES } from './configurator/data'
 import type { FieldKey, SubCategory } from './configurator/types'
 import {
+  CHANNEL_PRESET_COUNTS,
   type ConfiguratorHookProps,
   type SignalRow,
   buildProtocolIndustryGroups,
@@ -23,11 +23,13 @@ import {
   getConditionalOptions,
   getSpecSummaryText,
   getSpecSummaryTokens,
+  getSubCategory,
+  isSpecsDefault,
   useConfigurator,
 } from './configurator/useConfigurator'
 
-const TIER1_IDS = ['analog', 'digital', 'communication']
-const TIER1_ORDER = ['analog', 'digital', 'communication'] as const
+const TIER1_IDS = ['analog', 'digital', 'communication', 'motion']
+const TIER1_ORDER = ['analog', 'digital', 'communication', 'motion'] as const
 
 export default function ConfiguratorV2({ onSummaryChange, onRequirementsChange }: ConfiguratorHookProps = {}) {
   const {
@@ -35,6 +37,7 @@ export default function ConfiguratorV2({ onSummaryChange, onRequirementsChange }
     editingTarget,
     editingContext,
     draftEdit,
+    isDraftDirty,
     showAdvancedEditor,
     setShowAdvancedEditor,
     showDiscardConfirm,
@@ -45,19 +48,37 @@ export default function ConfiguratorV2({ onSummaryChange, onRequirementsChange }
     setTier2Open,
     tier1Categories,
     tier2Categories,
+    editorAnchor,
+    protocolSelectorContext,
+    setProtocolSelectorContext,
+    customChannelRows,
+    setCustomChannelRows,
+    isAdditionalStepOpen,
+    setIsAdditionalStepOpen,
     addSignalRow,
     removeSignalRow,
     openEditor,
     updateDraftSpec,
-    updateDraftQuantity,
+    updateRowQuantity,
     saveDraft,
     requestCloseEditor,
     discardDraftAndClose,
+    handleAddVariant,
+    handleProtocolSelect,
+    createTier1OpenMap,
+    createTier2OpenMap,
     getSubTotal,
     getCategoryTotal,
+    additionalTotalSignals,
+    hasAnyAdditionalRows,
+    additionalCollapsedActionLabel,
   } = useConfigurator({
     tier1Ids: TIER1_IDS,
     tier1Order: TIER1_ORDER,
+    accordionMode: true,
+    useEditorAnchors: true,
+    useProtocolSelector: true,
+    useCustomChannelRows: true,
     onSummaryChange,
     onRequirementsChange,
   })
@@ -72,6 +93,23 @@ export default function ConfiguratorV2({ onSummaryChange, onRequirementsChange }
     if (!options || options.length === 0) return null
 
     const selectedValue = draftEdit.specs[field.key] ?? options[0] ?? ''
+
+    if (editingTarget?.categoryId === 'communication' && editingTarget?.subId === 'protocols' && field.key === 'range') {
+      return (
+        <div key={field.key}>
+          <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-slate-700">{field.label}</label>
+          <CompactButton
+            type="button"
+            variant="secondary"
+            onClick={() => setProtocolSelectorContext({ mode: 'edit' })}
+            className="h-[var(--ui-control-h)] w-full justify-between px-2 text-xs"
+          >
+            <span className="truncate">{selectedValue || 'Select protocol'}</span>
+            <span className="ml-2 text-[11px] text-slate-500">Select</span>
+          </CompactButton>
+        </div>
+      )
+    }
 
     return (
       <div key={field.key}>
@@ -93,58 +131,110 @@ export default function ConfiguratorV2({ onSummaryChange, onRequirementsChange }
     )
   }
 
-  const renderProtocolIndustrySelector = (sub: SubCategory) => {
-    if (!draftEdit) return null
+  const renderProtocolSelectorOverlay = () => {
+    if (!protocolSelectorContext) return null
 
-    const protocolField = sub.fields.find((field) => field.key === 'range')
+    const selectorSub =
+      protocolSelectorContext.mode === 'add'
+        ? getSubCategory('communication', 'protocols')
+        : editingContext?.category.id === 'communication' && editingContext.sub.id === 'protocols'
+        ? editingContext.sub
+        : null
+
+    if (!selectorSub) return null
+
+    const protocolField = selectorSub.fields.find((field) => field.key === 'range')
     const protocolOptions = protocolField && Array.isArray(protocolField.options) ? protocolField.options : []
     if (protocolOptions.length === 0) return null
 
     const industryGroups = buildProtocolIndustryGroups(protocolOptions)
+    const selectedProtocol = protocolSelectorContext.mode === 'edit' ? draftEdit?.specs.range : undefined
 
     return (
-      <div className="space-y-[var(--ui-gap-2)]">
-        <div className="grid grid-cols-[96px_minmax(0,1fr)] rounded-[var(--ui-radius-sm)] border border-slate-200 bg-white px-2 py-1">
-          <span className="text-[11px] font-semibold uppercase tracking-wide text-slate-600">Industry</span>
-          <span className="text-[11px] font-semibold uppercase tracking-wide text-slate-600">Protocol Name</span>
-        </div>
+      <div className="fixed inset-0 z-[110]">
+        <button
+          type="button"
+          onClick={() => setProtocolSelectorContext(null)}
+          className="absolute inset-0 bg-slate-900/20 backdrop-blur-[1px]"
+          aria-label="Close protocol selector"
+        />
 
-        <div className="max-h-56 overflow-auto rounded-[var(--ui-radius-sm)] border border-slate-200 bg-white">
-          {industryGroups.map((group, index) => (
-            <div
-              key={group.industry}
-              className={cn('grid grid-cols-[96px_minmax(0,1fr)]', index > 0 && 'border-t border-slate-200')}
-            >
-              <div className="bg-slate-50 px-2 py-2 text-xs font-semibold text-slate-700">{group.industry}</div>
+        <div className="pointer-events-none absolute inset-0 flex items-center justify-center p-3">
+          <div className="pointer-events-auto w-full max-w-[880px]">
+            <div className="flex max-h-[78vh] flex-col overflow-hidden rounded-[var(--ui-radius-lg)] border border-slate-200 bg-white shadow-2xl">
+              <div className="flex items-start justify-between gap-2 border-b border-slate-200 px-3 py-2">
+                <div className="min-w-0">
+                  <CompactSectionLabel>Protocol Selector</CompactSectionLabel>
+                  <p className="mt-0.5 text-sm font-semibold text-slate-900">
+                    {protocolSelectorContext.mode === 'add'
+                      ? 'Select protocol before adding'
+                      : 'Select protocol for this variant'}
+                  </p>
+                </div>
 
-              <div className="px-2 py-2">
-                {group.protocols.length > 0 ? (
-                  <div className="flex flex-wrap gap-[var(--ui-gap-1)]">
-                    {group.protocols.map((protocol) => {
-                      const isSelected = draftEdit.specs.range === protocol
-                      return (
-                        <button
-                          key={protocol}
-                          type="button"
-                          onClick={() => updateDraftSpec('range', protocol)}
-                          className={cn(
-                            'inline-flex h-6 items-center rounded-[var(--ui-radius-sm)] border px-2 text-[11px] font-semibold transition',
-                            isSelected
-                              ? 'border-[rgb(var(--speedgoat-blue))] bg-[rgb(var(--speedgoat-blue))]/10 text-[rgb(var(--speedgoat-blue))]'
-                              : 'border-slate-300 bg-white text-slate-700 hover:border-slate-400 hover:bg-slate-50'
-                          )}
-                        >
-                          {protocol}
-                        </button>
-                      )
-                    })}
-                  </div>
-                ) : (
-                  <span className="text-xs text-slate-400">...</span>
-                )}
+                <CompactIconButton
+                  type="button"
+                  onClick={() => setProtocolSelectorContext(null)}
+                  aria-label="Close protocol selector"
+                  title="Close"
+                >
+                  <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 6l12 12M18 6L6 18" />
+                  </svg>
+                </CompactIconButton>
+              </div>
+
+              <div className="flex-1 overflow-auto px-3 py-2">
+                <div className="grid grid-cols-[110px_minmax(0,1fr)] rounded-[var(--ui-radius-sm)] border border-slate-200 bg-slate-50 px-2 py-1">
+                  <span className="text-[11px] font-semibold uppercase tracking-wide text-slate-600">Industry</span>
+                  <span className="text-[11px] font-semibold uppercase tracking-wide text-slate-600">Protocol Name</span>
+                </div>
+
+                <div className="mt-2 rounded-[var(--ui-radius-sm)] border border-slate-200 bg-white">
+                  {industryGroups.map((group, index) => (
+                    <div
+                      key={group.industry}
+                      className={cn('grid grid-cols-[110px_minmax(0,1fr)]', index > 0 && 'border-t border-slate-200')}
+                    >
+                      <div className="bg-slate-50 px-2 py-2 text-xs font-semibold text-slate-700">{group.industry}</div>
+                      <div className="px-2 py-2">
+                        {group.protocols.length > 0 ? (
+                          <div className="flex flex-wrap gap-[var(--ui-gap-1)]">
+                            {group.protocols.map((protocol) => {
+                              const isSelected = selectedProtocol === protocol
+                              return (
+                                <button
+                                  key={protocol}
+                                  type="button"
+                                  onClick={() => handleProtocolSelect(protocol)}
+                                  className={cn(
+                                    'inline-flex h-7 items-center rounded-[var(--ui-radius-sm)] border px-2 text-xs font-semibold transition',
+                                    isSelected
+                                      ? 'border-[rgb(var(--speedgoat-blue))] bg-[rgb(var(--speedgoat-blue))]/10 text-[rgb(var(--speedgoat-blue))]'
+                                      : 'border-slate-300 bg-white text-slate-700 hover:border-slate-400 hover:bg-slate-50'
+                                  )}
+                                >
+                                  {protocol}
+                                </button>
+                              )
+                            })}
+                          </div>
+                        ) : (
+                          <span className="text-xs text-slate-400">...</span>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex items-center justify-end gap-[var(--ui-gap-1)] border-t border-slate-200 px-3 py-2">
+                <CompactButton type="button" variant="secondary" onClick={() => setProtocolSelectorContext(null)}>
+                  Cancel
+                </CompactButton>
               </div>
             </div>
-          ))}
+          </div>
         </div>
       </div>
     )
@@ -156,104 +246,131 @@ export default function ConfiguratorV2({ onSummaryChange, onRequirementsChange }
     const { category, sub, rowIndex } = editingContext
     const basicFieldKey = getBasicFieldKey(category.id, sub)
     const advancedFieldKeys = sub.fields.filter((field) => field.key !== basicFieldKey).map((field) => field.key)
-    const showProtocolIndustrySelector = category.id === 'communication' && sub.id === 'protocols'
+    const viewportWidth = typeof window === 'undefined' ? 1280 : window.innerWidth
+    const viewportHeight = typeof window === 'undefined' ? 800 : window.innerHeight
+    const margin = 12
+    const floatingBottomGap = 48
+    const minPanelHeight = 220
+    const desiredPanelHeight = Math.min(Math.round(viewportHeight * 0.62), 520)
+    const panelWidth = Math.min(390, Math.max(300, viewportWidth - margin * 2))
+    const anchorX = editorAnchor?.x ?? viewportWidth - panelWidth - margin
+    const anchorY = editorAnchor?.y ?? 96
+    const anchorWidth = editorAnchor?.width ?? 0
+    const anchorHeight = editorAnchor?.height ?? 0
+
+    let panelLeft = anchorX + anchorWidth + 10
+    const leftSideCandidate = anchorX - panelWidth - 10
+    if (panelLeft + panelWidth > viewportWidth - margin && leftSideCandidate >= margin) {
+      panelLeft = leftSideCandidate
+    }
+    panelLeft = Math.min(Math.max(panelLeft, margin), viewportWidth - panelWidth - margin)
+
+    const preferredTop = anchorY + anchorHeight + 8
+    const maxTopForFloating = Math.max(margin, viewportHeight - floatingBottomGap - minPanelHeight)
+    let panelTop = Math.min(Math.max(preferredTop, margin), maxTopForFloating)
+
+    let panelHeight = Math.min(desiredPanelHeight, viewportHeight - panelTop - floatingBottomGap)
+    if (panelHeight < minPanelHeight) {
+      panelTop = margin
+      panelHeight = Math.min(desiredPanelHeight, viewportHeight - margin * 2)
+    }
+    panelHeight = Math.max(160, panelHeight)
 
     return (
       <div className="fixed inset-0 z-[90]">
         <button
           type="button"
           onClick={requestCloseEditor}
-          className="absolute inset-0 bg-slate-900/25 backdrop-blur-[1px]"
+          className="absolute inset-0 bg-slate-900/12 backdrop-blur-[1px]"
           aria-label="Close edit panel"
         />
 
-        <aside className="absolute inset-y-0 right-0 w-full max-w-[420px]">
-          <div className="relative flex h-full flex-col border-l border-slate-200 bg-white shadow-2xl">
-            <div className="flex items-start justify-between gap-2 border-b border-slate-200 p-[var(--ui-pad-2)]">
-              <div>
-                <CompactSectionLabel>Edit Variant</CompactSectionLabel>
-                <p className="mt-1 text-sm font-semibold text-slate-900">
-                  {category.label} / {sub.label} / Variant {rowIndex + 1}
-                </p>
-              </div>
-
-              <CompactIconButton type="button" onClick={requestCloseEditor} aria-label="Close editor" title="Close">
-                <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 6l12 12M18 6L6 18" />
-                </svg>
-              </CompactIconButton>
-            </div>
-
-            <div className="flex-1 space-y-3 overflow-y-auto p-[var(--ui-pad-2)]">
-              <CompactInspectorBlock className="space-y-[var(--ui-gap-2)]">
-                <div>
-                  <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-slate-700">
-                    Quantity
-                  </label>
-                  <CompactField
-                    type="number"
-                    min="0"
-                    max="999"
-                    step="1"
-                    value={draftEdit.quantity}
-                    onChange={(event) => updateDraftQuantity(parseInt(event.target.value, 10) || 0)}
-                    className="px-2 text-xs"
-                    aria-label="Quantity"
-                  />
+        <div className="pointer-events-none absolute inset-0">
+          <div
+            className="pointer-events-auto fixed"
+            style={{
+              top: panelTop,
+              left: panelLeft,
+              width: panelWidth,
+            }}
+          >
+            <div
+              className="relative flex flex-col overflow-hidden rounded-[var(--ui-radius-lg)] border border-slate-200 bg-white/95 shadow-2xl backdrop-blur"
+              style={{ height: panelHeight }}
+            >
+              <div className="flex items-center justify-between gap-2 border-b border-slate-200 px-3 py-2">
+                <div className="min-w-0">
+                  <CompactSectionLabel>Edit Variant</CompactSectionLabel>
+                  <p className="mt-0.5 truncate text-sm font-semibold text-slate-900">
+                    {category.label} / {sub.label} / Variant {rowIndex + 1}
+                  </p>
                 </div>
 
-                {basicFieldKey && renderDraftField(sub, basicFieldKey)}
-              </CompactInspectorBlock>
+                <CompactIconButton type="button" onClick={requestCloseEditor} aria-label="Close editor" title="Close">
+                  <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 6l12 12M18 6L6 18" />
+                  </svg>
+                </CompactIconButton>
+              </div>
 
-              <div className="space-y-[var(--ui-gap-2)]">
-                <CompactButton
-                  type="button"
-                  variant="ghost"
-                  onClick={() => setShowAdvancedEditor((prev) => !prev)}
-                  className="h-7 px-2 text-xs text-slate-700"
-                >
-                  {showAdvancedEditor ? 'Hide advanced' : 'Show advanced'}
+              <div className="flex-1 space-y-2 overflow-y-auto px-3 py-2">
+                <CompactInspectorBlock className="space-y-[var(--ui-gap-2)] bg-white p-2">
+                  {basicFieldKey ? (
+                    renderDraftField(sub, basicFieldKey)
+                  ) : (
+                    <p className="text-xs text-slate-500">No basic parameters for this variant.</p>
+                  )}
+                </CompactInspectorBlock>
+
+                <div className="space-y-[var(--ui-gap-1)]">
+                  <CompactButton
+                    type="button"
+                    variant="ghost"
+                    onClick={() => setShowAdvancedEditor((prev) => !prev)}
+                    className="h-7 px-2 text-xs text-slate-700"
+                  >
+                    {showAdvancedEditor ? 'Hide advanced' : 'Show advanced'}
+                  </CompactButton>
+
+                  {showAdvancedEditor && (
+                    <CompactInspectorBlock className="space-y-[var(--ui-gap-2)] bg-white p-2">
+                      {advancedFieldKeys.map((fieldKey) => renderDraftField(sub, fieldKey))}
+                      {advancedFieldKeys.length === 0 && (
+                        <p className="text-xs text-slate-500">No additional parameters for this variant.</p>
+                      )}
+                    </CompactInspectorBlock>
+                  )}
+                </div>
+              </div>
+
+              <div className="flex items-center justify-end gap-[var(--ui-gap-1)] border-t border-slate-200 px-3 py-2">
+                <CompactButton type="button" variant="secondary" onClick={requestCloseEditor}>
+                  Cancel
                 </CompactButton>
-
-                {showAdvancedEditor && (
-                  <CompactInspectorBlock className="space-y-[var(--ui-gap-2)]">
-                    {showProtocolIndustrySelector && renderProtocolIndustrySelector(sub)}
-                    {advancedFieldKeys.map((fieldKey) => renderDraftField(sub, fieldKey))}
-                    {!showProtocolIndustrySelector && advancedFieldKeys.length === 0 && (
-                      <p className="text-xs text-slate-500">No additional parameters for this variant.</p>
-                    )}
-                  </CompactInspectorBlock>
-                )}
+                <CompactButton type="button" variant="primary" onClick={saveDraft}>
+                  Save
+                </CompactButton>
               </div>
-            </div>
 
-            <div className="flex items-center justify-end gap-[var(--ui-gap-1)] border-t border-slate-200 p-[var(--ui-pad-2)]">
-              <CompactButton type="button" variant="secondary" onClick={requestCloseEditor}>
-                Cancel
-              </CompactButton>
-              <CompactButton type="button" variant="primary" onClick={saveDraft}>
-                Save
-              </CompactButton>
+              {showDiscardConfirm && (
+                <div className="absolute inset-0 z-10 flex items-end rounded-[var(--ui-radius-lg)] bg-slate-900/30 p-2">
+                  <CompactCard className="w-full space-y-[var(--ui-gap-2)] p-[var(--ui-pad-2)]">
+                    <p className="text-sm font-semibold text-slate-900">Discard unsaved changes?</p>
+                    <p className="text-xs text-slate-600">Your edits in this panel have not been saved yet.</p>
+                    <div className="flex items-center justify-end gap-[var(--ui-gap-1)]">
+                      <CompactButton type="button" variant="secondary" onClick={() => setShowDiscardConfirm(false)}>
+                        Keep editing
+                      </CompactButton>
+                      <CompactButton type="button" variant="danger" onClick={discardDraftAndClose}>
+                        Discard
+                      </CompactButton>
+                    </div>
+                  </CompactCard>
+                </div>
+              )}
             </div>
-
-            {showDiscardConfirm && (
-              <div className="absolute inset-0 z-10 flex items-end bg-slate-900/30 p-[var(--ui-pad-2)]">
-                <CompactCard className="w-full space-y-[var(--ui-gap-2)] p-[var(--ui-pad-2)]">
-                  <p className="text-sm font-semibold text-slate-900">Discard unsaved changes?</p>
-                  <p className="text-xs text-slate-600">Your edits in this panel have not been saved yet.</p>
-                  <div className="flex items-center justify-end gap-[var(--ui-gap-1)]">
-                    <CompactButton type="button" variant="secondary" onClick={() => setShowDiscardConfirm(false)}>
-                      Keep editing
-                    </CompactButton>
-                    <CompactButton type="button" variant="danger" onClick={discardDraftAndClose}>
-                      Discard
-                    </CompactButton>
-                  </div>
-                </CompactCard>
-              </div>
-            )}
           </div>
-        </aside>
+        </div>
       </div>
     )
   }
@@ -266,61 +383,110 @@ export default function ConfiguratorV2({ onSummaryChange, onRequirementsChange }
       categoryId,
       subId: sub.id,
     })
+    const summaryText = summaryTokens.length > 0 ? summaryTokens.join(' · ') : 'Default'
+    const specsAreDefault = isSpecsDefault(sub, row.specs)
+    const channelOptions = CHANNEL_PRESET_COUNTS.includes(row.quantity)
+      ? CHANNEL_PRESET_COUNTS
+      : [...CHANNEL_PRESET_COUNTS, row.quantity].sort((a, b) => a - b)
+    const isCustomChannelMode = customChannelRows[row.id] || !CHANNEL_PRESET_COUNTS.includes(row.quantity)
 
     return (
-      <div
+      <tr
         key={row.id}
         className={cn(
-          'flex items-center gap-[var(--ui-gap-1)] rounded-[var(--ui-radius-sm)] border p-1',
-          isEditing ? 'border-[rgb(var(--speedgoat-blue))]/60 bg-blue-50/60' : 'border-slate-200 bg-white'
+          'border-b border-slate-200 last:border-b-0',
+          isEditing && 'bg-blue-50/60'
         )}
       >
-        <div className="flex min-w-0 flex-1 items-center gap-[var(--ui-gap-1)] rounded-[var(--ui-radius-sm)] px-1 py-0.5 text-left">
-          <CompactChip className="min-w-[42px] justify-center rounded-[var(--ui-radius-sm)] text-xs font-semibold">
-            {row.quantity}
-          </CompactChip>
-
-          <div className="flex min-w-0 flex-1 items-center gap-[var(--ui-gap-1)] overflow-hidden">
-            {summaryTokens.length > 0 ? (
-              summaryTokens.map((token, index) => (
-                <CompactChip key={`${row.id}-${index}`} className="max-w-[150px] truncate text-xs" title={token}>
-                  {token}
-                </CompactChip>
-              ))
-            ) : (
-              <span className="truncate text-xs text-slate-500">Default</span>
-            )}
-          </div>
-        </div>
-
-        <CompactIconButton
-          type="button"
-          onClick={() => openEditor({ categoryId, subId: sub.id, rowId: row.id })}
-          aria-label={`Edit ${sub.label} variant ${rowIndex + 1}`}
-          title="Edit"
-        >
-          <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M16.862 3.487a2.1 2.1 0 113.03 2.906L8.19 18.096 4 19l.904-4.19L16.862 3.487z"
+        <td className="px-1.5 py-1.5">
+          {isCustomChannelMode ? (
+            <CompactField
+              type="number"
+              min="0"
+              max="999"
+              step="1"
+              value={row.quantity}
+              onChange={(event) => updateRowQuantity(categoryId, sub.id, row.id, parseInt(event.target.value, 10) || 0)}
+              onBlur={() => {
+                if (CHANNEL_PRESET_COUNTS.includes(row.quantity)) {
+                  setCustomChannelRows((prev) => ({ ...prev, [row.id]: false }))
+                }
+              }}
+              className="h-7 w-[78px] px-1 text-xs"
+              aria-label={`${sub.label} channels custom`}
             />
-          </svg>
-        </CompactIconButton>
+          ) : (
+            <CompactField
+              as="select"
+              value={String(row.quantity)}
+              onChange={(event) => {
+                const nextValue = event.target.value
+                if (nextValue === 'custom') {
+                  setCustomChannelRows((prev) => ({ ...prev, [row.id]: true }))
+                  return
+                }
+                setCustomChannelRows((prev) => ({ ...prev, [row.id]: false }))
+                updateRowQuantity(categoryId, sub.id, row.id, parseInt(nextValue, 10) || 0)
+              }}
+              className="h-7 w-[78px] px-1 text-xs"
+              aria-label={`${sub.label} channels`}
+            >
+              {channelOptions.map((count) => (
+                <option key={count} value={count}>
+                  {count}
+                </option>
+              ))}
+              <option value="custom">Custom...</option>
+            </CompactField>
+          )}
+        </td>
+        <td className="px-1.5 py-1.5 text-xs leading-5 text-slate-600 whitespace-normal break-words" title={summaryText}>
+          <span className="inline-flex items-center gap-1">
+            {!specsAreDefault && (
+              <span className="inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-[rgb(var(--speedgoat-blue))]" title="Customized" />
+            )}
+            {summaryText}
+          </span>
+        </td>
+        <td className="px-1.5 py-1.5">
+          <div className="flex items-center justify-end gap-0.5">
+            <CompactIconButton
+              type="button"
+              onClick={(event) => {
+                const rect = event.currentTarget.getBoundingClientRect()
+                openEditor(
+                  { categoryId, subId: sub.id, rowId: row.id },
+                  { x: rect.left, y: rect.top, width: rect.width, height: rect.height }
+                )
+              }}
+              aria-label={`Edit ${sub.label} variant ${rowIndex + 1}`}
+              title="Edit"
+              className="h-6 w-6"
+            >
+              <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M16.862 3.487a2.1 2.1 0 113.03 2.906L8.19 18.096 4 19l.904-4.19L16.862 3.487z"
+                />
+              </svg>
+            </CompactIconButton>
 
-        <CompactIconButton
-          type="button"
-          onClick={() => removeSignalRow(categoryId, sub.id, row.id)}
-          aria-label={`Remove ${sub.label} variant`}
-          title="Remove"
-          className="text-slate-500 hover:text-red-700"
-        >
-          <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 6l12 12M18 6L6 18" />
-          </svg>
-        </CompactIconButton>
-      </div>
+            <CompactIconButton
+              type="button"
+              onClick={() => removeSignalRow(categoryId, sub.id, row.id)}
+              aria-label={`Remove ${sub.label} variant`}
+              title="Remove"
+              className="h-6 w-6 text-slate-500 hover:text-red-700"
+            >
+              <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 6l12 12M18 6L6 18" />
+              </svg>
+            </CompactIconButton>
+          </div>
+        </td>
+      </tr>
     )
   }
 
@@ -336,40 +502,91 @@ export default function ConfiguratorV2({ onSummaryChange, onRequirementsChange }
         </div>
 
         {rows.length > 0 ? (
-          <div className="space-y-[var(--ui-gap-1)]">{rows.map((row, index) => renderSignalRow(categoryId, sub, row, index))}</div>
+          <div className="overflow-hidden rounded-[var(--ui-radius-sm)] border border-slate-200 bg-white">
+            <table className="w-full table-fixed border-collapse">
+              <thead>
+                <tr className="border-b border-slate-200 bg-slate-50">
+                  <th className="w-[86px] px-1.5 py-1.5 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-600">
+                    Channels
+                  </th>
+                  <th className="px-1.5 py-1.5 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-600">
+                    Key specs
+                  </th>
+                  <th className="w-[58px] px-1.5 py-1.5 text-right text-[11px] font-semibold uppercase tracking-wide text-slate-600">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody>{rows.map((row, index) => renderSignalRow(categoryId, sub, row, index))}</tbody>
+            </table>
+          </div>
         ) : (
           <p className="text-xs text-slate-500">No variants added.</p>
         )}
 
-        <CompactAddLink type="button" onClick={() => addSignalRow(categoryId, sub.id)}>
+        <CompactAddLink type="button" onClick={() => handleAddVariant(categoryId, sub.id)}>
           {getAddLabel(categoryId, sub.label)}
         </CompactAddLink>
       </div>
     )
   }
 
+  const getTier1ActiveRows = (category: (typeof CATEGORIES)[number]) => {
+    return category.subCategories.flatMap((sub) =>
+      (signalRows[category.id]?.[sub.id] || [])
+        .filter((row) => row.quantity > 0)
+        .map((row) => ({
+          sub,
+          row,
+          summaryText: getSpecSummaryText(sub, row.specs, { categoryId: category.id, subId: sub.id }),
+        }))
+    )
+  }
+
   const renderTier1Category = (category: (typeof CATEGORIES)[number]) => {
     const isOpen = tier1Open[category.id] ?? false
     const totalSignals = getCategoryTotal(category.id)
+    const hasConfiguredRows = category.subCategories.some((sub) => (signalRows[category.id]?.[sub.id] || []).length > 0)
+    const collapsedActionLabel = hasConfiguredRows ? 'Show' : '+ Add'
+    const activeRows = getTier1ActiveRows(category)
 
     return (
-      <CompactCard key={category.id} variant="default" className="self-start p-[var(--ui-pad-2)]">
+      <CompactCard key={category.id} variant="outlined" className="self-start p-[var(--ui-pad-2)]">
         <button
           type="button"
           onClick={() => {
-            const nextOpenState = !isOpen
-            setTier1Open((prev) => ({ ...prev, [category.id]: nextOpenState }))
+            setTier1Open((prev) => ({
+              ...prev,
+              [category.id]: !isOpen,
+            }))
           }}
           className="flex w-full items-center justify-between gap-[var(--ui-gap-2)] rounded-[var(--ui-radius-sm)] text-left"
           aria-expanded={isOpen}
           aria-controls={`tier1-${category.id}`}
         >
-          <span className="text-sm font-semibold uppercase tracking-wide text-slate-700">{category.label}</span>
+          <span className="text-sm font-semibold text-slate-700">
+            {category.label} <span className="text-slate-500">({totalSignals})</span>
+          </span>
           <div className="flex items-center gap-[var(--ui-gap-1)]">
-            {totalSignals > 0 && <CompactStatBadge>{totalSignals}</CompactStatBadge>}
-            <span className="text-xs text-slate-500">{isOpen ? 'Hide' : 'Show'}</span>
+            <span className="text-xs text-slate-500">{isOpen ? 'Hide' : collapsedActionLabel}</span>
           </div>
         </button>
+
+        {!isOpen && activeRows.length > 0 && (
+          <div className="mt-[var(--ui-gap-1)] space-y-0.5">
+            {activeRows.slice(0, 4).map((item) => {
+              const line = `${item.sub.label}: ${item.row.quantity} ch${item.summaryText ? ` · ${item.summaryText}` : ''}`
+              return (
+                <p key={`${item.sub.id}-${item.row.id}`} className="truncate text-xs text-slate-500" title={line}>
+                  {line}
+                </p>
+              )
+            })}
+            {activeRows.length > 4 && (
+              <p className="text-xs text-slate-400">+{activeRows.length - 4} more</p>
+            )}
+          </div>
+        )}
 
         {isOpen && (
           <div id={`tier1-${category.id}`} className="mt-[var(--ui-gap-2)] space-y-3 border-t border-slate-200 pt-[var(--ui-gap-2)]">
@@ -400,38 +617,39 @@ export default function ConfiguratorV2({ onSummaryChange, onRequirementsChange }
     const isOpen = tier2Open[category.id] ?? false
     const totalSignals = getCategoryTotal(category.id)
     const activeRows = getTier2ActiveRows(category)
+    const hasConfiguredRows = category.subCategories.some((sub) => (signalRows[category.id]?.[sub.id] || []).length > 0)
+    const collapsedActionLabel = hasConfiguredRows ? 'Show' : '+ Add'
 
     return (
       <CompactCard key={category.id} variant="outlined" className="self-start p-[var(--ui-pad-2)]">
         <button
           type="button"
-          onClick={() =>
-            setTier2Open((prev) => ({
-              ...prev,
-              [category.id]: !prev[category.id],
-            }))
-          }
+          onClick={() => {
+            const nextOpenState = !isOpen
+            setTier2Open(createTier2OpenMap(nextOpenState ? category.id : undefined))
+          }}
           className="flex w-full items-center justify-between gap-[var(--ui-gap-1)] rounded-[var(--ui-radius-sm)] text-left"
           aria-expanded={isOpen}
           aria-controls={`additional-${category.id}`}
         >
-          <span className="text-sm font-semibold text-slate-800">{category.label}</span>
+          <span className="text-sm font-semibold text-slate-800">
+            {category.label} <span className="text-slate-500">({totalSignals})</span>
+          </span>
           <div className="flex items-center gap-[var(--ui-gap-1)]">
-            {totalSignals > 0 && <CompactStatBadge>{totalSignals}</CompactStatBadge>}
-            <span className="text-xs text-slate-500">{isOpen ? 'Hide' : 'Show'}</span>
+            <span className="text-xs text-slate-500">{isOpen ? 'Hide' : collapsedActionLabel}</span>
           </div>
         </button>
 
         {!isOpen && (
           <div className="mt-[var(--ui-gap-2)]">
             {activeRows.length > 0 ? (
-              <div className="flex flex-wrap gap-[var(--ui-gap-1)]">
-                {activeRows.slice(0, 4).map((item) => {
-                  const chipLabel = `${item.sub.label}: ${item.row.quantity}${item.summaryText ? ` | ${item.summaryText}` : ''}`
+              <div className="space-y-1">
+                {activeRows.slice(0, 3).map((item) => {
+                  const line = `${item.sub.label}: ${item.row.quantity} ch${item.summaryText ? ` · ${item.summaryText}` : ''}`
                   return (
-                    <CompactChip key={`${item.sub.id}-${item.row.id}`} className="max-w-full truncate" title={chipLabel}>
-                      {chipLabel}
-                    </CompactChip>
+                    <p key={`${item.sub.id}-${item.row.id}`} className="truncate text-xs text-slate-600" title={line}>
+                      {line}
+                    </p>
                   )
                 })}
               </div>
@@ -460,30 +678,42 @@ export default function ConfiguratorV2({ onSummaryChange, onRequirementsChange }
   return (
     <>
       <CompactCard variant="default" className="space-y-3 p-[var(--ui-pad-3)]">
-        <p className="text-sm text-slate-600">
-          Configure required I/O variants. Use the pen icon on a variant row to edit details.
-        </p>
-
-        <div className="space-y-3">
-          <div>
-            <CompactSectionLabel>02 Core I/O</CompactSectionLabel>
-            <p className="mt-1 text-xs text-slate-500">Required. Add at least one core I/O variant to continue.</p>
-          </div>
-
-          <div className="grid grid-cols-1 gap-3">
-            {tier1Categories.map((category) => renderTier1Category(category))}
-          </div>
-
-          {tier2Categories.length > 0 && (
-            <div className="space-y-2">
-              <CompactSectionLabel>03 Additional I/O</CompactSectionLabel>
-              <div className="grid grid-cols-1 gap-3 md:grid-cols-2">{tier2Categories.map((category) => renderTier2Tile(category))}</div>
-            </div>
-          )}
+        <div className="space-y-2">
+          {tier1Categories.map((category) => (
+            <div key={category.id}>{renderTier1Category(category)}</div>
+          ))}
         </div>
+
+        {tier2Categories.length > 0 && (
+          <>
+            <button
+              type="button"
+              onClick={() => {
+                const nextOpen = !isAdditionalStepOpen
+                setIsAdditionalStepOpen(nextOpen)
+              }}
+              className="flex w-full items-center justify-between rounded-[var(--ui-radius-sm)] border border-slate-200 bg-slate-50 px-3 py-2 text-left"
+              aria-expanded={isAdditionalStepOpen}
+              aria-controls="v2-step-additional"
+            >
+              <span className="text-sm font-semibold text-slate-800">
+                03 Additional I/O <span className="text-slate-500">({additionalTotalSignals})</span>
+              </span>
+              <span className="text-xs text-slate-500">{isAdditionalStepOpen ? 'Hide' : additionalCollapsedActionLabel}</span>
+            </button>
+
+            {isAdditionalStepOpen && (
+              <div id="v2-step-additional" className="space-y-3 border-t border-slate-200 pt-3">
+                <div className="grid grid-cols-1 gap-3">{tier2Categories.map((category) => renderTier2Tile(category))}</div>
+              </div>
+            )}
+          </>
+        )}
       </CompactCard>
 
       {renderSlideOverEditor()}
+      {renderProtocolSelectorOverlay()}
     </>
   )
 }
+
