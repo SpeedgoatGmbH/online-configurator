@@ -11,138 +11,27 @@ import {
   CompactStatBadge,
 } from '@/components/ui/compact'
 import { cn } from '@/lib/cn'
-import { useEffect, useMemo, useState } from 'react'
+import { useState } from 'react'
 import { CATEGORIES } from './configurator/data'
-import type { ConfiguratorProps, FieldKey, SpecsRecord, SubCategory } from './configurator/types'
+import type { FieldKey, SubCategory } from './configurator/types'
+import {
+  CHANNEL_PRESET_COUNTS,
+  type ConfiguratorHookProps,
+  type ProtocolIndustry,
+  type SignalRow,
+  buildProtocolIndustryGroups,
+  getAddLabel,
+  getBasicFieldKey,
+  getConditionalOptions,
+  getSpecSummaryText,
+  getSpecSummaryTokens,
+  getSubCategory,
+  useConfigurator,
+} from './configurator/useConfigurator'
 
-type SignalRow = {
-  id: string
-  quantity: number
-  specs: SpecsRecord
-}
+// ─── V3_3-unique types & helpers ────────────────────────────────────────────────
 
-type EditingTarget = {
-  categoryId: string
-  subId: string
-  rowId: string
-} | null
-
-type DraftEdit = {
-  quantity: number
-  specs: SpecsRecord
-} | null
-
-type ProtocolSelectorContext = {
-  mode: 'add' | 'edit'
-} | null
-
-type EditorAnchor = {
-  x: number
-  y: number
-  width: number
-  height: number
-} | null
-
-type EditingContext = {
-  category: (typeof CATEGORIES)[number]
-  sub: SubCategory
-  row: SignalRow
-  rowIndex: number
-}
-
-const TIER1_IDS = ['analog', 'digital', 'communication', 'motion']
-const TIER1_ORDER = ['analog', 'digital', 'communication', 'motion'] as const
-const PROTOCOL_INDUSTRY_ORDER = ['Cross', 'Automotive', 'Aerospace', 'Industrial'] as const
-const CHANNEL_PRESET_COUNTS = [0, 1, 2, 4, 8, 16, 32, 64, 128]
-
-type ProtocolIndustry = (typeof PROTOCOL_INDUSTRY_ORDER)[number]
-type ProtocolIndustryGroup = { industry: ProtocolIndustry; protocols: string[] }
 type ProtocolFamilyGroup = { label: string; protocols: string[] }
-
-const PROTOCOL_INDUSTRY_MAP: Record<ProtocolIndustry, string[]> = {
-  Cross: [
-    'RS-422',
-    'RS-485',
-    'RS-232',
-    'SPI',
-    'I2C',
-    'PTP (IEEE 1588)',
-    'IRIG + GPS',
-    'MQTT',
-    'DDS',
-    'Raw Ethernet',
-    'Real-Time UDP',
-    'Aurora',
-    'Shared Memory',
-  ],
-  Automotive: [
-    'CAN',
-    'CAN FD',
-    'LIN',
-    'FlexRay',
-    'SENT',
-    'PSI5',
-    'Automotive Ethernet',
-    'XCP over CAN',
-    'XCP over Ethernet',
-  ],
-  Aerospace: ['AFDX (ARINC 664 P7)', 'ARINC 429', 'ARINC 629', 'ARINC 825', 'MIL-STD-1553'],
-  Industrial: [
-    'EtherCAT',
-    'PROFINET',
-    'EtherNet/IP',
-    'POWERLINK',
-    'OPC UA',
-    'CANopen',
-    'PROFIBUS',
-    'Modbus RTU',
-    'Modbus TCP',
-    'DNP3',
-    'IEC 61850',
-    'MVB / WTB',
-  ],
-}
-
-function buildInitialSignalRows(): Record<string, Record<string, SignalRow[]>> {
-  const initial: Record<string, Record<string, SignalRow[]>> = {}
-  CATEGORIES.forEach((category) => {
-    initial[category.id] = {}
-    category.subCategories.forEach((sub) => {
-      initial[category.id][sub.id] = []
-    })
-  })
-  return initial
-}
-
-function getCategory(categoryId: string) {
-  return CATEGORIES.find((category) => category.id === categoryId)
-}
-
-function getSubCategory(categoryId: string, subId: string) {
-  return getCategory(categoryId)?.subCategories.find((sub) => sub.id === subId)
-}
-
-function buildProtocolIndustryGroups(protocolOptions: string[]): ProtocolIndustryGroup[] {
-  const uniqueOptions = Array.from(new Set(protocolOptions))
-  const available = new Set(uniqueOptions)
-  const assigned = new Set<string>()
-
-  const groups = PROTOCOL_INDUSTRY_ORDER.map((industry) => {
-    const protocols = PROTOCOL_INDUSTRY_MAP[industry].filter((protocol) => available.has(protocol))
-    protocols.forEach((protocol) => assigned.add(protocol))
-    return { industry, protocols }
-  })
-
-  const unclassified = uniqueOptions.filter((protocol) => !assigned.has(protocol))
-  if (unclassified.length > 0) {
-    const crossGroup = groups.find((group) => group.industry === 'Cross')
-    if (crossGroup) {
-      crossGroup.protocols = [...crossGroup.protocols, ...unclassified]
-    }
-  }
-
-  return groups
-}
 
 function getProtocolFamilyLabel(protocol: string): string {
   if (protocol.startsWith('ARINC') || protocol.startsWith('AFDX')) return 'ARINC / AFDX'
@@ -176,7 +65,7 @@ function getProtocolFamilyLabel(protocol: string): string {
   return 'Other'
 }
 
-function buildProtocolFamilyGroups(protocols: string[]): ProtocolFamilyGroup[] {
+function buildProtocolFamilyGroupsLocal(protocols: string[]): ProtocolFamilyGroup[] {
   const familyOrder: string[] = []
   const familyMap: Record<string, string[]> = {}
 
@@ -195,284 +84,74 @@ function buildProtocolFamilyGroups(protocols: string[]): ProtocolFamilyGroup[] {
   }))
 }
 
-function getConditionalOptions(sub: SubCategory, fieldKey: FieldKey, currentSpecs: SpecsRecord): string[] | undefined {
-  const field = sub.fields.find((entry) => entry.key === fieldKey)
-  if (!field) return undefined
+// ─── Component ──────────────────────────────────────────────────────────────────
 
-  if (Array.isArray(field.options)) return field.options
+const TIER1_IDS = ['analog', 'digital', 'communication', 'motion']
+const TIER1_ORDER = ['analog', 'digital', 'communication', 'motion'] as const
 
-  const dependsOnValue = currentSpecs[field.options.dependsOn]
-  if (!dependsOnValue) return []
-  return field.options.conditions[dependsOnValue] || []
-}
-
-function normalizeSpecsForSub(sub: SubCategory, currentSpecs: SpecsRecord): SpecsRecord {
-  const normalized: SpecsRecord = { ...currentSpecs }
-
-  sub.fields.forEach((field) => {
-    const options = getConditionalOptions(sub, field.key, normalized)
-    if (!options || options.length === 0) return
-
-    const current = normalized[field.key]
-    if (!current || !options.includes(current)) {
-      normalized[field.key] = options[0]
-    }
-  })
-
-  return normalized
-}
-
-function getSpecSummaryTokens(
-  sub: SubCategory,
-  specs: SpecsRecord,
-  context?: { categoryId: string; subId: string }
-): string[] {
-  const isProtocolGroup = context?.categoryId === 'communication' && context?.subId === 'protocols'
-
-  if (isProtocolGroup) {
-    return [specs.range, specs.resolution, specs.speed].filter((value): value is string => Boolean(value))
-  }
-
-  const preferred = sub.fields
-    .filter((field) => field.key !== 'signalType')
-    .map((field) => specs[field.key])
-    .filter((value): value is string => Boolean(value))
-
-  if (preferred.length > 0) return preferred.slice(0, 4)
-
-  const fallback = sub.fields
-    .map((field) => specs[field.key])
-    .filter((value): value is string => Boolean(value))
-
-  return fallback.slice(0, 4)
-}
-
-function getSpecSummaryText(
-  sub: SubCategory,
-  specs: SpecsRecord,
-  context?: { categoryId: string; subId: string }
-): string {
-  return getSpecSummaryTokens(sub, specs, context).join(' | ')
-}
-
-function getAddLabel(categoryId: string, subLabel: string): string {
-  if (categoryId === 'communication') return '+ Add protocol type'
-  const normalized = subLabel.toLowerCase().endsWith('s') ? subLabel.toLowerCase().slice(0, -1) : subLabel.toLowerCase()
-  return `+ Add ${normalized} type`
-}
-
-function getBasicFieldKey(categoryId: string, sub: SubCategory): FieldKey | undefined {
-  const hasField = (key: FieldKey) => sub.fields.some((field) => field.key === key)
-
-  if (categoryId === 'analog') {
-    if (hasField('signalRange')) return 'signalRange'
-    if (hasField('range')) return 'range'
-  }
-
-  if (categoryId === 'digital' && hasField('signalType')) {
-    return 'signalType'
-  }
-
-  if (categoryId === 'communication' && sub.id === 'protocols' && hasField('range')) {
-    return 'range'
-  }
-
-  return sub.fields[0]?.key
-}
-
-type ConfiguratorV2Summary = {
-  totalSignals: number
-  rowCount: number
-  categoryTotals: Record<string, number>
-}
-
-type ConfiguratorV2Props = ConfiguratorProps & {
-  onSummaryChange?: (summary: ConfiguratorV2Summary) => void
-}
-
-export default function ConfiguratorV3({ onSummaryChange }: ConfiguratorV2Props = {}) {
-  const [signalRows, setSignalRows] = useState<Record<string, Record<string, SignalRow[]>>>(() => buildInitialSignalRows())
-  const [editingTarget, setEditingTarget] = useState<EditingTarget>(null)
-  const [editorAnchor, setEditorAnchor] = useState<EditorAnchor>(null)
-  const [draftEdit, setDraftEdit] = useState<DraftEdit>(null)
-  const [protocolSelectorContext, setProtocolSelectorContext] = useState<ProtocolSelectorContext>(null)
+export default function ConfiguratorV3({ onSummaryChange, onRequirementsChange }: ConfiguratorHookProps = {}) {
+  // V3_3-unique local state: protocol family accordion
   const [openProtocolFamilies, setOpenProtocolFamilies] = useState<Record<string, boolean>>({})
-  const [showAdvancedEditor, setShowAdvancedEditor] = useState(false)
-  const [showDiscardConfirm, setShowDiscardConfirm] = useState(false)
-  const [customChannelRows, setCustomChannelRows] = useState<Record<string, boolean>>({})
-  const [isAdditionalStepOpen, setIsAdditionalStepOpen] = useState(false)
-  const [tier1Open, setTier1Open] = useState<Record<string, boolean>>(() => {
-    const initial: Record<string, boolean> = {}
-    TIER1_IDS.forEach((id) => {
-      initial[id] = false
-    })
-    return initial
+
+  const {
+    signalRows,
+    editingTarget,
+    editingContext,
+    draftEdit,
+    isDraftDirty,
+    showAdvancedEditor,
+    setShowAdvancedEditor,
+    showDiscardConfirm,
+    setShowDiscardConfirm,
+    tier1Open,
+    setTier1Open,
+    tier2Open,
+    setTier2Open,
+    tier1Categories,
+    tier2Categories,
+    editorAnchor,
+    protocolSelectorContext,
+    setProtocolSelectorContext,
+    customChannelRows,
+    setCustomChannelRows,
+    isAdditionalStepOpen,
+    setIsAdditionalStepOpen,
+    addSignalRow,
+    removeSignalRow,
+    openEditor,
+    updateDraftSpec,
+    updateRowQuantity,
+    saveDraft,
+    requestCloseEditor,
+    discardDraftAndClose,
+    handleAddVariant: hookHandleAddVariant,
+    handleProtocolSelect: hookHandleProtocolSelect,
+    createTier1OpenMap,
+    createTier2OpenMap,
+    getSubTotal,
+    getCategoryTotal,
+    additionalTotalSignals,
+    hasAnyAdditionalRows,
+    additionalCollapsedActionLabel,
+  } = useConfigurator({
+    tier1Ids: TIER1_IDS,
+    tier1Order: TIER1_ORDER,
+    accordionMode: true,
+    useEditorAnchors: true,
+    useProtocolSelector: true,
+    useCustomChannelRows: true,
+    onCloseEditorExtra: () => setOpenProtocolFamilies({}),
+    onSummaryChange,
+    onRequirementsChange,
   })
-  const [tier2Open, setTier2Open] = useState<Record<string, boolean>>(() => {
-    const initial: Record<string, boolean> = {}
-    CATEGORIES.filter((category) => !TIER1_IDS.includes(category.id)).forEach((category) => {
-      initial[category.id] = false
-    })
-    return initial
-  })
 
-  const orderedTier1Categories = TIER1_ORDER.map((id) => CATEGORIES.find((category) => category.id === id)).filter(
-    (category): category is (typeof CATEGORIES)[number] => Boolean(category)
-  )
-  const overflowTier1Categories = CATEGORIES.filter(
-    (category) => TIER1_IDS.includes(category.id) && !TIER1_ORDER.includes(category.id as (typeof TIER1_ORDER)[number])
-  )
-  const tier1Categories = [...orderedTier1Categories, ...overflowTier1Categories]
-  const tier2Categories = CATEGORIES.filter((category) => !TIER1_IDS.includes(category.id))
-
-  const createTier1OpenMap = (openId?: string) => {
-    const next: Record<string, boolean> = {}
-    tier1Categories.forEach((category) => {
-      next[category.id] = category.id === openId
-    })
-    return next
-  }
-
-  const createTier2OpenMap = (openId?: string) => {
-    const next: Record<string, boolean> = {}
-    tier2Categories.forEach((category) => {
-      next[category.id] = category.id === openId
-    })
-    return next
-  }
-
+  // V3_3-unique: close protocol selector also resets family accordion
   const closeProtocolSelector = () => {
     setProtocolSelectorContext(null)
     setOpenProtocolFamilies({})
   }
 
-  const closeEditorState = () => {
-    setEditingTarget(null)
-    setEditorAnchor(null)
-    setDraftEdit(null)
-    closeProtocolSelector()
-    setShowAdvancedEditor(false)
-    setShowDiscardConfirm(false)
-  }
-
-  const editingContext = useMemo<EditingContext | null>(() => {
-    if (!editingTarget) return null
-
-    const category = getCategory(editingTarget.categoryId)
-    if (!category) return null
-
-    const sub = category.subCategories.find((entry) => entry.id === editingTarget.subId)
-    if (!sub) return null
-
-    const rows = signalRows[category.id]?.[sub.id] || []
-    const rowIndex = rows.findIndex((row) => row.id === editingTarget.rowId)
-    if (rowIndex === -1) return null
-
-    return {
-      category,
-      sub,
-      row: rows[rowIndex],
-      rowIndex,
-    }
-  }, [editingTarget, signalRows])
-
-  const isDraftDirty = useMemo(() => {
-    if (!editingContext || !draftEdit) return false
-    if (draftEdit.quantity !== editingContext.row.quantity) return true
-
-    return editingContext.sub.fields.some((field) => {
-      const original = editingContext.row.specs[field.key] ?? ''
-      const draft = draftEdit.specs[field.key] ?? ''
-      return original !== draft
-    })
-  }, [draftEdit, editingContext])
-
-  useEffect(() => {
-    if (editingTarget && !editingContext) {
-      setEditingTarget(null)
-      setEditorAnchor(null)
-      setDraftEdit(null)
-      setProtocolSelectorContext(null)
-      setOpenProtocolFamilies({})
-      setShowAdvancedEditor(false)
-      setShowDiscardConfirm(false)
-    }
-  }, [editingContext, editingTarget])
-
-  useEffect(() => {
-    if (!editingTarget && !protocolSelectorContext) return
-
-    const previousOverflow = document.body.style.overflow
-    document.body.style.overflow = 'hidden'
-
-    return () => {
-      document.body.style.overflow = previousOverflow
-    }
-  }, [editingTarget, protocolSelectorContext])
-
-  useEffect(() => {
-    if (!onSummaryChange) return
-
-    const categoryTotals: Record<string, number> = {}
-    let rowCount = 0
-    let totalSignals = 0
-
-    CATEGORIES.forEach((category) => {
-      let categoryTotal = 0
-      category.subCategories.forEach((sub) => {
-        const rows = signalRows[category.id]?.[sub.id] || []
-        rows.forEach((row) => {
-          const quantity = Math.max(0, row.quantity || 0)
-          categoryTotal += quantity
-          totalSignals += quantity
-          if (quantity > 0) rowCount += 1
-        })
-      })
-      categoryTotals[category.label] = categoryTotal
-    })
-
-    onSummaryChange({
-      totalSignals,
-      rowCount,
-      categoryTotals,
-    })
-  }, [onSummaryChange, signalRows])
-
-  const addSignalRow = (categoryId: string, subId: string, presetSpecs?: Partial<SpecsRecord>) => {
-    const sub = getSubCategory(categoryId, subId)
-    if (!sub) return
-
-    const row: SignalRow = {
-      id: `${categoryId}-${subId}-${Date.now()}-${Math.random().toString(36).slice(2)}`,
-      quantity: 32,
-      specs: normalizeSpecsForSub(sub, {
-        ...sub.defaults,
-        ...(presetSpecs || {}),
-      }),
-    }
-
-    setSignalRows((prev) => ({
-      ...prev,
-      [categoryId]: {
-        ...prev[categoryId],
-        [subId]: [...prev[categoryId][subId], row],
-      },
-    }))
-
-    if (TIER1_IDS.includes(categoryId)) {
-      setIsAdditionalStepOpen(false)
-      setTier1Open((prev) => ({
-        ...prev,
-        [categoryId]: true,
-      }))
-      setTier2Open(createTier2OpenMap())
-    } else {
-      setIsAdditionalStepOpen(true)
-      setTier2Open(createTier2OpenMap(categoryId))
-      setTier1Open(createTier1OpenMap())
-    }
-  }
-
+  // V3_3 wrappers: also reset openProtocolFamilies
   const handleAddVariant = (categoryId: string, subId: string) => {
     if (categoryId === 'communication' && subId === 'protocols') {
       setProtocolSelectorContext({ mode: 'add' })
@@ -494,159 +173,6 @@ export default function ConfiguratorV3({ onSummaryChange }: ConfiguratorV2Props 
     updateDraftSpec('range', protocol)
     closeProtocolSelector()
   }
-
-  const openEditor = (
-    target: NonNullable<EditingTarget>,
-    anchor?: {
-      x: number
-      y: number
-      width: number
-      height: number
-    }
-  ) => {
-    const sub = getSubCategory(target.categoryId, target.subId)
-    if (!sub) return
-
-    const rows = signalRows[target.categoryId]?.[target.subId] || []
-    const row = rows.find((entry) => entry.id === target.rowId)
-    if (!row) return
-
-    setEditingTarget(target)
-    setEditorAnchor(anchor || null)
-    setDraftEdit({
-      quantity: row.quantity,
-      specs: normalizeSpecsForSub(sub, { ...row.specs }),
-    })
-    setShowAdvancedEditor(false)
-    setShowDiscardConfirm(false)
-  }
-
-  const removeSignalRow = (categoryId: string, subId: string, rowId: string) => {
-    const isEditedRowBeingRemoved =
-      editingTarget?.categoryId === categoryId && editingTarget?.subId === subId && editingTarget?.rowId === rowId
-
-    setSignalRows((prev) => ({
-      ...prev,
-      [categoryId]: {
-        ...prev[categoryId],
-        [subId]: prev[categoryId][subId].filter((row) => row.id !== rowId),
-      },
-    }))
-    setCustomChannelRows((prev) => {
-      if (!prev[rowId]) return prev
-      const next = { ...prev }
-      delete next[rowId]
-      return next
-    })
-
-    if (isEditedRowBeingRemoved) {
-      closeEditorState()
-    }
-  }
-
-  const updateDraftSpec = (fieldKey: FieldKey, value: string) => {
-    if (!editingTarget) return
-
-    const sub = getSubCategory(editingTarget.categoryId, editingTarget.subId)
-    if (!sub) return
-
-    setDraftEdit((prev) => {
-      if (!prev) return prev
-      return {
-        ...prev,
-        specs: normalizeSpecsForSub(sub, {
-          ...prev.specs,
-          [fieldKey]: value,
-        }),
-      }
-    })
-  }
-
-  const updateRowQuantity = (categoryId: string, subId: string, rowId: string, quantity: number) => {
-    const safeQuantity = Number.isFinite(quantity) ? Math.max(0, quantity) : 0
-
-    setSignalRows((prev) => ({
-      ...prev,
-      [categoryId]: {
-        ...prev[categoryId],
-        [subId]: prev[categoryId][subId].map((row) =>
-          row.id === rowId
-            ? {
-                ...row,
-                quantity: safeQuantity,
-              }
-            : row
-        ),
-      },
-    }))
-
-    if (
-      editingTarget &&
-      editingTarget.categoryId === categoryId &&
-      editingTarget.subId === subId &&
-      editingTarget.rowId === rowId
-    ) {
-      setDraftEdit((prev) => (prev ? { ...prev, quantity: safeQuantity } : prev))
-    }
-  }
-
-  const saveDraft = () => {
-    if (!editingTarget || !draftEdit) return
-
-    const sub = getSubCategory(editingTarget.categoryId, editingTarget.subId)
-    if (!sub) return
-
-    const quantity = Math.max(0, Number.isFinite(draftEdit.quantity) ? draftEdit.quantity : 0)
-    const specs = normalizeSpecsForSub(sub, { ...draftEdit.specs })
-
-    setSignalRows((prev) => ({
-      ...prev,
-      [editingTarget.categoryId]: {
-        ...prev[editingTarget.categoryId],
-        [editingTarget.subId]: prev[editingTarget.categoryId][editingTarget.subId].map((row) =>
-          row.id === editingTarget.rowId
-            ? {
-                ...row,
-                quantity,
-                specs,
-              }
-            : row
-        ),
-      },
-    }))
-
-    closeEditorState()
-  }
-
-  const requestCloseEditor = () => {
-    if (isDraftDirty) {
-      setShowDiscardConfirm(true)
-      return
-    }
-    closeEditorState()
-  }
-
-  const discardDraftAndClose = () => {
-    closeEditorState()
-  }
-
-  const getSubTotal = (categoryId: string, subId: string) => {
-    const rows = signalRows[categoryId]?.[subId] || []
-    return rows.reduce((total, row) => total + Math.max(0, row.quantity || 0), 0)
-  }
-
-  const getCategoryTotal = (categoryId: string) => {
-    const category = getCategory(categoryId)
-    if (!category) return 0
-
-    return category.subCategories.reduce((total, sub) => total + getSubTotal(categoryId, sub.id), 0)
-  }
-
-  const additionalTotalSignals = tier2Categories.reduce((total, category) => total + getCategoryTotal(category.id), 0)
-  const hasAnyAdditionalRows = tier2Categories.some((category) =>
-    category.subCategories.some((sub) => (signalRows[category.id]?.[sub.id] || []).length > 0)
-  )
-  const additionalCollapsedActionLabel = hasAnyAdditionalRows ? 'Show' : '+ Add'
 
   const renderDraftField = (sub: SubCategory, fieldKey: FieldKey) => {
     if (!draftEdit) return null
@@ -776,7 +302,7 @@ export default function ConfiguratorV3({ onSummaryChange }: ConfiguratorV2Props 
                       <div className="px-2 py-1.5">
                         {group.protocols.length > 0 ? (
                           <div className="space-y-1">
-                            {buildProtocolFamilyGroups(group.protocols).map((family) => {
+                            {buildProtocolFamilyGroupsLocal(group.protocols).map((family) => {
                               const familyKey = `${group.industry}:${family.label}`
                               const open = isFamilyOpen(group.industry, family.label, family.protocols)
 

@@ -5,7 +5,9 @@ import ConfiguratorV2 from '@/components/ConfiguratorV2'
 import ConfiguratorV3 from '@/components/ConfiguratorV3'
 import ConfiguratorV3_2 from '@/components/ConfiguratorV3_2'
 import ConfiguratorV3_3 from '@/components/ConfiguratorV3_3'
+import ProposalResultCard from '@/components/ProposalResultCard'
 import { CompactButton, CompactCard, CompactChip, CompactSectionLabel } from '@/components/ui/compact'
+import type { ProposalGenerateRequest, ProposalGenerateResponse, RequirementRow } from '@/components/configurator/proposalTypes'
 import { cn } from '@/lib/cn'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
@@ -74,6 +76,10 @@ export default function Home() {
   const [isV1SummaryHovered, setIsV1SummaryHovered] = useState(false)
   const [selectedMachineId, setSelectedMachineId] = useState<string>(MACHINE_OPTIONS[0].id)
   const [configuratorSummary, setConfiguratorSummary] = useState<ConfiguratorSummary>(EMPTY_SUMMARY)
+  const [requirementsRows, setRequirementsRows] = useState<RequirementRow[]>([])
+  const [proposalStatus, setProposalStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
+  const [proposalResult, setProposalResult] = useState<ProposalGenerateResponse | null>(null)
+  const [proposalError, setProposalError] = useState<string | null>(null)
 
   const selectedMachine = MACHINE_OPTIONS.find((m) => m.id === selectedMachineId) ?? MACHINE_OPTIONS[0]
   const activeCategories = Object.entries(configuratorSummary.categoryTotals).filter(([, total]) => total > 0)
@@ -96,12 +102,101 @@ export default function Home() {
   const missingItems: string[] = []
   if (!hasMinimumInputs) missingItems.push('Add at least one I/O variant')
   const canGenerateProposal = missingItems.length === 0
+  const isGenerating = proposalStatus === 'loading'
+  const generateButtonLabel = isGenerating ? 'Generating proposal...' : 'Generate System Proposal'
+
+  const resetProposalState = () => {
+    setRequirementsRows([])
+    setProposalStatus('idle')
+    setProposalResult(null)
+    setProposalError(null)
+  }
+
   const handleVersionChange = (nextVersion: 'v1' | 'v2' | 'v3' | 'v3_2' | 'v3_3') => {
     if (nextVersion === activeVersion) return
     setConfiguratorSummary(EMPTY_SUMMARY)
+    resetProposalState()
     setIsV1SummaryHovered(false)
     setActiveVersion(nextVersion)
   }
+
+  const handleMachineSelect = (machineId: string) => {
+    if (machineId === selectedMachineId) return
+    setSelectedMachineId(machineId)
+    setProposalStatus('idle')
+    setProposalResult(null)
+    setProposalError(null)
+  }
+
+  const handleRequirementsChange = (payload: { rows: RequirementRow[] }) => {
+    setRequirementsRows(payload.rows)
+    if (proposalStatus !== 'idle') {
+      setProposalStatus('idle')
+      setProposalResult(null)
+      setProposalError(null)
+    }
+  }
+
+  const handleGenerateProposal = async () => {
+    if (!canGenerateProposal || isGenerating) return
+    if (requirementsRows.length === 0) {
+      setProposalStatus('error')
+      setProposalResult(null)
+      setProposalError('No configured I/O rows were found. Add at least one row and try again.')
+      return
+    }
+
+    const payload: ProposalGenerateRequest = {
+      machineId: selectedMachine.id,
+      machineName: selectedMachine.name,
+      version: activeVersion,
+      requirements: requirementsRows,
+    }
+
+    setProposalStatus('loading')
+    setProposalResult(null)
+    setProposalError(null)
+
+    try {
+      const response = await fetch('/api/proposal/generate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      })
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(typeof data?.error === 'string' ? data.error : 'Failed to generate proposal.')
+      }
+
+      setProposalResult(data as ProposalGenerateResponse)
+      setProposalStatus('success')
+    } catch (error) {
+      setProposalStatus('error')
+      setProposalResult(null)
+      setProposalError(error instanceof Error ? error.message : 'Failed to generate proposal.')
+    }
+  }
+
+  const renderGenerateButton = (className: string) => (
+    <CompactButton
+      type="button"
+      onClick={handleGenerateProposal}
+      disabled={!canGenerateProposal || isGenerating}
+      variant={canGenerateProposal && !isGenerating ? 'primary' : 'secondary'}
+      className={cn(className, (!canGenerateProposal || isGenerating) && 'text-slate-400')}
+    >
+      {isGenerating && (
+        <svg className="mr-1.5 h-3.5 w-3.5 animate-spin" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="12" r="9" stroke="currentColor" strokeOpacity="0.25" strokeWidth="2" />
+          <path d="M21 12a9 9 0 00-9-9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+        </svg>
+      )}
+      {generateButtonLabel}
+    </CompactButton>
+  )
 
   const renderSummaryStrip = () => (
     <CompactCard className="space-y-2 p-[var(--ui-pad-2)]">
@@ -114,14 +209,7 @@ export default function Home() {
           <p className="text-xs font-semibold text-slate-700">{inferredSystemClass}</p>
         </div>
 
-        <CompactButton
-          type="button"
-          disabled={!canGenerateProposal}
-          variant={canGenerateProposal ? 'primary' : 'secondary'}
-          className={cn('w-full sm:w-auto', !canGenerateProposal && 'text-slate-400')}
-        >
-          Generate System Proposal
-        </CompactButton>
+        {renderGenerateButton('w-full sm:w-auto')}
       </div>
 
       <div className="flex flex-wrap gap-[var(--ui-gap-1)]">
@@ -174,14 +262,7 @@ export default function Home() {
         </div>
       )}
 
-      <CompactButton
-        type="button"
-        disabled={!canGenerateProposal}
-        variant={canGenerateProposal ? 'primary' : 'secondary'}
-        className={cn('w-full', !canGenerateProposal && 'text-slate-400')}
-      >
-        Generate System Proposal
-      </CompactButton>
+      {renderGenerateButton('w-full')}
     </CompactCard>
   )
 
@@ -233,14 +314,7 @@ export default function Home() {
         </div>
       </div>
 
-      <CompactButton
-        type="button"
-        disabled={!canGenerateProposal}
-        variant={canGenerateProposal ? 'primary' : 'secondary'}
-        className={cn('w-full', !canGenerateProposal && 'text-slate-400')}
-      >
-        Generate System Proposal
-      </CompactButton>
+      {renderGenerateButton('w-full')}
     </>
   )
 
@@ -294,14 +368,7 @@ export default function Home() {
               </div>
             )}
 
-            <CompactButton
-              type="button"
-              disabled={!canGenerateProposal}
-              variant={canGenerateProposal ? 'primary' : 'secondary'}
-              className={cn('w-full', !canGenerateProposal && 'text-slate-400')}
-            >
-              Generate System Proposal
-            </CompactButton>
+            {renderGenerateButton('w-full')}
           </div>
         </div>
 
@@ -500,7 +567,7 @@ export default function Home() {
                         <button
                           key={machine.id}
                           type="button"
-                          onClick={() => setSelectedMachineId(machine.id)}
+                          onClick={() => handleMachineSelect(machine.id)}
                           className={cn(
                             'rounded-[var(--ui-radius-md)] border p-[var(--ui-pad-2)] text-left transition',
                             isActive
@@ -569,34 +636,67 @@ export default function Home() {
 
                 {activeVersion === 'v1' ? (
                   <div className="relative">
-                    <ConfiguratorV1 key="v1" onSummaryChange={setConfiguratorSummary} />
+                    <ConfiguratorV1
+                      key="v1"
+                      onSummaryChange={setConfiguratorSummary}
+                      onRequirementsChange={handleRequirementsChange}
+                    />
                     {renderV1HoverSummaryOverlay()}
                     <div className="mt-3 min-[1200px]:hidden">{renderSummaryStrip()}</div>
                   </div>
                 ) : activeVersion === 'v2' ? (
                   <div className="grid grid-cols-1 gap-3 min-[1200px]:grid-cols-[minmax(0,1.65fr)_minmax(280px,1fr)] min-[1200px]:items-start">
-                    <ConfiguratorV2 key="v2" onSummaryChange={setConfiguratorSummary} />
+                    <ConfiguratorV2
+                      key="v2"
+                      onSummaryChange={setConfiguratorSummary}
+                      onRequirementsChange={handleRequirementsChange}
+                    />
                     <div className="hidden min-[1200px]:block">{renderV2OverviewPanel()}</div>
                     <div className="min-[1200px]:hidden">{renderSummaryStrip()}</div>
                   </div>
                 ) : activeVersion === 'v3' ? (
                   <div className="grid grid-cols-1 gap-3 min-[1200px]:grid-cols-[minmax(0,1fr)_280px] min-[1200px]:items-start">
-                    <ConfiguratorV3 key="v3" onSummaryChange={setConfiguratorSummary} />
+                    <ConfiguratorV3
+                      key="v3"
+                      onSummaryChange={setConfiguratorSummary}
+                      onRequirementsChange={handleRequirementsChange}
+                    />
                     <div className="hidden min-[1200px]:block">{renderV3OverviewPanel()}</div>
                     <div className="min-[1200px]:hidden">{renderV3SummaryStrip()}</div>
                   </div>
                 ) : activeVersion === 'v3_2' ? (
                   <div className="grid grid-cols-1 gap-3 min-[1200px]:grid-cols-[minmax(0,1fr)_280px] min-[1200px]:items-start">
-                    <ConfiguratorV3_2 key="v3_2" onSummaryChange={setConfiguratorSummary} />
+                    <ConfiguratorV3_2
+                      key="v3_2"
+                      onSummaryChange={setConfiguratorSummary}
+                      onRequirementsChange={handleRequirementsChange}
+                    />
                     <div className="hidden min-[1200px]:block">{renderV3OverviewPanel()}</div>
                     <div className="min-[1200px]:hidden">{renderV3SummaryStrip()}</div>
                   </div>
                 ) : (
                   <div className="grid grid-cols-1 gap-3 min-[1200px]:grid-cols-[minmax(0,1fr)_280px] min-[1200px]:items-start">
-                    <ConfiguratorV3_3 key="v3_3" onSummaryChange={setConfiguratorSummary} />
+                    <ConfiguratorV3_3
+                      key="v3_3"
+                      onSummaryChange={setConfiguratorSummary}
+                      onRequirementsChange={handleRequirementsChange}
+                    />
                     <div className="hidden min-[1200px]:block">{renderV3OverviewPanel()}</div>
                     <div className="min-[1200px]:hidden">{renderV3SummaryStrip()}</div>
                   </div>
+                )}
+
+                {proposalStatus === 'error' && proposalError && (
+                  <CompactCard className="space-y-2 border border-rose-200 bg-rose-50 p-[var(--ui-pad-2)]">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <p className="text-xs font-semibold text-rose-700">{proposalError}</p>
+                      {renderGenerateButton('w-full sm:w-auto')}
+                    </div>
+                  </CompactCard>
+                )}
+
+                {proposalStatus === 'success' && proposalResult && (
+                  <ProposalResultCard proposal={proposalResult} machineName={selectedMachine.name} />
                 )}
               </div>
             </div>
