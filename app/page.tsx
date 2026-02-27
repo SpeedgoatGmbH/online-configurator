@@ -13,48 +13,51 @@ import { cn } from '@/lib/cn'
 import Image from 'next/image'
 import { useCallback, useEffect, useState } from 'react'
 
+/** basePath injected at build time for GitHub Pages sub-path deploys */
+const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH || ''
+
 const MACHINE_OPTIONS = [
   {
     id: 'performance',
     name: 'Performance',
     keywords: 'High performance • Maximum expansion',
     blurb: 'For office and lab use.',
-    image: '/assets/machine-performance.png',
+    image: `${BASE_PATH}/assets/machine-performance.png`,
   },
   {
     id: 'pulse',
     name: 'Pulse',
     keywords: 'Scalable desktop • Controller testing',
     blurb: 'Control design and validation.',
-    image: '/assets/machine-pulse.png',
+    image: `${BASE_PATH}/assets/machine-pulse.png`,
   },
   {
     id: 'mobile',
     name: 'Mobile',
     keywords: 'Rugged • Field testing',
     blurb: 'Withstands shock and vibration.',
-    image: '/assets/machine-mobile.png',
+    image: `${BASE_PATH}/assets/machine-mobile.png`,
   },
   {
     id: 'baseline',
     name: 'Baseline',
     keywords: 'Entry level • Compact',
     blurb: 'For office to in-vehicle use.',
-    image: '/assets/machine-baseline.png',
+    image: `${BASE_PATH}/assets/machine-baseline.png`,
   },
   {
     id: 'unit',
     name: 'Unit',
     keywords: 'Small form factor • Flexible',
     blurb: 'For field and confined spaces.',
-    image: '/assets/machine-unit.png',
+    image: `${BASE_PATH}/assets/machine-unit.png`,
   },
   {
     id: 'rack',
     name: 'Tailored Rack-System',
     keywords: 'Modular rack • Customizable',
     blurb: 'Built for advanced setups.',
-    image: '/assets/machine-rack.svg',
+    image: `${BASE_PATH}/assets/machine-rack.svg`,
   },
 ]
 
