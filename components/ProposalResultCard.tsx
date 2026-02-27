@@ -1,7 +1,9 @@
 'use client'
 
-import { CompactCard, CompactChip, CompactSectionLabel } from '@/components/ui/compact'
+import { CompactCard, CompactChip } from '@/components/ui/compact'
 import type { ProposalGenerateResponse } from '@/components/configurator/proposalTypes'
+import { cn } from '@/lib/cn'
+import { useEffect, useState } from 'react'
 
 type ProposalResultCardProps = {
   proposal: ProposalGenerateResponse
@@ -9,166 +11,163 @@ type ProposalResultCardProps = {
 }
 
 export default function ProposalResultCard({ proposal, machineName }: ProposalResultCardProps) {
-  const generatedLabel = new Date(proposal.generatedAt).toLocaleString()
+  const [flashActive, setFlashActive] = useState(true)
+
+  // Brief green flash on mount, then fade out
+  useEffect(() => {
+    const timer = setTimeout(() => setFlashActive(false), 1200)
+    return () => clearTimeout(timer)
+  }, [])
+
+  const allOk = proposal.unresolved.length === 0
+  const coverPct = proposal.summary.requestedChannels > 0
+    ? Math.round((proposal.summary.coveredChannels / proposal.summary.requestedChannels) * 100)
+    : 0
 
   return (
-    <CompactCard className="space-y-3 p-[var(--ui-pad-3)]">
-      <div className="flex flex-wrap items-start justify-between gap-2">
-        <div>
-          <CompactSectionLabel>Generated Proposal (Simulated)</CompactSectionLabel>
-          <p className="mt-0.5 text-sm font-semibold text-slate-900">{machineName}</p>
-          <p className="text-xs text-slate-500">
-            Proposal ID: {proposal.proposalId} · {generatedLabel}
-          </p>
+    <CompactCard
+      className={cn(
+        'space-y-2 p-[var(--ui-pad-2)] transition-all duration-700',
+        flashActive && allOk && 'ring-2 ring-green-400/80 shadow-[0_0_12px_rgba(34,197,94,0.25)]',
+        flashActive && !allOk && 'ring-2 ring-amber-400/80 shadow-[0_0_12px_rgba(245,158,11,0.25)]',
+      )}
+    >
+      {/* Compact header row */}
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+        <div className={cn(
+          'flex items-center gap-1.5 rounded-full px-2 py-0.5 text-xs font-semibold',
+          allOk ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700',
+        )}>
+          {allOk ? '✓' : '⚠'} {allOk ? 'Proposal Ready' : 'Review Needed'}
         </div>
-        <div className="flex flex-wrap gap-1">
-          <CompactChip>
-            Requested: <span className="font-semibold text-slate-900">{proposal.summary.requestedChannels}</span>
-          </CompactChip>
-          <CompactChip>
-            Covered: <span className="font-semibold text-slate-900">{proposal.summary.coveredChannels}</span>
-          </CompactChip>
-          <CompactChip>
-            Unresolved: <span className="font-semibold text-slate-900">{proposal.summary.unresolvedCount}</span>
-          </CompactChip>
-          <CompactChip>
-            Modules: <span className="font-semibold text-slate-900">{proposal.summary.moduleCount}</span>
-          </CompactChip>
+        <span className="text-sm font-semibold text-slate-900">{machineName}</span>
+        <span className="text-[11px] text-slate-400">{proposal.proposalId}</span>
+        <div className="ml-auto flex flex-wrap gap-1">
+          <CompactChip>{coverPct}% covered</CompactChip>
+          <CompactChip>{proposal.summary.moduleCount} modules</CompactChip>
+          {proposal.summary.unresolvedCount > 0 && (
+            <CompactChip>{proposal.summary.unresolvedCount} unresolved</CompactChip>
+          )}
         </div>
       </div>
 
-      <div className="space-y-2">
-        <p className="text-xs font-semibold uppercase tracking-wide text-slate-600">Recommended modules</p>
-        {proposal.recommendedModules.length === 0 ? (
-          <p className="text-xs text-slate-500">No modules could be matched.</p>
-        ) : (
-          <div className="space-y-1.5">
-            {proposal.recommendedModules.map((module) => {
-              const relatedDiffs = proposal.rowDiffs.filter((d) =>
-                module.coveredRows.includes(d.rowId)
-              )
-              // Derive visual status from actual spec diffs (not confidence %)
-              const allSpecDiffs = relatedDiffs.flatMap((d) => d.specDiffs)
-              const partialCount = allSpecDiffs.filter((s) => s.status === 'partial').length
-              const unresolvedCount = allSpecDiffs.filter((s) => s.status === 'unresolved').length
-              const hasIssues = partialCount > 0 || unresolvedCount > 0
+      {/* Recommended modules — collapsed by default */}
+      {proposal.recommendedModules.length === 0 ? (
+        <p className="text-xs text-slate-500">No modules could be matched.</p>
+      ) : (
+        <div className="space-y-1">
+          {proposal.recommendedModules.map((module) => {
+            const relatedDiffs = proposal.rowDiffs.filter((d) =>
+              module.coveredRows.includes(d.rowId)
+            )
+            const allSpecDiffs = relatedDiffs.flatMap((d) => d.specDiffs)
+            const partialCount = allSpecDiffs.filter((s) => s.status === 'partial').length
+            const unresolvedCount = allSpecDiffs.filter((s) => s.status === 'unresolved').length
+            const hasIssues = partialCount > 0 || unresolvedCount > 0
 
-              const borderColor = unresolvedCount > 0
-                ? 'border-l-red-400'
-                : partialCount > 0
-                ? 'border-l-amber-400'
-                : 'border-l-green-400'
+            const borderColor = unresolvedCount > 0
+              ? 'border-l-red-400'
+              : partialCount > 0
+              ? 'border-l-amber-400'
+              : 'border-l-green-400'
 
-              const statusIcon = unresolvedCount > 0 ? '⚠' : partialCount > 0 ? '◐' : '✓'
-              const statusLabel = unresolvedCount > 0
-                ? `${unresolvedCount} spec${unresolvedCount > 1 ? 's' : ''} not covered`
-                : partialCount > 0
-                ? `${partialCount} spec${partialCount > 1 ? 's' : ''} differ — review`
-                : 'All specs match'
-              const statusColor = unresolvedCount > 0
-                ? 'text-red-600'
-                : partialCount > 0
-                ? 'text-amber-600'
-                : 'text-green-600'
+            const statusIcon = unresolvedCount > 0 ? '⚠' : partialCount > 0 ? '◐' : '✓'
+            const statusLabel = unresolvedCount > 0
+              ? `${unresolvedCount} unresolved`
+              : partialCount > 0
+              ? `${partialCount} partial`
+              : 'OK'
+            const statusColor = unresolvedCount > 0
+              ? 'text-red-600'
+              : partialCount > 0
+              ? 'text-amber-600'
+              : 'text-green-600'
 
-              return (
-                <details key={module.moduleId} className={`group rounded-[var(--ui-radius-sm)] border border-slate-200 border-l-[3px] ${borderColor} bg-white`}>
-                  <summary className="flex cursor-pointer list-none items-center gap-3 px-3 py-2 select-none [&::-webkit-details-marker]:hidden">
-                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-slate-100 text-xs font-bold text-slate-700">
-                      {module.quantity}×
-                    </span>
-                    <div className="min-w-0 flex-1">
-                      <p className="text-sm font-semibold text-slate-900">
-                        {module.moduleId}{' '}
-                        <span className="font-normal text-slate-500">— {module.friendlyName}</span>
-                      </p>
-                      <p className="text-[11px] text-slate-500">
-                        {module.coveredChannels} ch covered
-                      </p>
-                    </div>
-                    <span className={`shrink-0 text-[11px] font-medium ${statusColor}`}>
-                      {statusIcon} {statusLabel}
-                    </span>
-                    <svg className="h-3.5 w-3.5 shrink-0 text-slate-400 transition-transform group-open:rotate-90" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clipRule="evenodd"/></svg>
-                  </summary>
-                  {relatedDiffs.length > 0 && (
-                    <div className="space-y-2 border-t border-slate-100 px-3 pb-2.5 pt-2">
-                      {hasIssues && (
-                        <p className="text-[11px] text-slate-500">
-                          {module.rationale}
+            return (
+              <details key={module.moduleId} className={`group rounded-[var(--ui-radius-sm)] border border-slate-200 border-l-[3px] ${borderColor} bg-white`}>
+                <summary className="flex cursor-pointer list-none items-center gap-2 px-2.5 py-1.5 select-none [&::-webkit-details-marker]:hidden">
+                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-slate-100 text-[10px] font-bold text-slate-700">
+                    {module.quantity}×
+                  </span>
+                  <p className="min-w-0 flex-1 truncate text-xs font-semibold text-slate-900">
+                    {module.moduleId}
+                    <span className="ml-1 font-normal text-slate-500">{module.friendlyName}</span>
+                  </p>
+                  <span className={`shrink-0 text-[10px] font-medium ${statusColor}`}>
+                    {statusIcon} {statusLabel}
+                  </span>
+                  <svg className="h-3 w-3 shrink-0 text-slate-400 transition-transform group-open:rotate-90" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clipRule="evenodd"/></svg>
+                </summary>
+                {relatedDiffs.length > 0 && (
+                  <div className="space-y-2 border-t border-slate-100 px-2.5 pb-2 pt-1.5">
+                    {hasIssues && (
+                      <p className="text-[11px] text-slate-500">{module.rationale}</p>
+                    )}
+                    {relatedDiffs.map((row) => (
+                      <div key={row.rowId}>
+                        <p className="mb-0.5 text-[11px] font-semibold text-slate-700">
+                          {row.categoryLabel} / {row.subLabel} · {row.quantityRequested} ch
                         </p>
-                      )}
-                      {relatedDiffs.map((row) => (
-                        <div key={row.rowId}>
-                          <div className="mb-1 flex items-center gap-2">
-                            <p className="text-[11px] font-semibold text-slate-700">
-                              {row.categoryLabel} / {row.subLabel} · {row.quantityRequested} ch
-                            </p>
-                          </div>
-                          <div className="overflow-hidden rounded border border-slate-200">
-                            <table className="w-full border-collapse text-[11px]">
-                              <thead className="bg-slate-50">
-                                <tr>
-                                  <th className="px-2 py-1 text-left font-semibold text-slate-500">Spec</th>
-                                  <th className="px-2 py-1 text-left font-semibold text-slate-500">Requested</th>
-                                  <th className="px-2 py-1 text-left font-semibold text-slate-500">Provided</th>
-                                  <th className="w-6 px-2 py-1"></th>
+                        <div className="overflow-hidden rounded border border-slate-200">
+                          <table className="w-full border-collapse text-[11px]">
+                            <thead className="bg-slate-50">
+                              <tr>
+                                <th className="px-2 py-0.5 text-left font-semibold text-slate-500">Spec</th>
+                                <th className="px-2 py-0.5 text-left font-semibold text-slate-500">Req</th>
+                                <th className="px-2 py-0.5 text-left font-semibold text-slate-500">Prov</th>
+                                <th className="w-5 px-1 py-0.5"></th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {row.specDiffs.map((diff, i) => (
+                                <tr
+                                  key={`${row.rowId}-${diff.key}-${i}`}
+                                  className={`border-t ${
+                                    diff.status === 'unresolved'
+                                      ? 'border-red-100 bg-red-50/50'
+                                      : diff.status === 'partial'
+                                      ? 'border-amber-100 bg-amber-50/50'
+                                      : 'border-slate-100'
+                                  }`}
+                                >
+                                  <td className="px-2 py-0.5 font-medium text-slate-700">{diff.key}</td>
+                                  <td className="px-2 py-0.5 text-slate-600">{diff.requested}</td>
+                                  <td className={`px-2 py-0.5 ${
+                                    diff.status === 'exact' ? 'text-slate-600' : diff.status === 'partial' ? 'font-medium text-amber-700' : 'font-medium text-red-700'
+                                  }`}>{diff.provided}</td>
+                                  <td className="px-1 py-0.5 text-center">
+                                    {diff.status === 'exact' ? (
+                                      <span className="text-green-500">✓</span>
+                                    ) : diff.status === 'partial' ? (
+                                      <span className="text-amber-500">≈</span>
+                                    ) : (
+                                      <span className="text-red-500">✗</span>
+                                    )}
+                                  </td>
                                 </tr>
-                              </thead>
-                              <tbody>
-                                {row.specDiffs.map((diff, i) => (
-                                  <tr
-                                    key={`${row.rowId}-${diff.key}-${i}`}
-                                    className={`border-t ${
-                                      diff.status === 'unresolved'
-                                        ? 'border-red-100 bg-red-50/50'
-                                        : diff.status === 'partial'
-                                        ? 'border-amber-100 bg-amber-50/50'
-                                        : 'border-slate-100'
-                                    }`}
-                                  >
-                                    <td className="px-2 py-1 font-medium text-slate-700">{diff.key}</td>
-                                    <td className="px-2 py-1 text-slate-600">{diff.requested}</td>
-                                    <td className={`px-2 py-1 ${
-                                      diff.status === 'exact' ? 'text-slate-600' : diff.status === 'partial' ? 'font-medium text-amber-700' : 'font-medium text-red-700'
-                                    }`}>{diff.provided}</td>
-                                    <td className="px-2 py-1 text-center">
-                                      {diff.status === 'exact' ? (
-                                        <span className="text-green-500">✓</span>
-                                      ) : diff.status === 'partial' ? (
-                                        <span className="text-amber-500" title="Approximate match">≈</span>
-                                      ) : (
-                                        <span className="text-red-500" title="Not covered">✗</span>
-                                      )}
-                                    </td>
-                                  </tr>
-                                ))}
-                              </tbody>
-                            </table>
-                          </div>
-                          {row.notes.length > 0 && <p className="mt-1 text-[10px] text-slate-500">{row.notes.join(' ')}</p>}
+                              ))}
+                            </tbody>
+                          </table>
                         </div>
-                      ))}
-                    </div>
-                  )}
-                </details>
-              )
-            })}
-          </div>
-        )}
-      </div>
+                        {row.notes.length > 0 && <p className="mt-0.5 text-[10px] text-slate-500">{row.notes.join(' ')}</p>}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </details>
+            )
+          })}
+        </div>
+      )}
 
+      {/* Unresolved rows — compact */}
       {proposal.unresolved.length > 0 && (
-        <div className="space-y-1 rounded-[var(--ui-radius-sm)] border border-amber-200 bg-amber-50 p-2">
-          <p className="text-xs font-semibold uppercase tracking-wide text-amber-800">Unresolved rows</p>
+        <div className="space-y-0.5 rounded-[var(--ui-radius-sm)] border border-amber-200 bg-amber-50 px-2 py-1.5">
+          <p className="text-[11px] font-semibold uppercase tracking-wide text-amber-800">Unresolved</p>
           {proposal.unresolved.map((item) => (
-            <div key={item.rowId} className="text-xs text-amber-800">
-              <p className="font-semibold">
-                {item.categoryLabel} / {item.subLabel} ({item.quantity} ch)
-              </p>
-              <p>{item.reason}</p>
-              <p className="text-amber-700">{item.suggestion}</p>
-            </div>
+            <p key={item.rowId} className="text-[11px] text-amber-800">
+              <span className="font-semibold">{item.categoryLabel} / {item.subLabel}</span> ({item.quantity} ch) — {item.reason}
+            </p>
           ))}
         </div>
       )}

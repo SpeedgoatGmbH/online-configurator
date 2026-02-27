@@ -107,7 +107,12 @@ export default function Home() {
   if (!hasMinimumInputs) missingItems.push('Add at least one I/O variant')
   const canGenerateProposal = missingItems.length === 0
   const isGenerating = proposalStatus === 'loading'
-  const generateButtonLabel = isGenerating ? 'Generating proposal...' : 'Generate System Proposal'
+  const isSuccess = proposalStatus === 'success'
+  const generateButtonLabel = isGenerating
+    ? 'Generating...'
+    : isSuccess
+    ? '✓ Proposal Generated'
+    : 'Generate System Proposal'
 
   const resetProposalState = () => {
     setRequirementsRows([])
@@ -181,7 +186,12 @@ export default function Home() {
       onClick={handleGenerateProposal}
       disabled={!canGenerateProposal || isGenerating}
       variant={canGenerateProposal && !isGenerating ? 'primary' : 'secondary'}
-      className={cn(className, (!canGenerateProposal || isGenerating) && 'text-slate-400')}
+      className={cn(
+        className,
+        'transition-colors duration-500',
+        (!canGenerateProposal || isGenerating) && 'text-slate-400',
+        isSuccess && '!bg-green-600 !border-green-600 !text-white hover:!bg-green-700',
+      )}
     >
       {isGenerating && (
         <svg className="mr-1.5 h-3.5 w-3.5 animate-spin" viewBox="0 0 24 24" fill="none" aria-hidden="true">
