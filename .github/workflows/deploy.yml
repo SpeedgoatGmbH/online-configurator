@@ -35,13 +35,14 @@ jobs:
 
       - name: Build static export
         env:
-          # Set to your repo name for GitHub Pages sub-path, e.g. /product_configurator
-          # Leave empty if using a custom domain
-          PAGES_BASE_PATH: /${{ github.event.repository.name }}
+          # Using custom domain — no sub-path needed
+          PAGES_BASE_PATH: ""
         run: npm run build
 
-      - name: Add .nojekyll
-        run: touch out/.nojekyll
+      - name: Add .nojekyll and CNAME
+        run: |
+          touch out/.nojekyll
+          echo "configurator.speedgoat.com" > out/CNAME
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
