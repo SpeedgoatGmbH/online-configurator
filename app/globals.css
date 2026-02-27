@@ -32,6 +32,23 @@ a {
   --text-sub: #525866;
   --stroke-soft: #e1e4ea;
   --surface-gray: #f5f7fa;
+
+  /* Compact ultra-dense UI tokens */
+  --ui-radius-sm: 6px;
+  --ui-radius-md: 8px;
+  --ui-radius-lg: 12px;
+  --ui-gap-1: 4px;
+  --ui-gap-2: 8px;
+  --ui-gap-3: 12px;
+  --ui-pad-1: 6px;
+  --ui-pad-2: 10px;
+  --ui-pad-3: 14px;
+  --ui-control-h: 34px;
+  --ui-font-xs: 12px;
+  --ui-font-sm: 13px;
+  --ui-border: #e1e4ea;
+  --ui-surface: #ffffff;
+  --ui-surface-subtle: #f5f7fa;
 }
 
 body {

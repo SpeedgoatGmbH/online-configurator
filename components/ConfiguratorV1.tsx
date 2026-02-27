@@ -227,7 +227,7 @@ type ConfiguratorV2Props = ConfiguratorProps & {
   onSummaryChange?: (summary: ConfiguratorV2Summary) => void
 }
 
-export default function ConfiguratorV2({ onSummaryChange }: ConfiguratorV2Props = {}) {
+export default function ConfiguratorV1({ onSummaryChange }: ConfiguratorV2Props = {}) {
   const [signalRows, setSignalRows] = useState<Record<string, Record<string, SignalRow[]>>>(() => buildInitialSignalRows())
   const [editingTarget, setEditingTarget] = useState<EditingTarget>(null)
   const [draftEdit, setDraftEdit] = useState<DraftEdit>(null)
@@ -769,7 +769,11 @@ export default function ConfiguratorV2({ onSummaryChange }: ConfiguratorV2Props 
     const totalSignals = getCategoryTotal(category.id)
 
     return (
-      <CompactCard key={category.id} variant="default" className="self-start p-[var(--ui-pad-2)]">
+      <CompactCard
+        key={category.id}
+        variant="default"
+        className={cn('self-start p-[var(--ui-pad-2)]', category.id === 'communication' && 'min-[1200px]:col-span-2')}
+      >
         <button
           type="button"
           onClick={() => {
@@ -886,7 +890,7 @@ export default function ConfiguratorV2({ onSummaryChange }: ConfiguratorV2Props 
             <p className="mt-1 text-xs text-slate-500">Required. Add at least one core I/O variant to continue.</p>
           </div>
 
-          <div className="grid grid-cols-1 gap-3">
+          <div className="grid grid-cols-1 gap-3 min-[1200px]:grid-cols-2 min-[1200px]:items-start">
             {tier1Categories.map((category) => renderTier1Category(category))}
           </div>
 
@@ -903,3 +907,4 @@ export default function ConfiguratorV2({ onSummaryChange }: ConfiguratorV2Props 
     </>
   )
 }
+
