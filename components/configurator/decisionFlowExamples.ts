@@ -28,6 +28,8 @@ export interface FlowExample {
   hasFpgaBranch: boolean
   /** Per-node snapshot facts displayed during animation */
   nodeSnapshots: NodeSnapshot[]
+  /** 5 plain-English facts for the Overview mode (one per stage) */
+  overviewFacts: [string, string, string, string, string]
 }
 
 // ─── Examples ───────────────────────────────────────────────────────────────────
@@ -63,6 +65,13 @@ export const FLOW_EXAMPLES: FlowExample[] = [
       { nodeId: 'compat_check', fact: 'All modules compatible with Performance machine' },
       { nodeId: 'output', fact: '8 rows resolved, 0 unresolved · avg confidence 82%' },
     ],
+    overviewFacts: [
+      '8 requirements: CAN FD, LIN, FlexRay, SENT, analog I/O, digital I/O, encoders',
+      'Matched 6 module types from the 120+ module catalog',
+      'IO334 encoder + digital share one FPGA → 1 board instead of 3',
+      'Fits in Performance machine (8 of 7 base slots → expansion chassis)',
+      '82% avg confidence · all 8 rows resolved',
+    ],
   },
   {
     id: 'aerospace',
@@ -91,6 +100,47 @@ export const FLOW_EXAMPLES: FlowExample[] = [
       { nodeId: 'slot_check', fact: '5 modules · Performance (7 base / 42 expanded): OK' },
       { nodeId: 'compat_check', fact: 'IO629 limited to Performance/Pulse only → warning if Mobile' },
       { nodeId: 'output', fact: '6 rows resolved, 0 unresolved · avg confidence 88%' },
+    ],
+    overviewFacts: [
+      '6 requirements: ARINC 429/629, MIL-STD-1553, analog, digital, RS-422',
+      'Matched 5 module types from catalog',
+      'No FPGA modules needed → optimization step skipped',
+      'Fits in Performance machine (5 of 7 base slots)',
+      '88% avg confidence · all 6 rows resolved',
+    ],
+  },
+  {
+    id: 'fpga_consolidation',
+    label: 'Mixed-Signal with Encoders',
+    icon: '⚡',
+    description: '4 requirement rows · encoder + digital on IO334 FPGA → board consolidation saves slots',
+    hasFpgaBranch: true,
+    requirements: [
+      { categoryId: 'motion', subId: 'encoder', quantity: 8, specs: { range: 'Incremental', speed: '100 kHz', resolution: '16-bit' } },
+      { categoryId: 'digital', subId: 'inputs', quantity: 64, specs: { signalType: 'TTL / Discrete', range: '5 V TTL', resolution: 'None' } },
+      { categoryId: 'analog', subId: 'inputs', quantity: 16, specs: { inputMode: 'Differential', signalType: 'Voltage', signalRange: '±10 V', resolution: '16-bit', speed: '100 kHz' } },
+      { categoryId: 'communication', subId: 'protocols', quantity: 2, specs: { range: 'CAN FD', resolution: 'HS CAN FD', speed: '5 Mbit/s' } },
+    ],
+    nodeSnapshots: [
+      { nodeId: 'input', fact: '4 requirement rows → RequirementRow[]' },
+      { nodeId: 'normalize', fact: 'Sorted: analog (1) → comm (1) → digital (1) → motion (1)' },
+      { nodeId: 'catalog_filter', fact: 'Encoder row: 90+ modules → 3 candidates (IO334, IO397)' },
+      { nodeId: 'score', fact: 'IO334: exact×12=24 + consolidation=10 → score 34' },
+      { nodeId: 'pick_best', fact: 'IO334 wins for encoder (1 unit). IO397 fallback (score 22)' },
+      { nodeId: 'accumulate', fact: '4 unique modules accumulated (IO334, IO101, IO611)' },
+      { nodeId: 'fpga_detect', fact: 'IO334 (encoder + digital) → fpgaFamily: IO334' },
+      { nodeId: 'fpga_consolidate', fact: 'Before: 3 boards (1 enc + 2 dig) → After: 1 board (⌈72/96⌉ = 1)' },
+      { nodeId: 'fpga_interface', fact: 'Auto-add IO334-21 interface board (qty: 1)' },
+      { nodeId: 'slot_check', fact: '4 modules · Baseline (4 base / 6 expanded): OK' },
+      { nodeId: 'compat_check', fact: 'All modules compatible with Baseline machine' },
+      { nodeId: 'output', fact: '4 rows resolved, 0 unresolved · avg confidence 85%' },
+    ],
+    overviewFacts: [
+      '4 requirements: 8 encoders, 64 digital inputs, 16 analog inputs, 2 CAN FD',
+      'Matched 4 module types — encoder and digital both land on IO334 FPGA family',
+      'Without FPGA: 3 boards (3 slots) → With FPGA: 1 board + 1 interface (2 slots saved)',
+      'Fits in Baseline machine (4 of 4 base slots)',
+      '85% confidence · all 4 rows resolved · 2 fewer slots used',
     ],
   },
 ]
