@@ -2,6 +2,7 @@
 
 import { CompactCard, CompactChip } from '@/components/ui/compact'
 import type { ProposalGenerateResponse } from '@/components/configurator/proposalTypes'
+import { getSpecLabel } from '@/components/configurator/data'
 import { cn } from '@/lib/cn'
 import { useEffect, useState } from 'react'
 
@@ -19,10 +20,13 @@ export default function ProposalResultCard({ proposal, machineName }: ProposalRe
     return () => clearTimeout(timer)
   }, [])
 
-  const allOk = proposal.unresolved.length === 0
+  const allOk = proposal.unresolved.length === 0 && !proposal.machineWarnings?.length
   const coverPct = proposal.summary.requestedChannels > 0
     ? Math.round((proposal.summary.coveredChannels / proposal.summary.requestedChannels) * 100)
     : 0
+
+  const ts = new Date(proposal.generatedAt)
+  const timeStr = ts.toLocaleString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
 
   return (
     <CompactCard
@@ -41,7 +45,9 @@ export default function ProposalResultCard({ proposal, machineName }: ProposalRe
           {allOk ? '✓' : '⚠'} {allOk ? 'Proposal Ready' : 'Review Needed'}
         </div>
         <span className="text-sm font-semibold text-slate-900">{machineName}</span>
-        <span className="text-[11px] text-slate-400">{proposal.proposalId}</span>
+        <span className="text-[11px] text-slate-400" title={proposal.generatedAt}>
+          {proposal.proposalId} · {timeStr}
+        </span>
         <div className="ml-auto flex flex-wrap gap-1">
           <CompactChip>{coverPct}% covered</CompactChip>
           <CompactChip>{proposal.summary.moduleCount} modules</CompactChip>
@@ -50,6 +56,16 @@ export default function ProposalResultCard({ proposal, machineName }: ProposalRe
           )}
         </div>
       </div>
+
+      {/* Machine warnings — separate prominent section */}
+      {proposal.machineWarnings && proposal.machineWarnings.length > 0 && (
+        <div className="space-y-0.5 rounded-[var(--ui-radius-sm)] border border-orange-300 bg-orange-50 px-2 py-1.5">
+          <p className="text-[11px] font-semibold uppercase tracking-wide text-orange-800">⚠ Machine Fit</p>
+          {proposal.machineWarnings.map((warning, i) => (
+            <p key={i} className="text-[11px] text-orange-800">{warning}</p>
+          ))}
+        </div>
+      )}
 
       {/* Recommended modules — collapsed by default */}
       {proposal.recommendedModules.length === 0 ? (
@@ -130,7 +146,9 @@ export default function ProposalResultCard({ proposal, machineName }: ProposalRe
                                       : 'border-slate-100'
                                   }`}
                                 >
-                                  <td className="px-2 py-0.5 font-medium text-slate-700">{diff.key}</td>
+                                  <td className="px-2 py-0.5 font-medium text-slate-700">
+                                    {getSpecLabel(row.categoryId, row.subId, diff.key)}
+                                  </td>
                                   <td className="px-2 py-0.5 text-slate-600">{diff.requested}</td>
                                   <td className={`px-2 py-0.5 ${
                                     diff.status === 'exact' ? 'text-slate-600' : diff.status === 'partial' ? 'font-medium text-amber-700' : 'font-medium text-red-700'

@@ -5,13 +5,18 @@ import ConfiguratorV2 from '@/components/ConfiguratorV2'
 import ConfiguratorV3 from '@/components/ConfiguratorV3'
 import ConfiguratorV3_2 from '@/components/ConfiguratorV3_2'
 import ConfiguratorV3_3 from '@/components/ConfiguratorV3_3'
+import ConfiguratorV5 from '@/components/ConfiguratorV5'
 import ProposalResultCard from '@/components/ProposalResultCard'
+import dynamic from 'next/dynamic'
 import { CompactButton, CompactCard, CompactChip, CompactSectionLabel } from '@/components/ui/compact'
+
+const DecisionFlowModal = dynamic(() => import('@/components/DecisionFlowModal'), { ssr: false })
 import type { ProposalGenerateRequest, ProposalGenerateResponse, RequirementRow } from '@/components/configurator/proposalTypes'
 import { getSimulationDelayMs, simulateProposal } from '@/lib/proposal/simulator'
+import type { StarterRow } from '@/components/configurator/industries'
 import { cn } from '@/lib/cn'
 import Image from 'next/image'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 /** basePath injected at build time for GitHub Pages sub-path deploys */
 const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH || ''
@@ -23,6 +28,8 @@ const MACHINE_OPTIONS = [
     keywords: 'High performance • Maximum expansion',
     blurb: 'For office and lab use.',
     image: `${BASE_PATH}/assets/machine-performance.png`,
+    maxSlots: 7,
+    maxSlotsExpanded: 42,
   },
   {
     id: 'pulse',
@@ -30,6 +37,8 @@ const MACHINE_OPTIONS = [
     keywords: 'Scalable desktop • Controller testing',
     blurb: 'Control design and validation.',
     image: `${BASE_PATH}/assets/machine-pulse.png`,
+    maxSlots: 3,
+    maxSlotsExpanded: 3,
   },
   {
     id: 'mobile',
@@ -37,6 +46,8 @@ const MACHINE_OPTIONS = [
     keywords: 'Rugged • Field testing',
     blurb: 'Withstands shock and vibration.',
     image: `${BASE_PATH}/assets/machine-mobile.png`,
+    maxSlots: 5,
+    maxSlotsExpanded: 14,
   },
   {
     id: 'baseline',
@@ -44,6 +55,8 @@ const MACHINE_OPTIONS = [
     keywords: 'Entry level • Compact',
     blurb: 'For office to in-vehicle use.',
     image: `${BASE_PATH}/assets/machine-baseline.png`,
+    maxSlots: 4,
+    maxSlotsExpanded: 6,
   },
   {
     id: 'unit',
@@ -51,6 +64,8 @@ const MACHINE_OPTIONS = [
     keywords: 'Small form factor • Flexible',
     blurb: 'For field and confined spaces.',
     image: `${BASE_PATH}/assets/machine-unit.png`,
+    maxSlots: 1,
+    maxSlotsExpanded: 1,
   },
   {
     id: 'rack',
@@ -58,6 +73,8 @@ const MACHINE_OPTIONS = [
     keywords: 'Modular rack • Customizable',
     blurb: 'Built for advanced setups.',
     image: `${BASE_PATH}/assets/machine-rack.svg`,
+    maxSlots: 99,
+    maxSlotsExpanded: 99,
   },
 ]
 
@@ -76,7 +93,7 @@ const EMPTY_SUMMARY: ConfiguratorSummary = {
 export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
-  const [activeVersion, setActiveVersion] = useState<'v1' | 'v2' | 'v3' | 'v3_2' | 'v3_3'>('v3')
+  const [activeVersion, setActiveVersion] = useState<'v1' | 'v2' | 'v3' | 'v3_2' | 'v3_3' | 'v5'>('v3')
   const [isV1SummaryHovered, setIsV1SummaryHovered] = useState(false)
   const [selectedMachineId, setSelectedMachineId] = useState<string>(MACHINE_OPTIONS[0].id)
   const [configuratorSummary, setConfiguratorSummary] = useState<ConfiguratorSummary>(EMPTY_SUMMARY)
@@ -84,6 +101,8 @@ export default function Home() {
   const [proposalStatus, setProposalStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
   const [proposalResult, setProposalResult] = useState<ProposalGenerateResponse | null>(null)
   const [proposalError, setProposalError] = useState<string | null>(null)
+  const [showDecisionFlow, setShowDecisionFlow] = useState(false)
+  const loadTemplateRef = useRef<((rows: StarterRow[]) => void) | null>(null)
 
   const selectedMachine = MACHINE_OPTIONS.find((m) => m.id === selectedMachineId) ?? MACHINE_OPTIONS[0]
   const activeCategories = Object.entries(configuratorSummary.categoryTotals).filter(([, total]) => total > 0)
@@ -121,7 +140,7 @@ export default function Home() {
     setProposalError(null)
   }
 
-  const handleVersionChange = (nextVersion: 'v1' | 'v2' | 'v3' | 'v3_2' | 'v3_3') => {
+  const handleVersionChange = (nextVersion: 'v1' | 'v2' | 'v3' | 'v3_2' | 'v3_3' | 'v5') => {
     if (nextVersion === activeVersion) return
     setConfiguratorSummary(EMPTY_SUMMARY)
     resetProposalState()
@@ -159,6 +178,8 @@ export default function Home() {
       machineName: selectedMachine.name,
       version: activeVersion,
       requirements: requirementsRows,
+      maxSlots: selectedMachine.maxSlots,
+      maxSlotsExpanded: selectedMachine.maxSlotsExpanded,
     }
 
     setProposalStatus('loading')
@@ -201,6 +222,21 @@ export default function Home() {
       )}
       {generateButtonLabel}
     </CompactButton>
+  )
+
+  const renderDecisionFlowButton = (className: string) => (
+    <button
+      type="button"
+      onClick={() => setShowDecisionFlow(true)}
+      className={cn(
+        className,
+        'group relative inline-flex items-center gap-1.5 rounded-lg border border-violet-300/60 bg-gradient-to-r from-violet-50 to-fuchsia-50 px-3 py-1.5 text-[11px] font-semibold text-violet-700 shadow-sm transition-all hover:shadow-md hover:from-violet-100 hover:to-fuchsia-100',
+      )}
+    >
+      <span className="flex h-4 w-4 items-center justify-center rounded bg-gradient-to-br from-violet-500 to-fuchsia-500 text-[9px] text-white shadow-inner">⚗</span>
+      Decision Logic
+      <span className="rounded-full bg-violet-200/70 px-1.5 py-px text-[8px] font-bold uppercase tracking-widest text-violet-600">DEV</span>
+    </button>
   )
 
   const renderSummaryStrip = () => (
@@ -594,7 +630,7 @@ export default function Home() {
               </CompactCard>
 
               <div className="mx-auto w-full max-w-[1240px] space-y-3">
-                <CompactCard className="p-[var(--ui-pad-2)]">
+                <CompactCard className="flex items-center gap-3 p-[var(--ui-pad-2)]">
                   <div className="inline-flex items-center rounded-[var(--ui-radius-md)] border border-slate-200 bg-slate-100 p-1">
                     <CompactButton
                       type="button"
@@ -636,7 +672,17 @@ export default function Home() {
                     >
                       V3.3
                     </CompactButton>
+                    <CompactButton
+                      type="button"
+                      variant={activeVersion === 'v5' ? 'primary' : 'ghost'}
+                      onClick={() => handleVersionChange('v5')}
+                      className={cn('h-8 px-3 text-xs', activeVersion !== 'v5' && 'text-slate-600')}
+                    >
+                      V5
+                    </CompactButton>
                   </div>
+
+                  {renderDecisionFlowButton('ml-auto')}
                 </CompactCard>
 
                 {activeVersion === 'v1' ? (
@@ -679,12 +725,23 @@ export default function Home() {
                     <div className="hidden min-[1200px]:block">{renderV3OverviewPanel()}</div>
                     <div className="min-[1200px]:hidden">{renderV3SummaryStrip()}</div>
                   </div>
-                ) : (
+                ) : activeVersion === 'v3_3' ? (
                   <div className="grid grid-cols-1 gap-3 min-[1200px]:grid-cols-[minmax(0,1fr)_280px] min-[1200px]:items-start">
                     <ConfiguratorV3_3
                       key="v3_3"
                       onSummaryChange={setConfiguratorSummary}
                       onRequirementsChange={handleRequirementsChange}
+                    />
+                    <div className="hidden min-[1200px]:block">{renderV3OverviewPanel()}</div>
+                    <div className="min-[1200px]:hidden">{renderV3SummaryStrip()}</div>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 gap-3 min-[1200px]:grid-cols-[minmax(0,1fr)_280px] min-[1200px]:items-start">
+                    <ConfiguratorV5
+                      key="v5"
+                      onSummaryChange={setConfiguratorSummary}
+                      onRequirementsChange={handleRequirementsChange}
+                      onLoadTemplate={(fn) => { loadTemplateRef.current = fn }}
                     />
                     <div className="hidden min-[1200px]:block">{renderV3OverviewPanel()}</div>
                     <div className="min-[1200px]:hidden">{renderV3SummaryStrip()}</div>
@@ -862,6 +919,14 @@ export default function Home() {
           </div>
         </div>
       </footer>
+
+      <DecisionFlowModal
+        open={showDecisionFlow}
+        onClose={() => setShowDecisionFlow(false)}
+        onLoadExample={(rows) => {
+          if (loadTemplateRef.current) loadTemplateRef.current(rows)
+        }}
+      />
     </>
   )
 }

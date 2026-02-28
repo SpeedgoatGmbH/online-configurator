@@ -13,6 +13,10 @@ export type ProposalGenerateRequest = {
   machineName: string
   version: string
   requirements: RequirementRow[]
+  /** Maximum I/O module slots in the base configuration */
+  maxSlots?: number
+  /** Maximum I/O module slots with expansion units */
+  maxSlotsExpanded?: number
 }
 
 export type ProposalSpecDiff = {
@@ -24,6 +28,8 @@ export type ProposalSpecDiff = {
 
 export type ProposalRowDiff = {
   rowId: string
+  categoryId: string
+  subId: string
   categoryLabel: string
   subLabel: string
   quantityRequested: number
@@ -68,4 +74,6 @@ export type ProposalGenerateResponse = {
   recommendedModules: ProposalRecommendedModule[]
   rowDiffs: ProposalRowDiff[]
   unresolved: ProposalUnresolvedRow[]
+  /** Warnings about machine type / slot incompatibility */
+  machineWarnings?: string[]
 }

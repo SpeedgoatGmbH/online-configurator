@@ -53,15 +53,19 @@ export function simulateProposal(request: ProposalGenerateRequest): ProposalGene
 
   const rowDiffs: ProposalRowDiff[] = []
   const unresolved: ProposalUnresolvedRow[] = []
+  const machineWarnings: string[] = []
   let coveredChannels = 0
+  let incompatibleModuleCount = 0
 
   normalizedRequirements.forEach((row) => {
-    const candidate = selectBestCandidate(row, moduleUsage, seededRandom)
-    if (!candidate || candidate.score < 0) {
+    const candidate = selectBestCandidate(row, moduleUsage, seededRandom, request.machineId)
+    if (!candidate) {
       const unresolvedEntry = buildUnresolvedRow(row)
       unresolved.push(unresolvedEntry)
       rowDiffs.push({
         rowId: row.rowId,
+        categoryId: row.categoryId,
+        subId: row.subId,
         categoryLabel: row.categoryLabel,
         subLabel: row.subLabel,
         quantityRequested: row.quantity,
@@ -81,6 +85,12 @@ export function simulateProposal(request: ProposalGenerateRequest): ProposalGene
       return
     }
 
+    // Track if the best candidate is not compatible with the selected machine
+    if (candidate.module.compatibleMachines &&
+        !candidate.module.compatibleMachines.includes(request.machineId)) {
+      incompatibleModuleCount++
+    }
+
     coveredChannels += row.quantity
     moduleUsage.set(candidate.module.moduleId, (moduleUsage.get(candidate.module.moduleId) || 0) + candidate.units)
 
@@ -96,6 +106,8 @@ export function simulateProposal(request: ProposalGenerateRequest): ProposalGene
 
     rowDiffs.push({
       rowId: row.rowId,
+      categoryId: row.categoryId,
+      subId: row.subId,
       categoryLabel: row.categoryLabel,
       subLabel: row.subLabel,
       quantityRequested: row.quantity,
@@ -131,6 +143,10 @@ export function simulateProposal(request: ProposalGenerateRequest): ProposalGene
     }
   })
 
+  // --- FPGA post-processing: consolidate boards & add -21 interfaces ---------
+  consolidateFpgaModules(rowDiffs, recommended)
+  addFpgaInterfaceBoards(recommended)
+
   const recommendedModules: ProposalRecommendedModule[] = Array.from(recommended.values())
     .map((entry) => ({
       moduleId: entry.module.moduleId,
@@ -152,8 +168,28 @@ export function simulateProposal(request: ProposalGenerateRequest): ProposalGene
   const moduleCount = recommendedModules.reduce((sum, module) => sum + module.quantity, 0)
   const proposalHash = hashObject({ seedInput, requestedChannels, moduleCount, unresolved: unresolved.length })
 
+  // Machine slot warnings
+  const maxSlots = request.maxSlots ?? 99
+  const maxSlotsExpanded = request.maxSlotsExpanded ?? 99
+  if (moduleCount > maxSlotsExpanded) {
+    machineWarnings.push(
+      `This configuration requires ${moduleCount} module slots, but ${request.machineName} supports a maximum of ${maxSlotsExpanded} (with expansion). Consider a larger machine or reducing I/O requirements.`
+    )
+  } else if (moduleCount > maxSlots) {
+    machineWarnings.push(
+      `This configuration requires ${moduleCount} module slots. ${request.machineName} has ${maxSlots} base slots — you will need an expansion unit (up to ${maxSlotsExpanded} slots available).`
+    )
+  }
+
+  // Warn about modules not compatible with the selected machine
+  if (incompatibleModuleCount > 0) {
+    machineWarnings.push(
+      `${incompatibleModuleCount} recommended module${incompatibleModuleCount > 1 ? 's are' : ' is'} not officially listed for ${request.machineName}. Verify compatibility with Speedgoat.`
+    )
+  }
+
   return {
-    proposalId: `mock-${proposalHash.toString(16)}`,
+    proposalId: `SP-${proposalHash.toString(16).toUpperCase().slice(0, 8)}`,
     generatedAt: new Date().toISOString(),
     summary: {
       requestedChannels,
@@ -164,6 +200,7 @@ export function simulateProposal(request: ProposalGenerateRequest): ProposalGene
     recommendedModules,
     rowDiffs,
     unresolved,
+    machineWarnings: machineWarnings.length > 0 ? machineWarnings : undefined,
   }
 }
 
@@ -201,7 +238,8 @@ function buildSeedInput(request: ProposalGenerateRequest): string {
 function selectBestCandidate(
   row: RequirementRow,
   moduleUsage: Map<string, number>,
-  seededRandom: () => number
+  seededRandom: () => number,
+  machineId?: string
 ): CandidateScore | null {
   const candidates = MOCK_MODULE_CATALOG.filter((entry) => {
     if (entry.categoryCoverage !== row.categoryId) return false
@@ -211,7 +249,7 @@ function selectBestCandidate(
   if (candidates.length === 0) return null
 
   const scoredCandidates = candidates
-    .map((candidate) => evaluateCandidate(row, candidate, moduleUsage, seededRandom))
+    .map((candidate) => evaluateCandidate(row, candidate, moduleUsage, seededRandom, machineId))
     .filter((candidate): candidate is CandidateScore => Boolean(candidate))
 
   if (scoredCandidates.length === 0) return null
@@ -230,7 +268,8 @@ function evaluateCandidate(
   row: RequirementRow,
   module: MockModuleCatalogEntry,
   moduleUsage: Map<string, number>,
-  seededRandom: () => number
+  seededRandom: () => number,
+  machineId?: string
 ): CandidateScore | null {
   if (row.categoryId === 'communication') {
     const requestedProtocol = row.specs.range
@@ -239,6 +278,7 @@ function evaluateCandidate(
     }
   }
 
+  // For FPGA boards, calculate I/O lines consumed instead of raw channel count
   const units = Math.max(1, Math.ceil(row.quantity / module.channelCapacity))
   let exactCount = 0
   let compatibleCount = 0
@@ -265,8 +305,11 @@ function evaluateCandidate(
   })
 
   const hasPriorUsage = moduleUsage.has(module.moduleId)
-  const consolidationBonus = row.categoryId === 'communication' && hasPriorUsage ? 10 : 0
-  const score = exactCount * 12 + compatibleCount * 6 - mismatchCount * 10 - missingCount * 8 - units * 2 + consolidationBonus
+  // FPGA boards strongly prefer reusing the same board (consolidation will merge later)
+  const consolidationBonus = (row.categoryId === 'communication' || module.fpgaFamily) && hasPriorUsage ? 10 : 0
+  // Prefer modules compatible with the selected machine
+  const machineBonus = machineId && module.compatibleMachines?.includes(machineId) ? 5 : 0
+  const score = exactCount * 12 + compatibleCount * 6 - mismatchCount * 10 - missingCount * 8 - units * 2 + consolidationBonus + machineBonus
 
   return {
     module,
@@ -396,4 +439,125 @@ function getSuggestionByCategory(categoryId: string): string {
   if (categoryId === 'digital') return 'Try a different interface class or isolate requirements into separate rows.'
   if (categoryId === 'motion') return 'Split encoder/resolver requirements or reduce signal rate.'
   return 'Adjust one or more detailed specs and generate again.'
+}
+
+/**
+ * After the main per-row matching loop, FPGA boards that were selected by
+ * multiple rows across different categories can often be **consolidated**.
+ * E.g. 6×PWM (6 lines) + 4×QAD (12 lines) = 18 lines total, which fits on
+ * a single 96-line IO323 instead of allocating two.
+ *
+ * Uses the `fpgaFamily` field to identify entries sharing the same physical
+ * board, and `quantity / channelCapacity` to compute fractional usage.
+ */
+function consolidateFpgaModules(
+  rowDiffs: ProposalRowDiff[],
+  recommended: Map<string, {
+    module: MockModuleCatalogEntry
+    quantity: number
+    coveredChannels: number
+    coveredRows: Set<string>
+    confidenceSum: number
+    confidenceCount: number
+    rationale: Set<string>
+  }>
+): void {
+  // Sum fractional board usage per fpgaFamily across all rows.
+  const familyUsage = new Map<string, number>()
+
+  for (const diff of rowDiffs) {
+    if (diff.status === 'unresolved') continue
+    const moduleId = diff.moduleRefs[0]
+    if (!moduleId) continue
+    // Find the catalog entry matching this moduleId + category + sub
+    const entry = MOCK_MODULE_CATALOG.find(e =>
+      e.moduleId === moduleId &&
+      e.categoryCoverage === diff.categoryId &&
+      e.subCoverage.includes(diff.subId)
+    )
+    if (!entry?.fpgaFamily || !entry.channelCapacity) continue
+    const fraction = diff.quantityRequested / entry.channelCapacity
+    familyUsage.set(entry.fpgaFamily, (familyUsage.get(entry.fpgaFamily) || 0) + fraction)
+  }
+
+  for (const [family, fraction] of familyUsage) {
+    const rec = recommended.get(
+      // Find the moduleId used for this family in the recommended map
+      Array.from(recommended.keys()).find(id => {
+        const r = recommended.get(id)
+        return r?.module.fpgaFamily === family || r?.module.moduleId === family
+      }) ?? family
+    )
+    if (!rec) continue
+    const actualUnits = Math.max(1, Math.ceil(fraction))
+    if (actualUnits < rec.quantity) {
+      rec.rationale.add(
+        `Consolidated onto ${actualUnits} × ${family} (${Math.round(fraction * 100)}% I/O utilization).`
+      )
+      rec.quantity = actualUnits
+    }
+  }
+}
+
+/**
+ * For every recommended module that declares an `interfaceBoard` in the catalog,
+ * auto-add the matching interface / connector board to the recommended list.
+ *
+ * This is fully data-driven: any catalog entry (FPGA or otherwise) that sets
+ * `interfaceBoard: { moduleId, friendlyName }` will have its companion board
+ * injected automatically. No hardcoded map to maintain.
+ *
+ * For FPGA boards without an explicit `interfaceBoard`, falls back to the
+ * convention `{technicalName}-21`.
+ */
+function addFpgaInterfaceBoards(
+  recommended: Map<string, {
+    module: MockModuleCatalogEntry
+    quantity: number
+    coveredChannels: number
+    coveredRows: Set<string>
+    confidenceSum: number
+    confidenceCount: number
+    rationale: Set<string>
+  }>
+): void {
+  // Collect all entries that either declare an interfaceBoard or are FPGA-backed
+  const entriesNeedingInterface = Array.from(recommended.entries()).filter(
+    ([, entry]) => Boolean(entry.module.interfaceBoard) || Boolean(entry.module.fpgaFamily)
+  )
+
+  for (const [, entry] of entriesNeedingInterface) {
+    const techName = entry.module.technicalName
+    // Prefer the explicit interfaceBoard from the catalog; fall back to {techName}-21 convention
+    const mapping = entry.module.interfaceBoard ?? {
+      moduleId: `${techName}-21`,
+      friendlyName: `Interface Board ${techName}-21`,
+    }
+
+    const existing = recommended.get(mapping.moduleId)
+    if (existing) {
+      existing.quantity += entry.quantity
+      for (const rowId of entry.coveredRows) existing.coveredRows.add(rowId)
+      existing.rationale.add(`Required interface for ${techName}.`)
+    } else {
+      recommended.set(mapping.moduleId, {
+        module: {
+          moduleId: mapping.moduleId,
+          friendlyName: mapping.friendlyName,
+          technicalName: mapping.moduleId,
+          categoryCoverage: 'interface',
+          subCoverage: [],
+          channelCapacity: 0,
+          supportedSpecs: {},
+          fpgaFamily: techName,
+        },
+        quantity: entry.quantity,
+        coveredChannels: 0,
+        coveredRows: new Set(entry.coveredRows),
+        confidenceSum: 95 * entry.quantity,
+        confidenceCount: entry.quantity,
+        rationale: new Set([`Required interface / connector board for ${techName}.`]),
+      })
+    }
+  }
 }

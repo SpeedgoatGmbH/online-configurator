@@ -1,5 +1,33 @@
 import type { Category } from './types'
 
+/**
+ * Lookup table: `"categoryId:subId:specKey"` → friendly label from CATEGORIES.
+ * Falls back to a title-cased version of the raw key if not found.
+ */
+const _specLabelCache = new Map<string, string>()
+
+export function getSpecLabel(categoryId: string, subId: string, key: string): string {
+  const cacheKey = `${categoryId}:${subId}:${key}`
+  if (_specLabelCache.has(cacheKey)) return _specLabelCache.get(cacheKey)!
+
+  for (const cat of CATEGORIES) {
+    if (cat.id !== categoryId) continue
+    for (const sub of cat.subCategories) {
+      if (sub.id !== subId) continue
+      const field = sub.fields.find((f) => f.key === key)
+      if (field) {
+        _specLabelCache.set(cacheKey, field.label)
+        return field.label
+      }
+    }
+  }
+
+  // Fallback: title-case the raw key  (e.g. "signalType" → "Signal Type")
+  const fallback = key.replace(/([A-Z])/g, ' $1').replace(/^./, (c) => c.toUpperCase()).trim()
+  _specLabelCache.set(cacheKey, fallback)
+  return fallback
+}
+
 export const CATEGORIES: Category[] = [
   {
     id: 'analog',
@@ -17,13 +45,13 @@ export const CATEGORIES: Category[] = [
             options: {
               dependsOn: 'signalType',
               conditions: {
-                'Voltage': ['±10 V', '0-10 V', '±5 V'],
-                'Current': ['0-20 mA', '4-20 mA']
+                'Voltage': ['±10 V', '0-10 V', '±5 V', '±20 V', '±25 V', '±48 V', '±7.5 V'],
+                'Current': ['0-20 mA', '4-20 mA', '±25 mA']
               }
             }
           },
-          { key: 'resolution', label: 'Resolution', options: ['16-bit', '18-bit', '24-bit'] },
-          { key: 'speed', label: 'Bandwidth', options: ['20 kHz', '100 kHz', '500 kHz'] },
+          { key: 'resolution', label: 'Resolution', options: ['14-bit', '16-bit', '18-bit', '24-bit'] },
+          { key: 'speed', label: 'Bandwidth', options: ['20 kHz', '100 kHz', '500 kHz', '2 MHz', '5 MHz'] },
         ],
         defaults: { inputMode: 'Differential', signalType: 'Voltage', signalRange: '±10 V', resolution: '16-bit', speed: '100 kHz' },
       },
@@ -39,13 +67,13 @@ export const CATEGORIES: Category[] = [
             options: {
               dependsOn: 'signalType',
               conditions: {
-                'Voltage': ['±10 V', '0-10 V', '±5 V'],
-                'Current': ['0-20 mA', '4-20 mA']
+                'Voltage': ['±10 V', '0-10 V', '±5 V', '±12 V', '±20 V', '±7.5 V'],
+                'Current': ['0-20 mA', '4-20 mA', '0-24 mA']
               }
             }
           },
-          { key: 'resolution', label: 'Resolution', options: ['14-bit', '16-bit', '18-bit'] },
-          { key: 'speed', label: 'Update Rate', options: ['20 kHz', '100 kHz', '500 kHz'] },
+          { key: 'resolution', label: 'Resolution', options: ['14-bit', '16-bit', '18-bit', '20-bit'] },
+          { key: 'speed', label: 'Update Rate', options: ['20 kHz', '100 kHz', '500 kHz', '5 MHz'] },
         ],
         defaults: { outputMode: 'Single-ended', signalType: 'Voltage', signalRange: '±10 V', resolution: '16-bit', speed: '100 kHz' },
       },
@@ -59,7 +87,7 @@ export const CATEGORIES: Category[] = [
         id: 'inputs',
         label: 'Inputs',
         fields: [
-          { key: 'signalType', label: 'Interface Class', options: ['TTL / Discrete', 'Differential Serial', 'Isolated Power Input'] },
+          { key: 'signalType', label: 'Interface Class', options: ['TTL / Discrete', 'Differential Serial', 'Isolated Power Input', 'LVDS'] },
           {
             key: 'range',
             label: 'Signaling / Voltage',
@@ -69,6 +97,7 @@ export const CATEGORIES: Category[] = [
                 'TTL / Discrete': ['5 V TTL', '3.3 V TTL', '24 V'],
                 'Differential Serial': ['RS422/RS485', 'LVDS', 'M-LVDS'],
                 'Isolated Power Input': ['0-24 V', '0-31 V', '0-48 V'],
+                'LVDS': ['LVDS Pairs'],
               },
             },
           },
@@ -81,6 +110,7 @@ export const CATEGORIES: Category[] = [
                 'TTL / Discrete': ['None', 'Isolated'],
                 'Differential Serial': ['None'],
                 'Isolated Power Input': ['Isolated Inputs'],
+                'LVDS': ['None'],
               },
             },
           },
@@ -91,7 +121,7 @@ export const CATEGORIES: Category[] = [
         id: 'outputs',
         label: 'Outputs',
         fields: [
-          { key: 'signalType', label: 'Interface Class', options: ['TTL / Discrete', 'Differential Serial', 'Isolated Power Output'] },
+          { key: 'signalType', label: 'Interface Class', options: ['TTL / Discrete', 'Differential Serial', 'Isolated Power Output', 'LVDS'] },
           {
             key: 'range',
             label: 'Signaling / Voltage',
@@ -101,6 +131,7 @@ export const CATEGORIES: Category[] = [
                 'TTL / Discrete': ['5 V TTL', '3.3 V TTL', '24 V'],
                 'Differential Serial': ['RS422/RS485', 'LVDS', 'M-LVDS'],
                 'Isolated Power Output': ['+5-34 V', '+5-48 V', '+6-48 V'],
+                'LVDS': ['LVDS Pairs'],
               },
             },
           },
@@ -113,6 +144,7 @@ export const CATEGORIES: Category[] = [
                 'TTL / Discrete': ['None', 'Isolated'],
                 'Differential Serial': ['None'],
                 'Isolated Power Output': ['Isolated Outputs', 'Isolated Inputs + Outputs'],
+                'LVDS': ['None'],
               },
             },
           },
@@ -135,6 +167,24 @@ export const CATEGORIES: Category[] = [
           },
         ],
         defaults: { signalType: 'TTL / Discrete', range: '5 V TTL', resolution: 'None', speed: 'Push-pull' },
+      },
+      {
+        id: 'pwm',
+        label: 'PWM Generation',
+        fields: [
+          { key: 'range', label: 'Signal Level', options: ['TTL 5 V', 'TTL 3.3 V', 'RS422', 'LVDS'] },
+          { key: 'speed', label: 'Clock Rate', options: ['1 MHz', '5 MHz', '10 MHz', '25 MHz'] },
+        ],
+        defaults: { range: 'TTL 5 V', speed: '10 MHz' },
+      },
+      {
+        id: 'capture',
+        label: 'Signal Capture',
+        fields: [
+          { key: 'range', label: 'Signal Level', options: ['TTL 5 V', 'TTL 3.3 V', 'RS422', 'LVDS'] },
+          { key: 'speed', label: 'Clock Rate', options: ['1 MHz', '5 MHz', '10 MHz', '25 MHz'] },
+        ],
+        defaults: { range: 'TTL 5 V', speed: '10 MHz' },
       },
     ],
   },
@@ -176,6 +226,10 @@ export const CATEGORIES: Category[] = [
               'ARINC 825',
               'MIL-STD-1553',
               'MVB / WTB',
+              'SAE J1939',
+              'Dshot',
+              'SDLC/HDLC',
+              'EV Charging (ISO 15118)',
               'RS-422',
               'RS-485',
               'RS-232',
@@ -223,6 +277,10 @@ export const CATEGORIES: Category[] = [
                 'ARINC 825': ['CAN'],
                 'MIL-STD-1553': ['MIL-STD-1553'],
                 'MVB / WTB': ['MVB / WTB'],
+                'SAE J1939': ['CAN'],
+                'Dshot': ['Dshot'],
+                'SDLC/HDLC': ['Serial'],
+                'EV Charging (ISO 15118)': ['PLC (HomePlug)', 'CCS Combo', 'CHAdeMO'],
                 'RS-422': ['RS-422'],
                 'RS-485': ['RS-485'],
                 'RS-232': ['RS-232'],
@@ -271,6 +329,10 @@ export const CATEGORIES: Category[] = [
                 'ARINC 825': ['1 Mbit/s'],
                 'MIL-STD-1553': ['1 Mbit/s'],
                 'MVB / WTB': ['1.5 Mbit/s'],
+                'SAE J1939': ['250 kbit/s', '500 kbit/s'],
+                'Dshot': ['150 kbit/s', '300 kbit/s', '600 kbit/s', '1200 kbit/s'],
+                'SDLC/HDLC': ['64 kbit/s', '2 Mbit/s', '10 Mbit/s'],
+                'EV Charging (ISO 15118)': ['10 Mbit/s'],
                 'RS-422': ['10 Mbit/s'],
                 'RS-485': ['10 Mbit/s'],
                 'RS-232': ['115.2 kbit/s'],
@@ -300,7 +362,7 @@ export const CATEGORIES: Category[] = [
         id: 'encoder',
         label: 'Encoder',
         fields: [
-          { key: 'range', label: 'Type', options: ['Incremental', 'SSI', 'BiSS', 'EnDat'] },
+          { key: 'range', label: 'Type', options: ['Incremental', 'QAD (A/B/Z)', 'QAE (A/B)', 'SSI', 'BiSS', 'EnDat', 'Cam & Crank'] },
           { key: 'speed', label: 'Signal Rate', options: ['10 kHz', '100 kHz', '1 MHz'] },
           { key: 'resolution', label: 'Resolution', options: ['16-bit', '24-bit', '32-bit'] },
         ],
@@ -308,13 +370,13 @@ export const CATEGORIES: Category[] = [
       },
       {
         id: 'resolver',
-        label: 'Resolver',
+        label: 'Resolver / LVDT / RVDT',
         fields: [
-          { key: 'range', label: 'Type', options: ['Single-speed', 'Multi-speed'] },
+          { key: 'range', label: 'Type', options: ['Resolver', 'LVDT', 'RVDT', 'Synchro'] },
           { key: 'speed', label: 'Excitation', options: ['2.5 kHz', '5 kHz', '10 kHz'] },
           { key: 'resolution', label: 'Resolution', options: ['12-bit', '14-bit', '16-bit'] },
         ],
-        defaults: { range: 'Single-speed', speed: '5 kHz', resolution: '14-bit' },
+        defaults: { range: 'Resolver', speed: '5 kHz', resolution: '14-bit' },
       },
     ],
   },
@@ -411,6 +473,57 @@ export const CATEGORIES: Category[] = [
           { key: 'speed', label: 'Bandwidth', options: ['10 kHz', '50 kHz', '100 kHz'] },
         ],
         defaults: { range: 'IGBT', speed: '50 kHz' },
+      },
+    ],
+  },
+  {
+    id: 'resistor',
+    label: 'Resistor Simulation',
+    subCategories: [
+      {
+        id: 'simulation',
+        label: 'Programmable Resistors',
+        fields: [
+          { key: 'range', label: 'Resistance Range', options: ['0–1 kΩ', '0–10 kΩ', '0–100 kΩ', '0–1 MΩ'] },
+          { key: 'resolution', label: 'Resolution', options: ['10-bit', '12-bit', '16-bit'] },
+          { key: 'speed', label: 'Update Rate', options: ['1 kHz', '10 kHz', '100 kHz'] },
+        ],
+        defaults: { range: '0–10 kΩ', resolution: '12-bit', speed: '10 kHz' },
+      },
+    ],
+  },
+  {
+    id: 'bms',
+    label: 'Battery Management',
+    subCategories: [
+      {
+        id: 'cell_emulation',
+        label: 'Cell Emulation',
+        fields: [
+          { key: 'range', label: 'Voltage Range', options: ['0–5 V', '0–7 V', '0–10 V', '0–60 V'] },
+          { key: 'speed', label: 'Update Rate', options: ['1 kHz', '10 kHz', '100 kHz'] },
+          { key: 'resolution', label: 'Resolution', options: ['14-bit', '16-bit'] },
+        ],
+        defaults: { range: '0–5 V', speed: '10 kHz', resolution: '16-bit' },
+      },
+      {
+        id: 'fault_insertion',
+        label: 'Fault Insertion (BMS)',
+        fields: [
+          { key: 'range', label: 'Fault Type', options: ['Open Cell', 'Short Cell', 'Low Voltage', 'High Voltage'] },
+          { key: 'speed', label: 'Switching Speed', options: ['1 ms', '100 µs', '10 µs'] },
+        ],
+        defaults: { range: 'Open Cell', speed: '100 µs' },
+      },
+      {
+        id: 'temp_emulation',
+        label: 'Temperature Emulation',
+        fields: [
+          { key: 'range', label: 'Sensor Type', options: ['NTC', 'PTC', 'Thermocouple', 'RTD'] },
+          { key: 'speed', label: 'Update Rate', options: ['10 Hz', '100 Hz', '1 kHz'] },
+          { key: 'resolution', label: 'Resistance Range', options: ['0–1 kΩ', '0–10 kΩ', '0–100 kΩ'] },
+        ],
+        defaults: { range: 'NTC', speed: '100 Hz', resolution: '0–10 kΩ' },
       },
     ],
   },
