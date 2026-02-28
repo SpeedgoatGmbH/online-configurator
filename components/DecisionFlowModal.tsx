@@ -29,6 +29,8 @@ interface OverviewStage {
   accentColor: string
 }
 
+const OVERVIEW_STAGE_COUNT = 7
+
 const OVERVIEW_STAGES: OverviewStage[] = [
   {
     id: 1,
@@ -41,15 +43,33 @@ const OVERVIEW_STAGES: OverviewStage[] = [
   },
   {
     id: 2,
-    icon: '🔍',
-    heading: 'Find Best Modules',
-    description: 'We search 120+ I/O modules and score each one by how well it fits your requirements.',
+    icon: '🗂️',
+    heading: 'Search Module Catalog',
+    description: 'Each requirement is matched against our catalog of 120+ I/O modules to find compatible candidates.',
     color: 'bg-amber-50',
     borderColor: 'border-amber-200',
     accentColor: 'text-amber-600',
   },
   {
     id: 3,
+    icon: '📊',
+    heading: 'Score & Rank Candidates',
+    description: 'Every candidate is scored on protocol match, channel capacity, consolidation potential, and machine compatibility.',
+    color: 'bg-pink-50',
+    borderColor: 'border-pink-200',
+    accentColor: 'text-pink-600',
+  },
+  {
+    id: 4,
+    icon: '🏆',
+    heading: 'Pick Winning Modules',
+    description: 'The highest-scoring module wins for each requirement. Ties are broken by fewest units needed.',
+    color: 'bg-orange-50',
+    borderColor: 'border-orange-200',
+    accentColor: 'text-orange-600',
+  },
+  {
+    id: 5,
     icon: '⚡',
     heading: 'Optimize FPGA Boards',
     description: 'When modules share an FPGA family, we consolidate boards to save slots and cost.',
@@ -58,16 +78,16 @@ const OVERVIEW_STAGES: OverviewStage[] = [
     accentColor: 'text-emerald-600',
   },
   {
-    id: 4,
+    id: 6,
     icon: '✅',
-    heading: 'Validate & Check',
+    heading: 'Validate Machine Fit',
     description: 'Verify machine slot limits and module compatibility before finalizing.',
     color: 'bg-red-50',
     borderColor: 'border-red-200',
     accentColor: 'text-red-600',
   },
   {
-    id: 5,
+    id: 7,
     icon: '📦',
     heading: 'System Proposal',
     description: 'Get a complete bill-of-materials with a confidence score and rationale.',
@@ -295,21 +315,21 @@ export default function DecisionFlowModal({ open, onClose, onLoadExample }: Deci
         setAnimStep(step)
       }, 600)
 
-      // Overview animation (5 stages × 800ms)
+      // Overview animation (7 stages × 700ms)
       setOverviewStage(0)
       setOverviewDone(false)
       let oStep = 0
       overviewIntervalRef.current = setInterval(() => {
         oStep++
-        if (oStep >= 5) {
+        if (oStep >= OVERVIEW_STAGE_COUNT) {
           if (overviewIntervalRef.current) clearInterval(overviewIntervalRef.current)
           overviewIntervalRef.current = null
           setOverviewDone(true)
-          setOverviewStage(4)
+          setOverviewStage(OVERVIEW_STAGE_COUNT - 1)
           return
         }
         setOverviewStage(oStep)
-      }, 800)
+      }, 700)
     },
     [clearAnimation],
   )
@@ -491,7 +511,7 @@ export default function DecisionFlowModal({ open, onClose, onLoadExample }: Deci
               <span className="ml-auto inline-flex items-center gap-1 text-[10px] font-semibold text-violet-500">
                 <span className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-violet-500" />
                 {viewMode === 'overview'
-                  ? `Stage ${overviewStage + 1} / 5`
+                  ? `Stage ${overviewStage + 1} / ${OVERVIEW_STAGE_COUNT}`
                   : `Step ${animStep + 1} / ${MAIN_PIPELINE_ORDER.length}`}
               </span>
             )}
@@ -507,12 +527,17 @@ export default function DecisionFlowModal({ open, onClose, onLoadExample }: Deci
                 const stageIdx = idx
                 const isActive = activeExample != null && overviewStage === stageIdx
                 const isVisited = activeExample != null && overviewStage >= stageIdx
-                const isFpgaStage = stage.id === 3
+                const isFpgaStage = stage.id === 5
+                const isScoreStage = stage.id === 3
+                const isPickStage = stage.id === 4
                 const fpgaSkipped = isFpgaStage && activeExample != null && !activeExample.hasFpgaBranch
                 const shouldDim = fpgaSkipped && !isActive
 
                 const overviewFact =
                   activeExample && isVisited ? activeExample.overviewFacts[stageIdx] : undefined
+
+                // Show module showcase on Score or Pick stage
+                const showModuleShowcase = (isScoreStage || isPickStage) && activeExample && isVisited
 
                 return (
                   <div key={stage.id}>
@@ -577,6 +602,105 @@ export default function DecisionFlowModal({ open, onClose, onLoadExample }: Deci
                               {overviewFact}
                             </div>
                           )}
+
+                          {/* Module candidate showcase (Score & Pick stages) */}
+                          {showModuleShowcase && activeExample.moduleShowcase.map((showcase) => (
+                            <div key={showcase.requirementLabel} className="mt-3 rounded-lg border border-slate-200 bg-white p-3">
+                              <p className="mb-2 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                                {showcase.requirementLabel}
+                              </p>
+                              <div className="space-y-1.5">
+                                {showcase.candidates.map((c) => (
+                                  <div key={c.moduleId + showcase.requirementLabel}>
+                                    <div
+                                      className={`flex items-center gap-3 rounded-lg px-3 py-2 text-xs transition-all ${
+                                        c.isWinner
+                                          ? 'border border-emerald-200 bg-emerald-50 font-semibold text-emerald-800'
+                                          : 'border border-slate-100 bg-slate-50 text-slate-600'
+                                      }`}
+                                    >
+                                      {/* Winner badge or rank dot */}
+                                      {c.isWinner ? (
+                                        <span className="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-emerald-500 text-[10px] text-white">✓</span>
+                                      ) : (
+                                        <span className="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-slate-200 text-[10px] text-slate-500">·</span>
+                                      )}
+
+                                      {/* Module name */}
+                                      <span className="flex-1 truncate font-mono text-[11px]">{c.name}</span>
+
+                                      {/* Score bar */}
+                                      <div className="flex items-center gap-1.5">
+                                        <div className="h-1.5 w-16 overflow-hidden rounded-full bg-slate-200">
+                                          <div
+                                            className={`h-full rounded-full transition-all duration-700 ${
+                                              c.isWinner ? 'bg-emerald-500' : 'bg-slate-400'
+                                            }`}
+                                            style={{ width: `${Math.min(100, (c.score / 40) * 100)}%` }}
+                                          />
+                                        </div>
+                                        <span className={`w-6 text-right font-bold ${
+                                          c.isWinner ? 'text-emerald-700' : 'text-slate-500'
+                                        }`}>
+                                          {c.score}
+                                        </span>
+                                      </div>
+
+                                      {/* Units */}
+                                      {isPickStage && (
+                                        <span className={`rounded px-1.5 py-0.5 text-[9px] font-bold ${
+                                          c.isWinner
+                                            ? 'bg-emerald-100 text-emerald-700'
+                                            : 'bg-slate-100 text-slate-500'
+                                        }`}>
+                                          {c.units} unit{c.units > 1 ? 's' : ''}
+                                        </span>
+                                      )}
+                                    </div>
+
+                                    {/* Score breakdown for winner on Score stage */}
+                                    {isScoreStage && c.isWinner && c.scoreBreakdown && (
+                                      <div className="ml-8 mt-1 mb-1 space-y-1 rounded-lg border border-emerald-100 bg-white p-2.5">
+                                        <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Score breakdown</p>
+                                        {c.scoreBreakdown.map((line) => (
+                                          <div key={line.label} className="flex items-center gap-2">
+                                            <span className={`w-14 text-right font-mono text-[11px] font-bold ${
+                                              line.points >= 0 ? 'text-emerald-600' : 'text-red-500'
+                                            }`}>
+                                              {line.points >= 0 ? '+' : ''}{line.points}
+                                            </span>
+                                            <div className="h-1.5 w-10 overflow-hidden rounded-full bg-slate-100">
+                                              <div
+                                                className={`h-full rounded-full ${
+                                                  line.points >= 0 ? 'bg-emerald-400' : 'bg-red-400'
+                                                }`}
+                                                style={{ width: `${Math.min(100, Math.abs(line.points) / 24 * 100)}%` }}
+                                              />
+                                            </div>
+                                            <span className="text-[10px] font-semibold text-slate-700">{line.label}</span>
+                                            <span className="text-[9px] text-slate-500">— {line.detail}</span>
+                                          </div>
+                                        ))}
+                                        <div className="mt-1 flex items-center gap-2 border-t border-slate-100 pt-1">
+                                          <span className="w-14 text-right font-mono text-[11px] font-black text-emerald-700">=&nbsp;{c.score}</span>
+                                          <span className="text-[10px] font-bold text-emerald-700">Total score</span>
+                                        </div>
+                                      </div>
+                                    )}
+                                  </div>
+                                ))}
+                              </div>
+                              {/* Winner reason on Pick stage */}
+                              {isPickStage && (() => {
+                                const winner = showcase.candidates.find((c) => c.isWinner)
+                                return winner ? (
+                                  <p className="mt-2 text-[10px] font-medium text-emerald-700">
+                                    ✓ {winner.name.split(' – ')[0]} selected — {winner.reason}
+                                  </p>
+                                ) : null
+                              })()}
+                            </div>
+                          ))}
 
                           {/* FPGA before/after savings callout */}
                           {isFpgaStage && activeExample?.hasFpgaBranch && isVisited && (
