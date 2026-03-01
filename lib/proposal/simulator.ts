@@ -477,7 +477,11 @@ function evaluateCandidate(
   const specDiffs: ProposalSpecDiff[] = []
 
   Object.entries(row.specs).forEach(([key, requested]) => {
-    const specMatch = compareSpec(requested, module.supportedSpecs[key], key)
+    // For communication modules, 'range' (Protocol) isn't in supportedSpecs — fall back to protocolSupport
+    const specValues = key === 'range' && !module.supportedSpecs[key] && module.protocolSupport
+      ? module.protocolSupport
+      : module.supportedSpecs[key]
+    const specMatch = compareSpec(requested, specValues, key)
     providedSpecs[key] = specMatch.provided
 
     if (specMatch.status === 'exact') exactCount += 1
@@ -1016,21 +1020,22 @@ function addFpgaInterfaceBoards(
   )
 
   for (const [, entry] of entriesNeedingExtensions) {
-    const techName = entry.module.technicalName
+    // Use fpgaFamily (e.g. 'IO324') for extension naming, not technicalName ('IO3xx (Resolver config)')
+    const boardName = entry.module.fpgaFamily ?? entry.module.technicalName
     const extensions = determineRequiredExtensions(entry.coveredRows, rowDiffs)
 
     for (const ext of extensions) {
-      const extId = `${techName}${ext}`
+      const extId = `${boardName}${ext}`
       const extInfo = IO_INTERFACE_EXTENSIONS.find(e => e.extensionId === ext)
       const friendlyName = extInfo
-        ? `${techName} ${extInfo.type}`
+        ? `${boardName} ${extInfo.type}`
         : `Interface Board ${extId}`
 
       const existing = recommended.get(extId)
       if (existing) {
         existing.quantity += entry.quantity
         for (const rowId of entry.coveredRows) existing.coveredRows.add(rowId)
-        existing.rationale.add(`Required ${ext} extension for ${techName}.`)
+        existing.rationale.add(`Required ${ext} extension for ${boardName}.`)
       } else {
         recommended.set(extId, {
           module: {
@@ -1041,12 +1046,12 @@ function addFpgaInterfaceBoards(
             subCoverage: [],
             channelCapacity: 0,
             supportedSpecs: {},
-            fpgaFamily: techName,
+            fpgaFamily: boardName,
           },
           quantity: entry.quantity,
           coveredChannels: 0,
           coveredRows: new Set(entry.coveredRows),
-          rationale: new Set([`Required ${ext} extension for ${techName} (${extInfo?.type ?? 'signal conditioning'}).`]),
+          rationale: new Set([`Required ${ext} extension for ${boardName} (${extInfo?.type ?? 'signal conditioning'}).`]),
           interfaceForModule: entry.module.moduleId,
         })
       }
@@ -1063,7 +1068,8 @@ function addFpgaInterfaceBoards(
     const board = selectIO33XBoard(entry.coveredRows, rowDiffs)
     if (!board) continue
 
-    const boardId = `${techName}-${board.interfaceId}`
+    // Use the interface board's own ID (e.g. 'IO33X-1-LV'), not prefixed with parent module
+    const boardId = board.interfaceId
     const existing = recommended.get(boardId)
     if (existing) {
       existing.quantity += entry.quantity
@@ -1073,7 +1079,7 @@ function addFpgaInterfaceBoards(
       recommended.set(boardId, {
         module: {
           moduleId: boardId,
-          friendlyName: `${board.interfaceId} Interface Board for ${techName}`,
+          friendlyName: `${board.description}`,
           technicalName: boardId,
           categoryCoverage: 'interface',
           subCoverage: [],
@@ -1084,7 +1090,7 @@ function addFpgaInterfaceBoards(
         quantity: entry.quantity,
         coveredChannels: 0,
         coveredRows: new Set(entry.coveredRows),
-        rationale: new Set([`${board.interfaceId}: ${board.description}. Front I/O interface for ${techName}.`]),
+        rationale: new Set([`${boardId}: ${board.description}. Front I/O interface for ${techName}.`]),
         interfaceForModule: entry.module.moduleId,
       })
     }

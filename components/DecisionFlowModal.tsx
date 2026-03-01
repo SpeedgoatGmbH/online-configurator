@@ -679,8 +679,7 @@ export default function DecisionFlowModal({ open, onClose, liveExample }: Decisi
                           {/* FPGA before/after savings callout — only when real consolidation occurred */}
                           {isFpgaStage && activeExample?.fpgaConsolidation && isVisited && (() => {
                             const { before, after } = activeExample.fpgaConsolidation!
-                            const ifcCount = activeExample.fpgaInterfaceBoardCount ?? after
-                            const totalAfter = after + ifcCount
+                            const ifcCount = activeExample.fpgaInterfaceBoardCount ?? 0
                             const saved = before - after
                             return (
                               <div className="mt-3 flex items-stretch gap-3">
@@ -689,7 +688,7 @@ export default function DecisionFlowModal({ open, onClose, liveExample }: Decisi
                                     Without optimization
                                   </p>
                                   <p className="mt-1 text-2xl font-black text-red-600">{before}</p>
-                                  <p className="text-xs text-red-600">board{before !== 1 ? 's' : ''} · {before} slot{before !== 1 ? 's' : ''}</p>
+                                  <p className="text-xs text-red-600">FPGA board{before !== 1 ? 's' : ''} · {before} slot{before !== 1 ? 's' : ''}</p>
                                 </div>
                                 <div className="flex items-center">
                                   <span className="text-xl text-emerald-500">→</span>
@@ -698,14 +697,19 @@ export default function DecisionFlowModal({ open, onClose, liveExample }: Decisi
                                   <p className="text-[10px] font-bold uppercase tracking-wider text-emerald-500">
                                     With FPGA consolidation
                                   </p>
-                                  <p className="mt-1 text-2xl font-black text-emerald-600">{after}+{ifcCount}</p>
-                                  <p className="text-xs text-emerald-600">{after} board{after !== 1 ? 's' : ''} + {ifcCount} interface{ifcCount !== 1 ? 's' : ''} · {totalAfter} slot{totalAfter !== 1 ? 's' : ''}</p>
+                                  <p className="mt-1 text-2xl font-black text-emerald-600">{after}</p>
+                                  <p className="text-xs text-emerald-600">{after} FPGA board{after !== 1 ? 's' : ''} · {after} slot{after !== 1 ? 's' : ''}</p>
+                                  {ifcCount > 0 && (
+                                    <p className="text-[10px] text-emerald-500 mt-0.5">+ {ifcCount} interface{ifcCount !== 1 ? 's' : ''} (no extra slots)</p>
+                                  )}
                                 </div>
-                                <div className="flex items-center">
-                                  <div className="rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-bold text-emerald-700 ring-1 ring-emerald-300">
-                                    {saved} slot{saved !== 1 ? 's' : ''} saved
+                                {saved > 0 && (
+                                  <div className="flex items-center">
+                                    <div className="rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-bold text-emerald-700 ring-1 ring-emerald-300">
+                                      {saved} slot{saved !== 1 ? 's' : ''} saved
+                                    </div>
                                   </div>
-                                </div>
+                                )}
                               </div>
                             )
                           })()}
@@ -722,18 +726,20 @@ export default function DecisionFlowModal({ open, onClose, liveExample }: Decisi
                           {/* Selected interface boards detail */}
                           {isFpgaStage && activeExample?.fpgaInterfaceBoards && activeExample.fpgaInterfaceBoards.length > 0 && isVisited && (
                             <div className="mt-3 rounded-lg border border-emerald-200 bg-emerald-50/60 p-3">
-                              <p className="text-[10px] font-bold uppercase tracking-wider text-emerald-500 mb-1.5">
+                              <p className="text-[10px] font-bold uppercase tracking-wider text-emerald-500 mb-2">
                                 Selected Interface Boards
                               </p>
-                              <div className="space-y-1">
+                              <div className="space-y-2">
                                 {activeExample.fpgaInterfaceBoards.map((b) => (
-                                  <div key={b.boardId} className="flex items-center gap-2 text-xs text-emerald-700">
-                                    <span className="inline-flex h-4 min-w-[1.25rem] items-center justify-center rounded bg-emerald-200 px-1 text-[10px] font-bold text-emerald-800">
-                                      {b.quantity}×
-                                    </span>
-                                    <span className="font-semibold">{b.boardId}</span>
-                                    <span className="text-emerald-600">— {b.friendlyName}</span>
-                                    <span className="ml-auto text-[10px] text-emerald-500">for {b.parentModuleId}</span>
+                                  <div key={b.boardId} className="flex flex-col gap-0.5 rounded border border-emerald-100 bg-white/60 px-2.5 py-1.5">
+                                    <div className="flex items-center gap-2 text-xs">
+                                      <span className="inline-flex h-4 min-w-[1.25rem] items-center justify-center rounded bg-emerald-200 px-1 text-[10px] font-bold text-emerald-800">
+                                        {b.quantity}×
+                                      </span>
+                                      <span className="font-bold text-emerald-800">{b.boardId}</span>
+                                      <span className="text-emerald-600 font-medium">{b.friendlyName.replace(/^IO\S+\s*/, '')}</span>
+                                    </div>
+                                    <p className="text-[10px] text-emerald-500 pl-7">↳ for {b.parentFriendlyName} ({b.parentModuleId})</p>
                                   </div>
                                 ))}
                               </div>

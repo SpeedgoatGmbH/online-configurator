@@ -173,31 +173,6 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     docDescription: 'Fast, simultaneous-sampling, 16-bit analog input module',
   },
   {
-    moduleId: 'IO106',
-    friendlyName: 'Analog Input 64ch +/-10 V Simultaneous',
-    technicalName: 'IO106',
-    categoryCoverage: 'analog',
-    subCoverage: ['inputs'],
-    channelCapacity: 64,
-    supportedSpecs: {
-      inputMode: ['Differential', 'Single-ended'],
-      signalType: ['Voltage'],
-      signalRange: ['\u00b110 V'],
-      resolution: ['16-bit'],
-      speed: ['100 kHz'],
-    },
-    compatibleMachines: ['performance', 'baseline', 'mobile'],
-    /* web-enriched (speedgoat.com/analog) */
-    lifecycleStatus: 'active',
-    resolutionBits: 16,
-    sampleRateHz: [200000],
-    voltageRange: { min: -10, max: 10, unit: 'V' },
-    samplingMode: 'SM/-',
-    inputChannelSpec: '64 SE / 32 DF',
-    webSourcePage: 'analog',
-    docDescription: 'Fast 16-bit analog module with 64/32 multiplexed analog input channels',
-  },
-  {
     moduleId: 'IO141',
     friendlyName: 'Analog I/O 16+4ch Wide-Range +/-25 V',
     technicalName: 'IO141',
@@ -576,7 +551,7 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     fpgaAnalogInputChannels: '16',
     fpgaAnalogOutputChannels: 8,
     fpgaDigitalIOLines: 32,
-    configPackages: ['Communication TTL', 'Communication RS422', 'HIL TTL', 'HIL RS422', 'RCP TTL', 'RCP RS422', 'TPI6020', 'modules Resolver TTL'],
+    configPackages: ['Communication TTL', 'Communication RS422', 'HIL TTL', 'HIL RS422', 'RCP TTL', 'RCP RS422', 'TPI6020', 'Resolver TTL'],
   },
   {
     moduleId: 'IO397',
@@ -612,7 +587,7 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     fpgaAnalogInputChannels: '4',
     fpgaAnalogOutputChannels: 4,
     fpgaDigitalIOLines: 14,
-    configPackages: ['Communication', 'modules HIL', 'modules RCP', 'modules TPI6020', 'Configuration Package Communication TTL', 'Communication RS422', 'HIL TTL', 'HIL RS422', 'RCP TTL', 'RCP RS422', 'Resolver TTL'],
+    configPackages: ['Communication', 'HIL', 'RCP', 'TPI6020'],
   },
   // IO335  — 24-input 3-output FPGA Analog 5 MHz (XMC)
   {
@@ -987,7 +962,7 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     fpgaLogicCells: '25k',
     fpgaCategory: 'configurable',
     fpgaDigitalIOLines: 64,
-    configPackages: ['Communication', 'modules HIL', 'modules RCP'],
+    configPackages: ['Communication', 'HIL', 'RCP'],
   },
   {
     moduleId: 'IO307',
@@ -1012,7 +987,7 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     fpgaLogicCells: '25k',
     fpgaCategory: 'configurable',
     fpgaDigitalIOLines: 48,
-    configPackages: ['Communication', 'modules HIL', 'modules RCP'],
+    configPackages: ['Communication', 'HIL', 'RCP'],
   },
   {
     moduleId: 'IO308',
@@ -1310,7 +1285,7 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     fpgaAnalogInputChannels: '32/16',
     fpgaAnalogOutputChannels: 8,
     fpgaDigitalIOLines: 32,
-    configPackages: ['Communication TTL', 'Communication RS422', 'HIL TTL', 'HIL RS422', 'RCP TTL', 'RCP RS422', 'TPI6020', 'modules Resolver TTL'],
+    configPackages: ['Communication TTL', 'Communication RS422', 'HIL TTL', 'HIL RS422', 'RCP TTL', 'RCP RS422', 'TPI6020', 'Resolver TTL'],
   },
   {
     moduleId: 'IO324',
@@ -1676,44 +1651,6 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     webSourcePage: 'communications',
   },
   {
-    moduleId: 'IO602',
-    friendlyName: 'CAN 2/4-port',
-    technicalName: 'IO602',
-    categoryCoverage: 'communication',
-    subCoverage: ['protocols'],
-    channelCapacity: 4,
-    supportedSpecs: {
-      resolution: ['HS CAN'],
-      speed: ['500 kbit/s', '1 Mbit/s'],
-    },
-    protocolSupport: ['CAN', 'XCP over CAN'],
-    compatibleMachines: ['performance', 'baseline', 'mobile'],
-    /* web-enriched (speedgoat.com/communications) */
-    lifecycleStatus: 'active',
-    connector: '25-pin D-sub or 4x 9-pin D-sub',
-    maxDataRateMbps: 5,
-    webSourcePage: 'communications',
-  },
-  {
-    moduleId: 'IO601',
-    friendlyName: 'CAN / LIN / XCP 2-port',
-    technicalName: 'IO601',
-    categoryCoverage: 'communication',
-    subCoverage: ['protocols'],
-    channelCapacity: 2,
-    supportedSpecs: {
-      resolution: ['HS CAN', 'LIN'],
-      speed: ['500 kbit/s', '1 Mbit/s', '19.2 kbit/s'],
-    },
-    protocolSupport: ['CAN', 'LIN', 'XCP over CAN'],
-    compatibleMachines: ['performance', 'baseline', 'mobile'],
-    /* web-enriched (speedgoat.com/communications) */
-    lifecycleStatus: 'active',
-    connector: '9-pin D-sub',
-    maxDataRateMbps: 1,
-    webSourcePage: 'communications',
-  },
-  {
     moduleId: 'IO691',
     friendlyName: 'CAN / XCP 2-port Compact',
     technicalName: 'IO691',
@@ -1790,25 +1727,6 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     webSourcePage: 'communications',
   },
   {
-    moduleId: 'IO612',
-    friendlyName: 'CAN / XCP 4-port',
-    technicalName: 'IO612',
-    categoryCoverage: 'communication',
-    subCoverage: ['protocols'],
-    channelCapacity: 4,
-    supportedSpecs: {
-      resolution: ['HS CAN'],
-      speed: ['500 kbit/s', '1 Mbit/s'],
-    },
-    protocolSupport: ['CAN', 'XCP over CAN'],
-    compatibleMachines: ['performance', 'mobile'],
-    /* web-enriched (speedgoat.com/communications) */
-    lifecycleStatus: 'active',
-    connector: '9-pin D-sub x 2',
-    maxDataRateMbps: 1,
-    webSourcePage: 'communications',
-  },
-  {
     moduleId: 'IO613',
     friendlyName: 'CAN / XCP 2-port Baseline',
     technicalName: 'IO613',
@@ -1847,23 +1765,6 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     webSourcePage: 'communications',
   },
   {
-    moduleId: 'IO629',
-    friendlyName: 'ARINC 429 / 629 Multi-Channel Performance',
-    technicalName: 'IO629',
-    categoryCoverage: 'communication',
-    subCoverage: ['protocols'],
-    channelCapacity: 4,
-    supportedSpecs: {
-      resolution: ['ARINC 429', 'ARINC 629'],
-      speed: ['100 kbit/s', '2 Mbit/s'],
-    },
-    protocolSupport: ['ARINC 429', 'ARINC 629'],
-    compatibleMachines: ['performance'],
-    /* web-enriched (speedgoat.com/communications) */
-    lifecycleStatus: 'active',
-    webSourcePage: 'communications',
-  },
-  {
     moduleId: 'IO624',
     friendlyName: 'PSI5 8-port',
     technicalName: 'IO624',
@@ -1897,24 +1798,6 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     protocolSupport: ['IRIG + GPS'],
     compatibleMachines: ['performance', 'baseline', 'mobile'],
     docDescription: 'I/O modules installed.',
-  },
-  {
-    moduleId: 'IO723',
-    friendlyName: 'Automotive Ethernet + CAN FD Multi-Bus 6-port',
-    technicalName: 'IO723',
-    categoryCoverage: 'communication',
-    subCoverage: ['protocols'],
-    channelCapacity: 6,
-    supportedSpecs: {
-      resolution: ['HS CAN', 'HS CAN FD', '100BASE-T1', '1000BASE-T1'],
-      speed: ['500 kbit/s', '1 Mbit/s', '2 Mbit/s', '5 Mbit/s', '100 Mbit/s', '1 Gbit/s'],
-    },
-    protocolSupport: ['CAN', 'CAN FD', 'Automotive Ethernet'],
-    compatibleMachines: ['performance'],
-    /* web-enriched (speedgoat.com/communications) */
-    lifecycleStatus: 'active',
-    maxDataRateMbps: 1000,
-    webSourcePage: 'communications',
   },
   {
     moduleId: 'IO750',
@@ -2309,35 +2192,6 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     connector: 'RJ-45 x 2',
     maxDataRateMbps: 100,
     webSourcePage: 'communications',
-  },
-  {
-    moduleId: 'IO710',
-    friendlyName: 'Multi-Protocol Ethernet 1-port GbE',
-    technicalName: 'IO710',
-    categoryCoverage: 'communication',
-    subCoverage: ['protocols'],
-    channelCapacity: 1,
-    supportedSpecs: {
-      resolution: ['1000BASE-T', 'Ethernet'],
-      speed: ['1 Gbit/s'],
-    },
-    protocolSupport: [
-      'EtherCAT',
-      'Real-Time UDP',
-      'XCP over Ethernet',
-      'Modbus TCP',
-      'OPC UA',
-      'MQTT',
-      'DNP3',
-      'IEC 61850',
-    ],
-    compatibleMachines: ['performance'],
-    /* web-enriched (speedgoat.com/communications) */
-    lifecycleStatus: 'active',
-    connector: 'RJ-45',
-    maxDataRateMbps: 1000,
-    webSourcePage: 'communications',
-    docDescription: 'Gigabit Ethernet I/O module with 1 port',
   },
   {
     moduleId: 'IO716',
@@ -2839,6 +2693,141 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     },
     compatibleMachines: ['performance', 'mobile', 'baseline', 'unit'],
   },
+
+  // ===========================================================================
+  // Modules added from Gold Lake production-paper verification (missing from
+  // original catalog but found in real customer configurations).
+  // ===========================================================================
+
+  // --- IO133 — 514 production papers, #2 most configured module (ACTIVE) -----
+  {
+    moduleId: 'IO133',
+    friendlyName: 'Analog I/O 16in + 8out + 14 DIO',
+    technicalName: 'IO133',
+    categoryCoverage: 'analog',
+    subCoverage: ['inputs', 'outputs'],
+    channelCapacity: 16,
+    supportedSpecs: {
+      inputMode: ['Differential'],
+      signalType: ['Voltage'],
+      signalRange: ['±10 V'],
+      resolution: ['16-bit'],
+      speed: ['100 kHz'],
+    },
+    compatibleMachines: ['performance', 'pulse', 'baseline', 'mobile'],
+    formFactor: 'PMC',
+    lifecycleStatus: 'active',
+    resolutionBits: 16,
+    sampleRateHz: [200000],
+    voltageRange: { min: -10, max: 10, unit: 'V' },
+    outputVoltageRange: { min: -10.8, max: 10.8, unit: 'V' },
+    samplingMode: 'SM/SM',
+    inputChannelSpec: '16 DF',
+    outputChannelSpec: '8 SE',
+    webSourcePage: 'analog',
+    docDescription: 'Simultaneous-sampling 16-bit analog I/O module with 16 differential inputs, 8 single-ended outputs and 14 digital I/O lines',
+  },
+
+  // --- IO132 — 148 production papers (ACTIVE) --------------------------------
+  {
+    moduleId: 'IO132',
+    friendlyName: 'Analog I/O 8in + 4out + 14 DIO',
+    technicalName: 'IO132',
+    categoryCoverage: 'analog',
+    subCoverage: ['inputs', 'outputs'],
+    channelCapacity: 8,
+    supportedSpecs: {
+      inputMode: ['Differential'],
+      signalType: ['Voltage'],
+      signalRange: ['±10 V'],
+      resolution: ['16-bit'],
+      speed: ['100 kHz'],
+    },
+    compatibleMachines: ['performance', 'pulse', 'baseline', 'mobile'],
+    formFactor: 'PMC',
+    lifecycleStatus: 'active',
+    resolutionBits: 16,
+    sampleRateHz: [200000],
+    voltageRange: { min: -10, max: 10, unit: 'V' },
+    outputVoltageRange: { min: -10.8, max: 10.8, unit: 'V' },
+    samplingMode: 'SM/SM',
+    inputChannelSpec: '8 DF',
+    outputChannelSpec: '4 SE',
+    webSourcePage: 'analog',
+    docDescription: 'Simultaneous-sampling 16-bit analog I/O module with 8 differential inputs, 4 single-ended outputs and 14 digital I/O lines',
+  },
+
+  // --- IO907 — Temperature Sensor Simulation (222 production papers) ---------
+  {
+    moduleId: 'IO907',
+    friendlyName: 'Temperature Sensor Simulation 16ch',
+    technicalName: 'IO907',
+    categoryCoverage: 'temperature',
+    subCoverage: ['simulation'],
+    channelCapacity: 16,
+    supportedSpecs: {
+      range: ['Thermocouple', 'RTD', 'Thermistor'],
+      speed: ['10 Hz', '100 Hz', '1 kHz'],
+    },
+    compatibleMachines: ['performance'],
+    lifecycleStatus: 'active',
+    webSourcePage: 'temperature-strain',
+    docDescription: 'Temperature sensor simulation I/O module for HIL testing of automotive and industrial control systems',
+  },
+
+  // --- IO941 — Reed Relay Switching (~120 production papers) -----------------
+  {
+    moduleId: 'IO941',
+    friendlyName: 'Reed Relay Switching Module',
+    technicalName: 'IO941',
+    categoryCoverage: 'fault',
+    subCoverage: ['relays'],
+    channelCapacity: 32,
+    supportedSpecs: {
+      range: ['SPST', 'SPDT', 'DPST'],
+      speed: ['250 V AC', '30 V DC'],
+    },
+    compatibleMachines: ['performance'],
+    lifecycleStatus: 'active',
+    webSourcePage: 'fault-insertion',
+    docDescription: 'Ruthenium reed relay and electromechanical relay switching I/O module, max 1.25 A / 300 Vdc / 250 Vac',
+  },
+
+  // --- IO981 — Fault Insertion (SPST/SPDT) -----------------------------------
+  {
+    moduleId: 'IO981',
+    friendlyName: 'Fault Insertion Module (SPST/SPDT)',
+    technicalName: 'IO981',
+    categoryCoverage: 'fault',
+    subCoverage: ['switches'],
+    channelCapacity: 48,
+    supportedSpecs: {
+      range: ['MOSFET'],
+      speed: ['5 A', '10 A'],
+    },
+    compatibleMachines: ['performance'],
+    lifecycleStatus: 'active',
+    webSourcePage: 'fault-insertion',
+    docDescription: 'Fault insertion I/O module with up to 75 channels for HIL testing of embedded controllers',
+  },
+
+  // --- IO983 — Fault Insertion (DPST) ----------------------------------------
+  {
+    moduleId: 'IO983',
+    friendlyName: 'Fault Insertion Module (DPST)',
+    technicalName: 'IO983',
+    categoryCoverage: 'fault',
+    subCoverage: ['switches'],
+    channelCapacity: 75,
+    supportedSpecs: {
+      range: ['MOSFET'],
+      speed: ['5 A', '10 A'],
+    },
+    compatibleMachines: ['performance'],
+    lifecycleStatus: 'active',
+    webSourcePage: 'fault-insertion',
+    docDescription: 'Fault insertion I/O module with DPST switch configuration, up to 75 channels',
+  },
 ]
 
 /**
@@ -2969,14 +2958,13 @@ export const FPGA_CODE_MODULE_COMPAT: Record<string, Set<string>> = {
   IO324: new Set(['Analog', 'PWM', 'SPI', 'I2C', 'Serial', 'Digital', 'Pulse Counter', 'Quadrature', 'SSI', 'BiSS', 'EnDat', 'Resolver', 'TPI6020', 'SENT', 'Dshot', 'Cam and Crank', 'CMU Emulation', 'Interrupt', 'DMA Controller']),
   IO334: new Set(['Analog', 'PWM', 'SPI', 'I2C', 'Serial', 'Digital', 'Pulse Counter', 'Quadrature', 'SSI', 'BiSS', 'EnDat', 'Resolver', 'SENT', 'Dshot', 'Cam and Crank', 'Interrupt', 'DMA Controller']),
   IO336: new Set(['Analog', 'PWM', 'SPI', 'I2C', 'Serial', 'Digital', 'Pulse Counter', 'Quadrature', 'SSI', 'BiSS', 'EnDat', 'Resolver', 'TPI6020', 'SENT', 'Dshot', 'Cam and Crank', 'CMU Emulation', 'Interrupt', 'DMA Controller']),
-  IO337: new Set(['Analog', 'PWM', 'SPI', 'I2C', 'Serial', 'Digital', 'Interrupt', 'DMA Controller']),
+  IO337: new Set(['Analog', 'PWM', 'SPI', 'I2C', 'Serial', 'Digital', 'Pulse Counter', 'Quadrature', 'SSI', 'BiSS', 'EnDat', 'Interrupt', 'DMA Controller']),  // config packages prove Quadrature/SSI/EnDat/Pulse Counter support
   IO397: new Set(['Analog', 'PWM', 'SPI', 'I2C', 'Serial', 'Digital', 'Pulse Counter', 'Quadrature', 'TPI6020', 'Interrupt', 'DMA Controller']),
   // Configurable-only modules — support same protocols via config files
   IO316: new Set(['PWM', 'SPI', 'I2C', 'Digital', 'Pulse Counter', 'Quadrature', 'Interrupt', 'DMA Controller']),
   IO317: new Set(['PWM', 'SPI', 'I2C', 'Serial', 'Digital', 'Pulse Counter', 'Quadrature', 'SSI', 'BiSS', 'EnDat', 'Interrupt', 'DMA Controller']),
   IO318: new Set(['PWM', 'SPI', 'I2C', 'Serial', 'Digital', 'Pulse Counter', 'Quadrature', 'SSI', 'BiSS', 'EnDat', 'Interrupt', 'DMA Controller']),
   IO322: new Set(['Analog', 'PWM', 'SPI', 'I2C', 'Serial', 'Digital', 'Pulse Counter', 'Quadrature', 'Interrupt', 'DMA Controller']),
-  // IO323 removed (Discontinued)
   IO391: new Set(['PWM', 'SPI', 'I2C', 'Digital', 'Pulse Counter', 'Quadrature', 'Interrupt', 'DMA Controller']),
   IO392: new Set(['PWM', 'SPI', 'I2C', 'Serial', 'Digital', 'Pulse Counter', 'Quadrature', 'SSI', 'BiSS', 'EnDat', 'Interrupt', 'DMA Controller']),
   IO393: new Set(['PWM', 'SPI', 'I2C', 'Serial', 'Digital', 'Pulse Counter', 'Quadrature', 'SSI', 'BiSS', 'EnDat', 'Interrupt', 'DMA Controller']),
@@ -3194,7 +3182,6 @@ export const FPGA_MODULE_SPECS = [
     "hasOptionalInterfaces": false,
     "hasInterfaceExtensions": false
   },
-  // IO323 removed (Discontinued)
   {
     "moduleId": "IO324",
     "fullName": "IO324-200k",
@@ -3221,7 +3208,6 @@ export const FPGA_MODULE_SPECS = [
     "hasOptionalInterfaces": false,
     "hasInterfaceExtensions": false
   },
-  // IO331 removed (Deprecated → IO332)
   {
     "moduleId": "IO332",
     "fullName": "IO332-200k",

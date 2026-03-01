@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Archivo } from 'next/font/google'
+import Script from 'next/script'
 import './globals.css'
 
 const archivo = Archivo({
@@ -20,7 +21,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={archivo.variable}>{children}</body>
+      <body className={archivo.variable}>
+        <Script src="https://mcp.figma.com/mcp/html-to-design/capture.js" strategy="afterInteractive" />
+        {children}
+      </body>
     </html>
   )
 }

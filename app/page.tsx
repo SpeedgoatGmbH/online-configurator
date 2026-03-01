@@ -39,7 +39,7 @@ const MACHINE_OPTIONS = [
     blurb: 'Control design and validation.',
     image: `${BASE_PATH}/assets/machine-pulse.png`,
     maxSlots: 3,
-    maxSlotsExpanded: 3,
+    maxSlotsExpanded: 8,
   },
   {
     id: 'mobile',

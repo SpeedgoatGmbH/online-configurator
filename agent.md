@@ -364,3 +364,619 @@ Added `defaultQuantity?: number` to the `SubCategory` type (`types.ts`). `create
 | BMS | Fault Insertion | 4 | Fault per cell group |
 | BMS | Temp Emulation | 8 | NTC per module |
 | Custom | General Purpose | 4 | Conservative default |
+
+---
+
+## 11. Accessing Speedgoat Authenticated Documentation (Workflow)
+
+### Problem
+
+Speedgoat's help documentation (e.g. HDL Coder interfaces, IO module specs) lives behind a customer login at `https://www.speedgoat.com/help/...`. Standard `fetch` or `curl` cannot access it — pages return a login wall.
+
+### Solution: Playwright Crawler
+
+The project includes a Playwright-based crawler at `scripts/crawl-speedgoat-playwright.js` that handles authenticated crawling.
+
+#### Prerequisites
+
+```bash
+npm i -D playwright
+npx playwright install chromium
+```
+
+#### Credentials
+
+Store credentials in `.env.local` (gitignored):
+
+```env
+CRAWL_USERNAME=your.email@speedgoat.com
+CRAWL_PASSWORD=your_password
+```
+
+#### Running the Crawler
+
+**Automated login (if selectors match the login form):**
+```powershell
+$env:CRAWL_START_URL="https://www.speedgoat.com/help/hdlcoder/page/refentry_interface_io33x_01LV"
+$env:CRAWL_PATH_PREFIX="/help"
+$env:CRAWL_MAX_PAGES=30
+$env:CRAWL_HEADLESS="true"
+$env:CRAWL_BLOCK_ASSETS="true"
+$env:CRAWL_DELAY_MS=500
+node scripts/crawl-speedgoat-playwright.js
+```
+
+**Manual login (recommended — Speedgoat login form may not match default selectors):**
+```powershell
+$env:CRAWL_START_URL="https://www.speedgoat.com/help/hdlcoder/page/refentry_interface_io33x_01LV"
+$env:CRAWL_PATH_PREFIX="/help"
+$env:CRAWL_MAX_PAGES=30
+$env:CRAWL_HEADLESS="false"
+$env:CRAWL_LOGIN_POLL="true"
+$env:CRAWL_LOGIN_POLL_TIMEOUT_MS=300000
+$env:CRAWL_BLOCK_ASSETS="true"
+$env:CRAWL_DELAY_MS=500
+node scripts/crawl-speedgoat-playwright.js
+```
+
+This opens a browser window. Log in manually, then the script auto-detects authentication and begins crawling.
+
+#### Output
+
+- HTML pages saved to `crawl-output-playwright/pages/help/hdlcoder/page/*.html`
+- Manifest: `crawl-output-playwright/crawl-results.json`
+- Persistent browser profile: `crawl-output-playwright/profile/` (subsequent runs reuse login session)
+
+#### Key Environment Variables
+
+| Variable | Default | Description |
+|---|---|---|
+| `CRAWL_START_URL` | extranet home | Starting URL to crawl |
+| `CRAWL_PATH_PREFIX` | `/extranet` | Only follow links under this path |
+| `CRAWL_MAX_PAGES` | 50 | Maximum pages to crawl |
+| `CRAWL_HEADLESS` | `false` | Run browser headless (no window) |
+| `CRAWL_LOGIN_POLL` | `false` | Poll for manual login completion |
+| `CRAWL_BLOCK_ASSETS` | `true` | Block images/fonts/media for speed |
+| `CRAWL_SAVE_JSON` | `false` | Capture JSON API responses too |
+| `CRAWL_USERNAME` / `CRAWL_PASSWORD` | empty | Auto-login credentials |
+
+#### Extracting Text from Crawled HTML
+
+Since `jsdom` is not installed, use Node's built-in string replacement:
+
+```javascript
+const fs = require('fs');
+const html = fs.readFileSync('crawl-output-playwright/pages/help/hdlcoder/page/refentry_interface_io33x_01LV.html', 'utf8');
+const text = html
+  .replace(/<style[\s\S]*?<\/style>/gi, '')
+  .replace(/<script[\s\S]*?<\/script>/gi, '')
+  .replace(/<[^>]+>/g, ' ')
+  .replace(/&nbsp;/g, ' ')
+  .replace(/\s+/g, ' ')
+  .trim();
+console.log(text.slice(0, 5000));
+```
+
+---
+
+## 12. IO33x Interface & Pin Mapping Analysis
+
+### Source Data
+
+Crawled 30 pages from `https://www.speedgoat.com/help/hdlcoder/page/` on 2026-03-01, covering:
+- IO33x-01LV, IO33x-02, IO33x-03, IO33x-04, IO33x-06 (front interfaces)
+- IO3xx-21, IO3xx-22, IO3xx-24 (extension interfaces)
+- IO335, IO336, IO337 (module-specific front interfaces)
+- IO324, IO325 (TTL/differential interfaces)
+- IO360-A/B/C, IO361-A/B/C (TTL/differential interfaces)
+- IO397 (TTL interface)
+- Digital FireFly interface
+
+### Interface Architecture Summary
+
+Each IO33x front interface board (IO33X-1-LV through IO33X-8) defines a **fixed physical pin mapping** between:
+1. **Terminal pins** (physical connector pins on the board's front panel)
+2. **FPGA pins** (the FPGA's I/O banks inside the IO332/IO333 module)
+3. **Target Platform Interfaces** (the HDL Workflow Advisor interface names)
+
+**This mapping is physically wired — it is NOT software-configurable.**
+
+### IO33x Front Interface Pin Mappings (from documentation)
+
+| Interface | Connector | I/O Type | Channel Count | Direction | Data Type |
+|---|---|---|---|---|---|
+| **IO33X-1-LV** (IO33x-01LV) | 68-pin | LVTTL 3.3V | 64 channels [0:63] | bidirectional | boolean |
+| **IO33X-2** (IO33x-02) | 68-pin | RS485/RS422 differential | 30 channels [0:29] | bidirectional | boolean |
+| **IO33X-3** (IO33x-03) | 68-pin | Mixed: 16 TTL + 22 RS485/RS422 | 16+22 = 38 channels | bidirectional | boolean |
+| **IO33X-4** (IO33x-04) | 68-pin | LVDS differential | 30 channels [0:29] | bidirectional | boolean |
+| **IO33X-5** (IO33x-05) | — | 2× 16-bit 105MHz differential AI | 2 channels | input | int16 |
+| **IO33X-6** (IO33x-06) | — | Mixed: 16 AI + 8 AO + 16 GPIO | 16+8+16 = 40 channels | mixed | int16/boolean |
+| **IO33X-7** (IO33x-07) | — | 16× 16-bit AO | 16 channels | output | int16 |
+| **IO33X-8** (IO33x-08) | — | 8× 16-bit AO | 8 channels | output | int16 |
+
+### IO Extension Interface Pin Mappings
+
+| Extension | I/O Type | Channel Count | Supported Modules |
+|---|---|---|---|
+| **-21** (IO3xx-21) | 56 TTL I/O lines, 7 groups of 8 | 56 | IO324, IO325, IO332, IO333, IO334, IO335, IO336, IO337, IO342, IO344, IO352, IO360, IO361, Pulse I/O |
+| **-22** (IO3xx-22) | 16 RS422/RS485 + 24 TTL + 6 I²C | 46 | IO324, IO325, IO332, IO333, IO334, IO335, IO336, IO337, IO342, IO344, IO352, IO360, IO361, Pulse I/O |
+| **-24** (IO3xx-24) | 2 RDC + 8 RS422/RS485 + 40 TTL | 50 | IO324, IO325, IO332, IO333, IO334, IO335, IO336, IO337, IO360, IO361, Pulse I/O |
+
+### Module Compatibility Matrix (from docs)
+
+| Module | Supported IO33X-N Front Interfaces | IO Extensions |
+|---|---|---|
+| **IO332-200k** | -01LV, -02, -04, -06 | -21, -22, -24 |
+| **IO333-325k/410k** | -01LV, -02, -03, -04, -06 | -21, -22, -24 |
+| **IO334-325k** | (has own front connector) | -21, -22, -24 |
+| **IO335-325k** | (has own front connector) | -21, -22, -24 |
+| **IO336-325k** | (has own front connector) | -21, -22, -24 |
+| **IO337-650k** | (has own front connector) | -21, -22 (no -24) |
+
+### Digital FireFly Interface (for future reference)
+
+The FireFly connector supports LVCMOS or LVDS with module-dependent channel counts:
+- IO332/IO333: 8 LVDS or 16 LVCMOS
+- IO334/IO336: 4 LVDS or 8 LVCMOS
+- IO337/IO352: 8 LVCMOS only (no LVDS)
+- IO360/IO361: 4 LVDS only (no LVCMOS)
+
+---
+
+## 13. Pin Mapping in the Configurator — Do We Need It?
+
+### The Core Question
+
+> Since we generate bitstreams and only a certain flexible amount of functionality is possible, do we need pin mapping logic in the configurator?
+
+### Analysis
+
+#### What Happens in the Real Workflow
+
+1. **Customer selects a reference design** in the HDL Workflow Advisor (Simulink/HDL Coder)
+2. **Step 1.2**: Customer selects the I/O interface (e.g. "-01" for IO33x-01LV, "-02" for IO33x-02)
+3. **Step 1.3**: The available Target Platform Interfaces are **determined by the interface selection** — e.g. selecting "-01" gives `LVTTL IO33x-01LV Channel [0:63]`, selecting "-02" gives `RS485/RS422 IO33x-02 Channel [0:29]`
+4. **HDL Coder generates the bitstream** with the correct pin assignments baked in
+
+#### What the Configurator Does Today
+
+The configurator recommends:
+- Which FPGA module to use (IO332, IO333, IO334, etc.)
+- Which IO33X-N front interface board (for IO332/IO333)
+- Which IO extension(s) (-21, -22, -24, -120)
+
+This is **sufficient** because:
+
+1. **Pin mapping is fixed per interface board** — Choosing IO33X-2 (RS485) automatically means 30 RS485 channels on specific pins. There is no "custom pin assignment" option. The physical wiring is baked into the daughter board PCB.
+
+2. **The bitstream generation handles pin mapping** — HDL Coder + the IO Configuration Package automatically assigns FPGA pins based on the selected interface. The customer doesn't manually route pins.
+
+3. **Channel count is the binding constraint, not pin mapping** — The configurator already tracks channel counts per interface board and validates against `fpgaTotalLines` + `channelCapacity`. This is what determines whether the hardware can serve the customer's needs.
+
+4. **Extension interfaces are similarly fixed** — The -21 always provides 56 TTL lines in 7 groups of 8. The -22 always provides 16 RS422 + 24 TTL + 6 I²C. There's no flexibility in the pinout.
+
+### Verdict: **No, we do NOT need pin mapping in the configurator**
+
+The configurator operates at the **functional requirement → hardware selection** level. Pin mapping is a downstream concern handled entirely by:
+- The physical PCB design of the interface board
+- The HDL Coder Workflow Advisor + IO Configuration Package
+- The generated bitstream
+
+#### What We Already Do (and is sufficient)
+
+| Configurator Concern | How We Handle It | Status |
+|---|---|---|
+| Which FPGA module? | `evaluateCandidate()` scoring + `FPGA_CODE_MODULE_COMPAT` | ✅ Implemented |
+| How many boards? | Dual-budget: `channelCapacity` + `fpgaTotalLines` | ✅ Implemented |
+| Which IO33X-N board? | `selectIO33XBoard()` based on signal types | ✅ Implemented |
+| Which extensions? | `determineRequiredExtensions()` from sub-IDs | ✅ Implemented |
+| Code-module compatibility? | `SUB_ID_TO_CODE_MODULES` × `FPGA_CODE_MODULE_COMPAT` | ✅ Implemented |
+
+#### What Would Change If We Added Pin Mapping
+
+Adding pin mapping would mean:
+- Modeling every terminal pin → FPGA pin assignment per interface board
+- Tracking which pins are "used" vs "free" across multiple signal types sharing a board
+- Validating group constraints (e.g. -21 extension: all 8 pins in a group must share direction/pull config)
+- This complexity belongs in the HDL Workflow Advisor, not in a sales/proposal configurator
+
+### Recommendation
+
+**Keep the configurator at the functional level.** The current approach of selecting interface boards by signal type and validating channel counts is the right abstraction for a proposal tool. Pin-level mapping is an engineering detail that the HDL toolchain handles automatically during bitstream generation.
+
+If anything, we could enhance the configurator to **display** the pin mapping info (read-only) as reference documentation for the customer — but not use it as a constraint in the selection algorithm.
+
+---
+
+## 14. Front Interface vs Rear Extension: Two Independent I/O Paths
+
+### The Dual-Connector Architecture (IO332/IO333)
+
+A critical insight from the docs: for IO332/IO333, the **front interface** (IO33X-N board) and the **rear extension** (-21, -22, -24) are **completely independent I/O paths** that are selected separately.
+
+```
+                ┌──────────────────────────────┐
+                │       IO332 / IO333          │
+                │         (FPGA core)          │
+                │                              │
+  FRONT ◄──────┤  IO33X-N board (daughter)     │──────► REAR
+  connector     │  e.g. IO33X-6:               │       connector
+                │  16 AI + 8 AO + 16 GPIO      │       via extension
+                │                              │       e.g. -21:
+                │  Pin mapping fixed by PCB     │       56 TTL in 7×8 groups
+                │  of the IO33X-N board         │       + 6 bidirectional I²C
+                └──────────────────────────────┘
+```
+
+### HDL Workflow Advisor Step 1.2 — Two Separate Selections
+
+The Workflow Advisor has **two drop-downs** in step 1.2:
+1. **I/O Interface** → selects the front board: `-01` (IO33x-01LV), `-02`, `-03`, `-04`, `-06`
+2. **I/O Interface Extension** → selects the rear extension: `-21`, `-22`, `-24`
+
+Step 1.3 then shows **combined** Target Platform Interfaces from both selections.
+
+### What -21 Provides (IO3xx-21 Extension)
+
+When -21 is selected as the extension:
+
+| Feature | Detail |
+| --- | --- |
+| **TTL channels** | 56 lines [0:55], distributed in 7 groups of 8 |
+| **Group constraint** | All 8 lines in a group share direction + pull resistor config |
+| **Pull-up options** | 3.3V, 5V, pull-down, or floating (configured per group in generated block mask) |
+| **Bidirectional I²C** | 6 additional bidirectional lines [0:5] with open-collector 5V pull-up (I²C-compatible) |
+| **Switching speed** | Bidirectional: ~4µs HIGH→LOW, ~13µs LOW→HIGH (slow — I²C only) |
+| **Physical connector** | 68-pin terminal board, pins 1-60 for TTL/bidir, 67-68 for +5V supply |
+| **Ground pins** | Pins 9, 26, 43, 60 (every 17th pin) |
+| **Data type** | boolean |
+| **Direction** | input or output (per group), bidirectional (I²C lines) |
+
+#### Module-Dependent Channel Limits on -21
+
+Some modules use fewer rear FPGA lines than the IO33x family:
+
+| Module | TTL Channels (n) | Bidirectional (m) |
+| --- | --- | --- |
+| IO33x (IO332/IO333) | 55 | 5 |
+| IO342 | 13 | 1 |
+| IO344 | 19 | 1 |
+| IO352 | 19 | 3 |
+| Pulse I/O | 55 | 5 |
+
+### How the Configurator Handles This Today
+
+The current code in `addFpgaInterfaceBoards()` correctly treats these as two independent selections:
+
+1. **Section 1** — `determineRequiredExtensions()`: Scans covered row signal types → picks extension(s)
+   - Resolver → `-24`
+   - Analog → `-120`
+   - RS422/RS485 → `-22`
+   - Default → `-21`
+   - **Multiple can be selected** (e.g. resolver + analog = both -24 and -120)
+
+2. **Section 2** — `selectIO33XBoard()`: Only for IO332/IO333 (`supportsIOInterfaces: true`) → picks front board
+   - Mixed analog+digital → `IO33X-6`
+   - Analog only → `IO33X-5`
+   - RS422/RS485 → `IO33X-2`
+   - LVDS → `IO33X-4`
+   - Default → `IO33X-1-LV`
+
+These are **additive** — an IO332 proposal can include both an IO33X-6 front board AND a -21 rear extension.
+
+### Implication for Pin Mapping
+
+This reinforces the §13 verdict: **no pin mapping needed in the configurator**. The -21 extension's 56 lines in 7×8 groups with configurable pull resistors are all handled by:
+- The physical PCB of the -21 board (fixed wiring)
+- The HDL Workflow Advisor step 1.3 (interface assignment)
+- The generated bitstream mask (group direction/pull-up config)
+
+The configurator's job is just to say: "you need an IO332 + IO33X-6 front board + -21 rear extension" — the downstream toolchain handles pin details.
+
+---
+
+## 15. Crawled Product Pages — FPGA Module Specs Summary
+
+### Source
+
+Crawled 13 individual product pages from `https://www.speedgoat.com/products/` on 2026-03-01.
+Stored in `crawl-output-playwright/pages/products/`.
+
+### Complete FPGA Module Comparison
+
+| Module | FPGA Chip | Logic Cells | Form Factor | AI (ch/res/rate) | AO (ch/res) | Digital I/O | IO33X-N Front | Extensions | Config Packages |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| **IO324** | Kintex-7 XC7K200T | 200k | PCIe | 32 SE or 16 diff / 16-bit / 1 Msps | 8 / 16-bit | 32 TTL + 8 RS422/485 | No | -21, -22, -24, -32 | RCP, HIL, Comms |
+| **IO325** | Kintex-7 XC7K160T | 160k | XMC | 8 diff / 16-bit / 1.5 Msps | 4 / 16-bit | 32 TTL (16 reconfig as RS422) | No | -21, -22, -24, -32 | RCP, HIL, Comms |
+| **IO332** | Artix-7 XC7A200T | 200k | XMC | via IO33X-N | via IO33X-N | via IO33X-N | **Yes**: -1-LV, -2, -3, -4, -6 | -21, -22, -32 | Custom bitstreams |
+| **IO333** | Kintex-7 (325k/410k) | 325k–410k | XMC | via IO33X-N | via IO33X-N | via IO33X-N | **Yes**: -1-LV, -2, -3, -4, -6 | -21, -22, -32 | Custom bitstreams |
+| **IO333-SFP** | Kintex-7 (325k/410k) | 325k–410k | XMC | — | — | 26 LVCMOS / 13 LVDS + 2 SFP+ | No | -21, -22, -32 | FPGA only |
+| **IO334** | Kintex-7 XC7K325T | 325k | PCIe | 16 diff / 16-bit / 5 Msps | 16 SE / 16-bit | — (front AIO only) | No | -21, -22, -24, -32 | RCP, HIL, Comms, Resolver |
+| **IO335** | Kintex-7 XC7K325T | 325k | XMC | 24 diff / 16-bit / 5 Msps | — | 3 diff digital input (front) | No | -21, -22, -32 | FPGA only |
+| **IO336** | Kintex-7 XC7K325T | 325k | PCIe | 16 diff / 16-bit / 5 Msps | 8 / 16-bit | 32 TTL + 8 RS422/485 | No | -21, -22, -24, -32 | RCP, HIL, Comms |
+| **IO337** | Kintex-7 XC7K325T | 650k | PCIe | 8 diff / 16-bit / 5 Msps | 32 SE / 16-bit / 10 Mups | 4 M-LVDS | No | -21, -22 | HIL, Comms |
+| **IO342** | Kintex UltraScale (1.08M/1.45M) | 1.08M–1.45M | PCIe | via FMC (IO342-63) | via FMC | 14 TTL + 2 I²C (via -21) | Optional FMC | -21, -22, -32 | FPGA only |
+| **IO344** | Zynq UltraScale+ RFSoC | 930k | PCIe x8 | 8 SE / 12-bit / 4 GSPS | 8 SE / 14-bit / 6.4 GSPS | 20 TTL (via -21) | No | -21, -22 | FPGA only |
+| **IO352** | UltraScale+ | 500k | PCIe | — | — | 20 TTL + 4 I²C (via -21) | No | -21, -22 | Vision FPGA |
+| **IO397** | Artix-7 XC7A50T | 50k | mPCIe | 4 / 16-bit / 200 ksps | 4 / 16-bit | 14 TTL (ESD, M12) | No | **None** (self-contained) | RCP, HIL, Comms |
+
+### Key Observations from Product Pages
+
+1. **Configuration packages are extension-specific**: Each module offers different config packages for -21 vs -22 vs -24 extensions. E.g., IO334 with -21 gets PWM/SPI/UART channels; IO334 with -22 gets SSI/EnDAT channels; IO334 with -24 gets resolver emulation.
+
+2. **IO332 and IO333 are the only modules with IO33X-N front interfaces**: Every other module has built-in front I/O (analog + digital).
+
+3. **IO342 uses FMC connectors** (FPGA Mezzanine Card) instead of IO33X-N — a different interface standard for its high-end UltraScale FPGA.
+
+4. **IO344 is an RFSoC** (Radio Frequency System on Chip) — 4 GSPS sampling, aimed at SDR/radar, not typical I/O.
+
+5. **IO397 is fully self-contained** (mPCIe form factor) — no extensions at all, M12 connectors, 14 TTL + 4 AI + 4 AO.
+
+6. **IO337 has the most AO channels** (32 outputs at 10 Mups) — designed for power electronics inverter testing.
+
+7. **IO335 is input-only** (24 AI, no AO) — pure high-speed data acquisition.
+
+8. **Aurora inter-module communication** available on: IO325, IO332, IO333, IO334, IO335, IO336, IO337, IO342, IO344, IO352.
+
+### Ordering Code Pattern
+
+All modules follow: `{ItemCode}{MachineCode}` where the machine code suffix (X) indicates the target machine.
+
+| Base Item Code | Module |
+| --- | --- |
+| 2A324X | IO324-200k |
+| 2A325X | IO325-160k |
+| 2A332X | IO332-200k |
+| 2A333X | IO333-325k |
+| 2B333X | IO333-410k |
+| 2R333X | IO333-325k-SFP |
+| 2S333X | IO333-410k-SFP |
+| 2A334X | IO334-325k-10V |
+| 2C334X | IO334-325k-2.5V |
+| 2A335X | IO335-325k |
+| 2A336X | IO336-325k |
+| 2A337X | IO337-650k |
+| 2A342-6 | IO342-1.08M-1FMC |
+| 2B342-6 | IO342-1.45M-1FMC |
+| 2A344-6 | IO344-930k |
+| 2A352-6 | IO352-500k |
+| 2A397X | IO397-50k |
+
+### Extension Ordering Codes
+
+| Item Code | Extension | Description |
+| --- | --- | --- |
+| 23x21X | IO3XX-21 | TTL signal conditioning extension |
+| 23x22X | IO3XX-22 | RS422/RS485/TTL extension |
+| 23x24X | IO3XX-24 | Resolver + RS422/TTL extension |
+| 23x32X | IO3XX-32 | SFP+ transceiver extension |
+
+### HDL Coder Integration Package Codes
+
+| Item Code | Package |
+| --- | --- |
+| 3A24IP | IO324-200k HCIP |
+| 3A25IP | IO325-160k HCIP |
+| 3A32IP | IO332-200k HCIP |
+| 3A33IP | IO333-325k/410k HCIP |
+| 3A34IP | IO334-325k HCIP |
+| 3A35IP | IO335-325k HCIP |
+| 3A36IP | IO336-325k HCIP |
+| 3A37IP | IO337-650k HCIP |
+
+### HDL I/O Blockset Codes
+
+| Item Code | Blockset |
+| --- | --- |
+| 303MOT | Motion Control HDL I/O Blockset (PWM, Quadrature, SSI, BiSS, EnDat, Cam/Crank, Resolver Emulation) |
+| 303COM | Communication HDL I/O Blockset (SPI, I2C, SENT, Serial, dShot) |
+
+---
+
+## 16. Configuration Options, Code Modules & Restrictions
+
+### Three Layers of FPGA Functionality
+
+Every Speedgoat FPGA module has **three independent layers** that together determine what I/O functionalities are available:
+
+| Layer | What it controls | How it's selected | Item example |
+|---|---|---|---|
+| **1. Configuration Package** | Pre-built bitstream with fixed channel allocation (RCP / HIL / Comms / Resolver) | Ordered per module+extension combo | `20334X` (IO334-21 RCP) |
+| **2. HDL Coder Integration Package (HCIP)** | Unlocks Simulink-programmable workflow — custom HDL bitstreams | One per base module | `3A34IP` (IO334 HCIP) |
+| **3. HDL I/O Blocksets** | Reusable IP blocks for HDL Coder (motion, comms) | One per protocol family | `303MOT`, `303COM` |
+
+**Key insight**: Layers 2+3 (HDL Coder) give the customer **full freedom** to allocate any supported code module to any digital I/O line. Layer 1 (Configuration Package) is a **fixed, pre-designed allocation** — the customer picks which "preset" fits their application.
+
+### Configuration Packages — Per Module (Canonical Source)
+
+> **Source**: [/help/slrt/page/io_configuration_package/refentry_ch_configurations](https://www.speedgoat.com/help/slrt/page/io_configuration_package/refentry_ch_configurations)
+
+Configuration packages are **NOT universal** — each module offers different packages. Modules with IO3xx extensions ("-21"/"-22"/"-24") offer TTL/RS422 variants; self-contained modules (IO306/IO307/IO397) offer plain RCP/HIL/Comms.
+
+#### Complete Config-Package Matrix (from help page)
+
+| Module | Comm TTL | Comm RS422 | HIL TTL | HIL RS422 | RCP TTL | RCP RS422 | TPI6020 | Resolver TTL |
+|--------|----------|------------|---------|-----------|---------|-----------|---------|-------------|
+| **IO306** | — Comm | — | — HIL | — | — RCP | — | — | — |
+| **IO307** | — Comm | — | — HIL | — | — RCP | — | — | — |
+| **IO324** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **IO334** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | — | ✅ |
+| **IO336** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **IO337** | ✅ | ✅ | ✅ | ✅ | — | — | — | — |
+| **IO397** | — Comm | — | — HIL | — | — RCP | — | ✅ | — |
+| **Pulse I/O** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | — | ✅ |
+
+> "—" = not offered for that module. IO306/IO307/IO397 have plain "Communication"/"HIL"/"RCP" without TTL/RS422 variants (no extension boards).
+> **IO337** offers 4 packages (Comm+HIL × TTL+RS422) — no RCP, no Resolver, no TPI6020.
+> **Pulse I/O** is a generic category (same package structure as IO334).
+
+#### Extension ↔ Config Package Coupling
+
+| Extension | RCP | HIL | Communication | Resolver |
+|---|---|---|---|---|
+| **-21** (TTL) | ✅ TTL variant | ✅ TTL variant | ✅ TTL variant | ❌ No resolver HW |
+| **-22** (RS422/RS485) | ✅ RS422 variant (SSI/EnDat) | ✅ RS422 variant (SSI/EnDat Slave) | ✅ RS422 variant (Serial) | ❌ No resolver HW |
+| **-24** (Resolver) | ❌ | ❌ | ❌ | ✅ 2ch resolver + TTL |
+| **None** (IO306/IO307/IO397) | ✅ Built-in | ✅ Built-in | ✅ Built-in | ❌ |
+
+#### Detailed Channel Allocations (from Product Pages)
+
+**IO334 with -21 (TTL) Extension:**
+
+| Package | Channels |
+|---|---|
+| RCP | 10x PWM Gen, 4x PWM Cap, 3x Quad Dec, 3x Pulse Cnt, 2x UART Tx/Rx, 1x I2C Master, 2x I2C Slave, 1x Interrupt |
+| HIL | 5x PWM Gen, 12x PWM Cap, 3x Quad Enc, 2x Pulse Cnt, 2x UART Tx/Rx, 1x SPI, 1x I2C Master, 2x I2C Slave, 1x Interrupt |
+| Comms | 5x PWM Gen, 6x PWM Cap, 1x Quad Dec, 1x Quad Enc, 4x UART Tx/Rx, 4x SPI, 1x I2C Master, 2x I2C Slave, 1x Interrupt |
+
+**IO334 with -22 (RS422) Extension:**
+
+| Package | Channels |
+|---|---|
+| RCP | 6x PWM Gen, 4x PWM Cap, 2x Quad Dec, 1x Pulse Cnt, 3x SSI Master, 2x EnDAT Master, 1x I2C Master, 2x I2C Slave, 1x Interrupt |
+| HIL | 3x PWM Gen, 9x PWM Cap, 2x Quad Enc, 3x SSI Master, 2x EnDAT Slave, 1x I2C Master, 2x I2C Slave, 1x Interrupt |
+| Comms | 5x PWM Gen, 3x PWM Cap, 1x Quad Dec, 1x Quad Enc, 6x UART Tx/Rx, 1x I2C Master, 2x I2C Slave, 1x SPI |
+
+**IO334 with -24 (Resolver) Extension:**
+
+| Package | Channels |
+|---|---|
+| Resolver | 2x Resolver Emu, 7x PWM Gen, 4x PWM Cap, 3x Pulse Cnt, 2x UART Tx/Rx, 2x SPI, 1x Interrupt |
+
+**IO324 / IO336 (identical config package structure to IO334)**
+
+Same package types (RCP/HIL/Comms for -21/-22, Resolver for -24), with slight channel count differences due to FPGA size:
+- IO324 (200k) — slightly fewer channels per package
+- IO336 (325k) — identical to IO334 channel allocations
+- Both also support **TPI6020** (Three-Phase Inverter) config: 2x Power Module, 6x PWM, 2x Quad Dec, 1x Interrupt
+
+**IO337 — 4 Config Packages (Comm+HIL × TTL+RS422):**
+
+| Package | Code Modules Included |
+|---|---|
+| Comm TTL | SPI M/S, I2C M/S, Serial |
+| Comm RS422 | SPI M/S, I2C M/S, Serial |
+| HIL TTL | PWM Gen/Cap, Pulse Counter, Quadrature Encoder, Interrupt Input |
+| HIL RS422 | PWM Gen/Cap, SSI Slave, EnDat Slave, Quadrature Encoder, Interrupt Input |
+
+> ⚠ **Discrepancy**: IO337 config packages include Quadrature, SSI Slave, EnDat Slave, Pulse Counter — but `FPGA_CODE_MODULE_COMPAT` in the codebase does **not** list these for IO337. The code module compat map may only reflect the HDL Coder workflow, not what's available via config packages.
+
+**IO306 — 3 Config Packages (no extensions, no TTL/RS422 variants):**
+
+| Package | Code Modules Included |
+|---|---|
+| Communication | SPI M/S, I2C M/S |
+| HIL | PWM Gen/Cap, Quadrature Encoder, Pulse Counter, Interrupt Input |
+| RCP | PWM Gen/Cap, Quadrature Decoder, Pulse Counter, Interrupt Input |
+
+**IO307 — 3 Config Packages (no extensions, no TTL/RS422 variants):**
+
+| Package | Code Modules Included |
+|---|---|
+| Communication | Serial M/S, SPI M/S, I2C M/S |
+| HIL | SSI Slave, BiSS Slave, EnDat Slave, Quadrature Encoder, PWM Gen/Cap, Pulse Counter, Interrupt Input |
+| RCP | SSI Master, BiSS Master, EnDat Master, Quadrature Decoder, PWM Gen/Cap, Pulse Counter, Interrupt Input |
+
+**IO397 — 4 Config Packages (self-contained, no extensions):**
+
+| Package | Code Modules Included |
+|---|---|
+| Communication | SPI M/S, I2C M/S, Serial |
+| HIL | PWM Capture, Quadrature Encoder, Interrupt Input |
+| RCP | PWM Generation, Quadrature Decoder, Interrupt Input |
+| TPI6020 | PWR-TPI6020 Three-Phase Inverter, PWM Gen, Quadrature Decoder |
+
+> Note: IO397 HIL omits PWM Generation; IO397 RCP omits PWM Capture (asymmetric).
+
+**IO332 / IO333 — No config packages (Simulink-programmable only):**
+
+These use IO33X-N front interface boards (not extensions) and are purely HDL Coder workflow. Config packages don't apply — every bitstream is custom.
+
+### Code Modules (FPGA_CODE_MODULE_COMPAT)
+
+Code modules are the atomic functional blocks that an FPGA can instantiate. They determine **what the FPGA can do** independent of which config package or extension is selected.
+
+**Current codebase mapping** (`mockCatalog.ts`):
+
+| Module | Code Modules Supported |
+|---|---|
+| IO306 | PWM, SPI, I2C, Digital, Pulse Counter, Quadrature, Interrupt, DMA Controller |
+| IO307 | + Serial, SSI, BiSS, EnDat |
+| IO324 | All above + Analog, Resolver, TPI6020, SENT, Dshot, Cam/Crank, CMU Emu |
+| IO325 | All above (excl. TPI6020, Dshot, Cam/Crank, CMU; + SENT) |
+| IO334 | All above (excl. TPI6020, CMU) + SENT, Dshot, Cam/Crank |
+| IO336 | = IO324 (full set including TPI6020, CMU) |
+| IO337 | Analog, PWM, SPI, I2C, Serial, Digital, Interrupt, DMA Controller |
+| IO397 | Analog, PWM, SPI, I2C, Serial, Digital, Pulse Counter, Quadrature, TPI6020, Interrupt, DMA Controller |
+
+**Key restriction**: IO337 (650k Zynq) has a **reduced** code module set in `FPGA_CODE_MODULE_COMPAT` — no Quadrature, SSI, BiSS, EnDat, Resolver, SENT, Dshot despite being the largest FPGA. However, the IO337 **config packages** (see above) DO include Quadrature Encoder, SSI Slave, EnDat Slave, and Pulse Counter. The compat map may only reflect HDL Coder capabilities (custom bitstreams), while config packages provide pre-built bitstreams that include these code modules.
+
+### SUB_ID → Code Module Mapping
+
+The configurator gates FPGA candidates using `SUB_ID_TO_CODE_MODULES`:
+
+| Sub-ID | Required Code Module(s) | Effect |
+|---|---|---|
+| `pwm` | PWM | Gates out IO337 ❌ (wait — IO337 has PWM ✅) |
+| `capture` | PWM, Pulse Counter | Any match = compatible |
+| `gpio` | Digital | All FPGA modules pass |
+| `encoder` | Quadrature, BiSS, EnDat, SSI | IO337 ❌, IO397 only Quadrature |
+| `resolver` | Resolver | Only IO324, IO325, IO334, IO336 |
+| `spi` / `i2c` / `serial` | SPI / I2C / Serial | Most modules pass |
+| `sent` / `dshot` | SENT / Dshot | Only IO324, IO325, IO334, IO336 |
+| `inputs` / `outputs` | Analog | Only IO324, IO325, IO334, IO335, IO336, IO337, IO397 |
+
+### HDL Coder Integration Package (HCIP)
+
+HCIP is a **per-module license** that enables the Simulink-programmable workflow. Without it, the module can only use configurable workflow (pre-built bitstreams = config packages).
+
+| Module | HCIP Code | Notes |
+|---|---|---|
+| IO324 | 3A24IP | Covers base module + all extensions (-21/-22/-24) |
+| IO325 | 3A25IP | Covers base + extensions (-21/-22/-24/-32) |
+| IO332 | 3A32IP | Covers base + IO33X-N interfaces + extensions |
+| IO333 | 3A33IP / 3B33IP | 3A = 325k variant, 3B = 410k variant |
+| IO334 | 3A34IP | Covers base + extensions |
+| IO335 | 3A35IP | Covers base + extensions |
+| IO336 | 3A36IP | Covers base + extensions |
+| IO337 | 3A37IP | Covers base + extensions |
+| IO342 | 3A32IP | Note: shares code with IO332 HCIP |
+| IO344 | 3A44IP | Covers base + interfaces |
+| IO352 | 3A52IP | Covers base + interfaces |
+
+### HDL I/O Blocksets
+
+These are **add-on IP bundles** for HDL Coder users:
+
+| Blockset | Code | Contains |
+|---|---|---|
+| **Motion Control** | 303MOT | PWM Gen/Cap, Quadrature Dec/Enc, SSI, BiSS, EnDat, Cam/Crank, Resolver Emulation |
+| **Communication** | 303COM | SPI, I2C, SENT, Serial, dShot |
+
+> Available for: IO324, IO325, IO334, IO335, IO336, IO337 (all Simulink-programmable XMC/PCIe modules with extensions).
+> NOT needed for: IO332/IO333 (included in HCIP), IO342/IO344/IO352 (different architecture), IO397 (configurable only).
+
+### Two Workflows — Configurable vs Simulink-Programmable
+
+| Aspect | Configurable Workflow | Simulink-Programmable (HDL Coder) |
+|---|---|---|
+| **Bitstream** | Pre-built by Speedgoat (config package) | Custom, compiled from Simulink model |
+| **Channel allocation** | Fixed per package (RCP/HIL/Comms/Resolver) | Fully flexible — any code module on any line |
+| **Sample rate** | Up to ~100 kHz | Up to 100 MHz |
+| **Required purchase** | Config Package (per module+ext) | HCIP + optionally 303MOT/303COM |
+| **Customer skill** | Low — Simulink Real-Time only | High — HDL Coder + Simulink |
+| **Modules** | IO316–IO397 (most modules) | IO324, IO325, IO332–IO337, IO342, IO344, IO352 |
+
+### Implications for the Configurator
+
+1. **Config packages are NOT in the codebase yet as structured data**: The `configPackages` field on catalog entries is a free-form string array (e.g., `['Communication TTL', 'HIL RS422']`) rather than a structured per-extension breakdown. Only 8 modules have any `configPackages` defined.
+
+2. **The scoring bonus is soft (+4)**: `computeConfigPackageBonus()` does substring matching on config package names vs sub-IDs. It works as a tie-breaker but doesn't enforce hard restrictions.
+
+3. **Config package selection is NOT a user-facing choice yet**: The configurator doesn't ask the customer "RCP or HIL?" — it auto-selects modules. In a future phase, the workflow type (RCP vs HIL vs custom HDL) could be a top-level configurator input that constrains module scoring.
+
+4. **Extension ↔ config package coupling is implicit**: When the simulator assigns a -24 extension, it implicitly means the Resolver config package. But the codebase doesn't enforce that -24 *requires* a Resolver config and *excludes* RCP/HIL/Comms.
+
+5. **Channel count limits per config package could gate proposals**: E.g., IO334-21 RCP gives only 10x PWM + 4x PWM Capture. If a customer needs 15x PWM, a single RCP config won't suffice — they'd need HDL Coder workflow or a second module.
+
+6. **Future enhancement**: Add a `workflowType` field to the configurator (`'configurable' | 'hdl-coder'`) and surface config package channel limits as hard gates for configurable-workflow proposals.

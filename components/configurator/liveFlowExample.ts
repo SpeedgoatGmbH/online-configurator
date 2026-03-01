@@ -294,12 +294,17 @@ export function buildLiveFlowExample(
   const fpgaInterfaceBoardCount = interfaceMods.reduce((sum, m) => sum + m.quantity, 0)
 
   // Build detailed interface board info for the decision flow
-  const fpgaInterfaceBoards: FpgaInterfaceBoardInfo[] = interfaceMods.map((m) => ({
-    boardId: m.moduleId,
-    friendlyName: m.friendlyName,
-    parentModuleId: m.interfaceForModule!,
-    quantity: m.quantity,
-  }))
+  const allMods = sim.response.recommendedModules
+  const fpgaInterfaceBoards: FpgaInterfaceBoardInfo[] = interfaceMods.map((m) => {
+    const parent = allMods.find((p) => p.moduleId === m.interfaceForModule)
+    return {
+      boardId: m.moduleId,
+      friendlyName: m.friendlyName,
+      parentModuleId: m.interfaceForModule!,
+      parentFriendlyName: parent?.friendlyName ?? m.interfaceForModule!,
+      quantity: m.quantity,
+    }
+  })
 
   return {
     id: 'live_config',

@@ -46,12 +46,14 @@ export interface ModuleShowcase {
 }
 
 export type FpgaInterfaceBoardInfo = {
-  /** Interface board module ID (e.g. "IO321-21") */
+  /** Interface board module ID (e.g. "IO324-21") */
   boardId: string
-  /** Human-readable name */
+  /** Human-readable description of what this extension does */
   friendlyName: string
-  /** Parent FPGA module this board belongs to */
+  /** Parent FPGA module ID this board belongs to */
   parentModuleId: string
+  /** Parent FPGA module's human-readable name */
+  parentFriendlyName: string
   /** How many of this board */
   quantity: number
 }
