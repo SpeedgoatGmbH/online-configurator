@@ -13,10 +13,11 @@ import { CompactButton, CompactCard, CompactChip, CompactSectionLabel } from '@/
 const DecisionFlowModal = dynamic(() => import('@/components/DecisionFlowModal'), { ssr: false })
 import type { ProposalGenerateRequest, ProposalGenerateResponse, RequirementRow } from '@/components/configurator/proposalTypes'
 import { getSimulationDelayMs, simulateProposal } from '@/lib/proposal/simulator'
+import { buildLiveFlowExample } from '@/components/configurator/liveFlowExample'
 import type { StarterRow } from '@/components/configurator/industries'
 import { cn } from '@/lib/cn'
 import Image from 'next/image'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 /** basePath injected at build time for GitHub Pages sub-path deploys */
 const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH || ''
@@ -105,6 +106,18 @@ export default function Home() {
   const loadTemplateRef = useRef<((rows: StarterRow[]) => void) | null>(null)
 
   const selectedMachine = MACHINE_OPTIONS.find((m) => m.id === selectedMachineId) ?? MACHINE_OPTIONS[0]
+
+  // Build live Decision Flow example from current configurator rows (on modal open)
+  const liveFlowExample = useMemo(() => {
+    if (!showDecisionFlow || requirementsRows.length === 0) return undefined
+    return buildLiveFlowExample(
+      requirementsRows,
+      selectedMachine.id,
+      selectedMachine.name,
+      selectedMachine.maxSlots,
+      selectedMachine.maxSlotsExpanded,
+    )
+  }, [showDecisionFlow, requirementsRows, selectedMachine])
   const activeCategories = Object.entries(configuratorSummary.categoryTotals).filter(([, total]) => total > 0)
   const groupLabel = configuratorSummary.rowCount === 1 ? 'group' : 'groups'
 
@@ -926,6 +939,7 @@ export default function Home() {
         onLoadExample={(rows) => {
           if (loadTemplateRef.current) loadTemplateRef.current(rows)
         }}
+        liveExample={liveFlowExample}
       />
     </>
   )

@@ -10,7 +10,7 @@ import type {
   RequirementRow,
 } from '@/components/configurator/proposalTypes'
 
-type CandidateScore = {
+export type CandidateScore = {
   module: MockModuleCatalogEntry
   units: number
   tieBreaker: number
@@ -21,6 +21,10 @@ type CandidateScore = {
   score: number
   providedSpecs: Record<string, string>
   specDiffs: ProposalSpecDiff[]
+  /** Bonus from consolidation (reuse of same module for multiple rows) */
+  consolidationBonus: number
+  /** Bonus from machine compatibility */
+  machineBonus: number
 }
 
 type SpecMatch = {
@@ -204,6 +208,116 @@ export function simulateProposal(request: ProposalGenerateRequest): ProposalGene
   }
 }
 
+// ─── Extended simulation: expose all candidates per row ─────────────────────
+
+export type PerRowCandidates = {
+  rowId: string
+  categoryId: string
+  subId: string
+  categoryLabel: string
+  subLabel: string
+  quantity: number
+  allCandidates: CandidateScore[]
+  winner: CandidateScore | null
+}
+
+export type SimulationWithCandidates = {
+  response: ProposalGenerateResponse
+  perRow: PerRowCandidates[]
+  fpgaConsolidation: { before: number; after: number } | null
+  catalogSize: number
+}
+
+/**
+ * Run the full proposal simulator AND return per-row candidate lists,
+ * FPGA consolidation before/after, and catalog metadata.
+ */
+export function simulateProposalWithCandidates(request: ProposalGenerateRequest): SimulationWithCandidates {
+  const response = simulateProposal(request)
+
+  // Re-run candidate selection to capture ALL scored candidates per row
+  const normalizedRequirements = normalizeRequirements(request.requirements)
+  const seedInput = buildSeedInput({ ...request, requirements: normalizedRequirements })
+  const seededRandom = createSeededRandom(seedInput)
+  const moduleUsage = new Map<string, number>()
+  const perRow: PerRowCandidates[] = []
+
+  for (const row of normalizedRequirements) {
+    const { allCandidates, winner } = selectAllCandidates(row, moduleUsage, seededRandom, request.machineId)
+    perRow.push({
+      rowId: row.rowId,
+      categoryId: row.categoryId,
+      subId: row.subId,
+      categoryLabel: row.categoryLabel,
+      subLabel: row.subLabel,
+      quantity: row.quantity,
+      allCandidates,
+      winner,
+    })
+    // Track usage the same way as the main loop so consolidation bonuses are consistent
+    if (winner) {
+      moduleUsage.set(winner.module.moduleId, (moduleUsage.get(winner.module.moduleId) || 0) + winner.units)
+    }
+  }
+
+  // Calculate FPGA consolidation before/after
+  let fpgaConsolidation: { before: number; after: number } | null = null
+  const fpgaModules = response.recommendedModules.filter((m) => {
+    const catEntry = MOCK_MODULE_CATALOG.find((c) => c.moduleId === m.moduleId)
+    return catEntry?.fpgaFamily
+  })
+  if (fpgaModules.length > 0) {
+    // "Before" = sum of units each FPGA-backed row would need individually
+    let beforeCount = 0
+    for (const pr of perRow) {
+      if (pr.winner) {
+        const catEntry = MOCK_MODULE_CATALOG.find((c) => c.moduleId === pr.winner!.module.moduleId)
+        if (catEntry?.fpgaFamily) beforeCount += pr.winner.units
+      }
+    }
+    const afterCount = fpgaModules.reduce((sum, m) => sum + m.quantity, 0)
+    if (beforeCount > afterCount) {
+      fpgaConsolidation = { before: beforeCount, after: afterCount }
+    }
+  }
+
+  return {
+    response,
+    perRow,
+    fpgaConsolidation,
+    catalogSize: MOCK_MODULE_CATALOG.length,
+  }
+}
+
+function selectAllCandidates(
+  row: RequirementRow,
+  moduleUsage: Map<string, number>,
+  seededRandom: () => number,
+  machineId?: string
+): { allCandidates: CandidateScore[]; winner: CandidateScore | null } {
+  const candidates = MOCK_MODULE_CATALOG.filter((entry) => {
+    if (entry.categoryCoverage !== row.categoryId) return false
+    return entry.subCoverage.includes(row.subId)
+  })
+
+  if (candidates.length === 0) return { allCandidates: [], winner: null }
+
+  const scoredCandidates = candidates
+    .map((candidate) => evaluateCandidate(row, candidate, moduleUsage, seededRandom, machineId))
+    .filter((candidate): candidate is CandidateScore => Boolean(candidate))
+
+  if (scoredCandidates.length === 0) return { allCandidates: [], winner: null }
+
+  scoredCandidates.sort((left, right) => {
+    if (left.units !== right.units) return left.units - right.units
+    if (left.score !== right.score) return right.score - left.score
+    if (left.tieBreaker !== right.tieBreaker) return left.tieBreaker - right.tieBreaker
+    return left.module.moduleId.localeCompare(right.module.moduleId)
+  })
+
+  return { allCandidates: scoredCandidates, winner: scoredCandidates[0] }
+}
+
 function normalizeRequirements(requirements: RequirementRow[]): RequirementRow[] {
   return requirements
     .filter((row) => row.quantity > 0)
@@ -322,6 +436,8 @@ function evaluateCandidate(
     score,
     providedSpecs,
     specDiffs,
+    consolidationBonus,
+    machineBonus,
   }
 }
 

@@ -259,10 +259,18 @@ type DecisionFlowModalProps = {
   open: boolean
   onClose: () => void
   onLoadExample?: (rows: StarterRow[]) => void
+  /** Live example built from the user's current configurator rows */
+  liveExample?: FlowExample
 }
 
-export default function DecisionFlowModal({ open, onClose, onLoadExample }: DecisionFlowModalProps) {
+export default function DecisionFlowModal({ open, onClose, onLoadExample, liveExample }: DecisionFlowModalProps) {
   const memoNodeTypes = useMemo(() => nodeTypes, [])
+
+  // ─── Merge live example with pre-built examples ────────────────────
+  const allExamples = useMemo(
+    () => (liveExample ? [liveExample, ...FLOW_EXAMPLES] : FLOW_EXAMPLES),
+    [liveExample],
+  )
 
   // ─── View mode ────────────────────────────────────────────────────────
   const [viewMode, setViewMode] = useState<'overview' | 'technical'>('overview')
@@ -349,6 +357,13 @@ export default function DecisionFlowModal({ open, onClose, onLoadExample }: Deci
     }
     return clearAnimation
   }, [open, clearAnimation])
+
+  // Auto-start live example when modal opens with one
+  useEffect(() => {
+    if (open && liveExample && !activeExample) {
+      startExample(liveExample)
+    }
+  }, [open, liveExample]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // ─── Compute nodes for technical mode ─────────────────────────────────
   const computedNodes: Node<FlowNodeData>[] = useMemo(() => {
@@ -455,7 +470,7 @@ export default function DecisionFlowModal({ open, onClose, onLoadExample }: Deci
         {/* ── Example selector bar ────────────────────────────────── */}
         <div className="flex flex-wrap items-center gap-2 border-b border-slate-100 bg-white px-5 py-2">
           <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">Examples</span>
-          {FLOW_EXAMPLES.map((ex) => {
+          {allExamples.map((ex) => {
             const isSelected = activeExample?.id === ex.id
             return (
               <button
