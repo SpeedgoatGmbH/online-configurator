@@ -643,13 +643,6 @@ export default function Home() {
                 </>
               </CompactCard>
 
-              <MachineChassisStrip
-                maxSlots={selectedMachine.maxSlots}
-                machineName={selectedMachine.name}
-                modules={proposalResult?.recommendedModules ?? null}
-                rowDiffs={proposalResult?.rowDiffs ?? null}
-              />
-
               <div className="mx-auto w-full max-w-[1240px] space-y-3">
                 <CompactCard className="flex items-center gap-3 p-[var(--ui-pad-2)]">
                   <div className="inline-flex items-center rounded-[var(--ui-radius-md)] border border-slate-200 bg-slate-100 p-1">
@@ -779,7 +772,24 @@ export default function Home() {
                 )}
 
                 {proposalStatus === 'success' && proposalResult && (
-                  <ProposalResultCard proposal={proposalResult} machineName={selectedMachine.name} />
+                  <CompactCard className="space-y-3 border border-slate-200 p-[var(--ui-pad-3)]">
+                    <div className="flex items-center gap-2">
+                      <div className="flex h-5 w-5 items-center justify-center rounded bg-emerald-600 text-[10px] text-white">
+                        ✓
+                      </div>
+                      <h2 className="text-sm font-semibold text-slate-800">Generated Proposal</h2>
+                      <span className="ml-auto text-[10px] text-slate-400">{proposalResult.proposalId}</span>
+                    </div>
+
+                    <MachineChassisStrip
+                      maxSlots={selectedMachine.maxSlots}
+                      machineName={selectedMachine.name}
+                      modules={proposalResult.recommendedModules}
+                      rowDiffs={proposalResult.rowDiffs}
+                    />
+
+                    <ProposalResultCard proposal={proposalResult} machineName={selectedMachine.name} />
+                  </CompactCard>
                 )}
               </div>
             </div>
