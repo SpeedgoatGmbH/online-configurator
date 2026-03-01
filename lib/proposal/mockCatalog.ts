@@ -2845,6 +2845,9 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
       speed: ['Standard', 'High-speed', 'Deterministic'],
     },
     compatibleMachines: ['performance', 'baseline', 'mobile'],
+    fpgaFamily: 'IO324',
+    fpgaTotalLines: 96,
+    interfaceBoard: { moduleId: 'IO324-21', friendlyName: 'Interface Board IO324-21' },
     /* web-enriched (speedgoat.com/analog) */
     lifecycleStatus: 'active',
     resolutionBits: 16,
