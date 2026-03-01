@@ -551,6 +551,9 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
       speed: ['500 kHz'],
     },
     compatibleMachines: ['performance', 'baseline', 'mobile'],
+    fpgaFamily: 'IO325',
+    fpgaTotalLines: 32,
+    interfaceBoard: { moduleId: 'IO325-21', friendlyName: 'Interface Board IO325-21' },
     /* web-enriched (speedgoat.com/analog) */
     lifecycleStatus: 'active',
     resolutionBits: 16,
@@ -583,6 +586,9 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
       speed: ['500 kHz'],
     },
     compatibleMachines: ['performance', 'baseline', 'mobile'],
+    fpgaFamily: 'IO336',
+    fpgaTotalLines: 32,
+    interfaceBoard: { moduleId: 'IO336-21', friendlyName: 'Interface Board IO336-21' },
     /* web-enriched (speedgoat.com/analog) */
     lifecycleStatus: 'active',
     resolutionBits: 16,
@@ -616,6 +622,9 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
       speed: ['100 kHz'],
     },
     compatibleMachines: ['baseline', 'unit'],
+    fpgaFamily: 'IO397',
+    fpgaTotalLines: 14,
+    interfaceBoard: { moduleId: 'IO397-21', friendlyName: 'Interface Board IO397-21' },
     /* web-enriched (speedgoat.com/analog) */
     lifecycleStatus: 'active',
     resolutionBits: 16,
@@ -1000,6 +1009,7 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     compatibleMachines: ['performance', 'baseline', 'mobile'],
     fpgaFamily: 'IO306',
     fpgaTotalLines: 64,
+    interfaceBoard: { moduleId: 'IO306-21', friendlyName: 'Interface Board IO306-21' },
     /* web-enriched (speedgoat.com/digital) */
     lifecycleStatus: 'active',
     webSourcePage: 'digital',
@@ -1024,6 +1034,7 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     compatibleMachines: ['performance', 'baseline', 'mobile'],
     fpgaFamily: 'IO307',
     fpgaTotalLines: 48,
+    interfaceBoard: { moduleId: 'IO307-21', friendlyName: 'Interface Board IO307-21' },
     /* web-enriched (speedgoat.com/digital) */
     lifecycleStatus: 'active',
     webSourcePage: 'digital',
@@ -1048,6 +1059,7 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     compatibleMachines: ['performance', 'baseline', 'mobile'],
     fpgaFamily: 'IO308',
     fpgaTotalLines: 32,
+    interfaceBoard: { moduleId: 'IO308-21', friendlyName: 'Interface Board IO308-21' },
     /* web-enriched (speedgoat.com/digital) */
     lifecycleStatus: 'active',
     webSourcePage: 'digital',
@@ -1137,6 +1149,7 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     compatibleMachines: ['baseline', 'unit'],
     fpgaFamily: 'IO391',
     fpgaTotalLines: 26,
+    interfaceBoard: { moduleId: 'IO391-21', friendlyName: 'Interface Board IO391-21' },
     /* web-enriched (speedgoat.com/digital) */
     lifecycleStatus: 'active',
     webSourcePage: 'digital',
@@ -1160,6 +1173,7 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     compatibleMachines: ['baseline', 'unit'],
     fpgaFamily: 'IO393',
     fpgaTotalLines: 20,
+    interfaceBoard: { moduleId: 'IO393-21', friendlyName: 'Interface Board IO393-21' },
     /* web-enriched (speedgoat.com/digital) */
     lifecycleStatus: 'active',
     webSourcePage: 'digital',
@@ -1274,6 +1288,9 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
       speed: ['Driver enabled'],
     },
     compatibleMachines: ['baseline', 'unit'],
+    fpgaFamily: 'IO392',
+    fpgaTotalLines: 13,
+    interfaceBoard: { moduleId: 'IO392-21', friendlyName: 'Interface Board IO392-21' },
     /* web-enriched (speedgoat.com/digital) */
     lifecycleStatus: 'active',
     webSourcePage: 'digital',
@@ -1295,6 +1312,9 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
       speed: ['Driver enabled'],
     },
     compatibleMachines: ['baseline', 'unit'],
+    fpgaFamily: 'IO394',
+    fpgaTotalLines: 13,
+    interfaceBoard: { moduleId: 'IO394-21', friendlyName: 'Interface Board IO394-21' },
     /* web-enriched (speedgoat.com/digital) */
     lifecycleStatus: 'active',
     webSourcePage: 'digital',
@@ -2561,6 +2581,9 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
       resolution: ['16-bit', '24-bit', '32-bit'],
     },
     compatibleMachines: ['performance', 'baseline', 'mobile'],
+    fpgaFamily: 'IO324',
+    fpgaTotalLines: 96,
+    interfaceBoard: { moduleId: 'IO324-21', friendlyName: 'Interface Board IO324-21' },
   },
   // --- Motion & Position: Resolvers ------------------------------------------
   {
@@ -2612,6 +2635,9 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
       resolution: ['12-bit', '14-bit'],
     },
     compatibleMachines: ['performance', 'baseline', 'mobile'],
+    fpgaFamily: 'IO324',
+    fpgaTotalLines: 96,
+    interfaceBoard: { moduleId: 'IO324-24', friendlyName: 'Resolver Extension IO324-24' },
   },
   // --- Temperature -----------------------------------------------------------
   {
@@ -2842,6 +2868,9 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
       speed: ['Standard', 'High-speed'],
     },
     compatibleMachines: ['baseline', 'unit'],
+    fpgaFamily: 'IO397',
+    fpgaTotalLines: 14,
+    interfaceBoard: { moduleId: 'IO397-21', friendlyName: 'Interface Board IO397-21' },
   },
   // --- Resistor Simulation ---------------------------------------------------
   {
