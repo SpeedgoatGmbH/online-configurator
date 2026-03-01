@@ -6,6 +6,7 @@ import ConfiguratorV3 from '@/components/ConfiguratorV3'
 import ConfiguratorV3_2 from '@/components/ConfiguratorV3_2'
 import ConfiguratorV3_3 from '@/components/ConfiguratorV3_3'
 import ConfiguratorV5 from '@/components/ConfiguratorV5'
+import MachineChassisStrip from '@/components/MachineChassisStrip'
 import ProposalResultCard from '@/components/ProposalResultCard'
 import dynamic from 'next/dynamic'
 import { CompactButton, CompactCard, CompactChip, CompactSectionLabel } from '@/components/ui/compact'
@@ -641,6 +642,13 @@ export default function Home() {
                   </div>
                 </>
               </CompactCard>
+
+              <MachineChassisStrip
+                maxSlots={selectedMachine.maxSlots}
+                machineName={selectedMachine.name}
+                modules={proposalResult?.recommendedModules ?? null}
+                rowDiffs={proposalResult?.rowDiffs ?? null}
+              />
 
               <div className="mx-auto w-full max-w-[1240px] space-y-3">
                 <CompactCard className="flex items-center gap-3 p-[var(--ui-pad-2)]">
