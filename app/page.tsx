@@ -6,8 +6,7 @@ import ConfiguratorV3 from '@/components/ConfiguratorV3'
 import ConfiguratorV3_2 from '@/components/ConfiguratorV3_2'
 import ConfiguratorV3_3 from '@/components/ConfiguratorV3_3'
 import ConfiguratorV5 from '@/components/ConfiguratorV5'
-import MachineChassisStrip from '@/components/MachineChassisStrip'
-import ProposalResultCard from '@/components/ProposalResultCard'
+import SolutionProposal from '@/components/SolutionProposal'
 import dynamic from 'next/dynamic'
 import { CompactButton, CompactCard, CompactChip, CompactSectionLabel } from '@/components/ui/compact'
 
@@ -772,24 +771,12 @@ export default function Home() {
                 )}
 
                 {proposalStatus === 'success' && proposalResult && (
-                  <CompactCard className="space-y-3 border border-slate-200 p-[var(--ui-pad-3)]">
-                    <div className="flex items-center gap-2">
-                      <div className="flex h-5 w-5 items-center justify-center rounded bg-emerald-600 text-[10px] text-white">
-                        ✓
-                      </div>
-                      <h2 className="text-sm font-semibold text-slate-800">Generated Proposal</h2>
-                      <span className="ml-auto text-[10px] text-slate-400">{proposalResult.proposalId}</span>
-                    </div>
-
-                    <MachineChassisStrip
-                      maxSlots={selectedMachine.maxSlots}
-                      machineName={selectedMachine.name}
-                      modules={proposalResult.recommendedModules}
-                      rowDiffs={proposalResult.rowDiffs}
-                    />
-
-                    <ProposalResultCard proposal={proposalResult} machineName={selectedMachine.name} />
-                  </CompactCard>
+                  <SolutionProposal
+                    proposal={proposalResult}
+                    machine={selectedMachine}
+                    summary={configuratorSummary}
+                    inferredSystemClass={inferredSystemClass}
+                  />
                 )}
               </div>
             </div>

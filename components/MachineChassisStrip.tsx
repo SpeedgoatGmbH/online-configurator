@@ -161,6 +161,29 @@ export default function MachineChassisStrip({ maxSlots, machineName, modules, ro
           </div>
         )}
       </div>
+
+      {/* Category legend */}
+      {filledSlots.length > 0 && (() => {
+        const counts = new Map<string, number>()
+        for (const s of filledSlots) {
+          counts.set(s.categoryId, (counts.get(s.categoryId) ?? 0) + 1)
+        }
+        return (
+          <div className="mt-2 flex flex-wrap items-center gap-3">
+            {Array.from(counts.entries()).map(([catId, count]) => {
+              const c = CATEGORY_COLORS[catId] ?? FALLBACK_COLOR
+              return (
+                <div key={catId} className="flex items-center gap-1.5">
+                  <div className={`h-2.5 w-2.5 rounded-sm border ${c.border} ${c.bg}`} />
+                  <span className="text-[10px] font-medium text-slate-600">
+                    {c.label || catId} <span className="text-slate-400">({count})</span>
+                  </span>
+                </div>
+              )
+            })}
+          </div>
+        )
+      })()}
     </div>
   )
 }

@@ -73,3 +73,32 @@ body {
 
 .bg-slate-100 { background-color: #f2f5f8; }
 .bg-slate-50 { background-color: #f5f7fa; }
+
+/* ─── Print styles ──────────────────────────────────────────────────────────── */
+@media print {
+  body { background: white; }
+
+  /* Hide everything except the solution proposal section */
+  header, nav, footer,
+  [data-print-hide] { display: none !important; }
+
+  .solution-proposal {
+    border: 1px solid #cacfd8 !important;
+    box-shadow: none !important;
+    break-inside: avoid;
+  }
+
+  /* Expand all <details> so spec tables are visible in print */
+  .solution-proposal details { open: true; }
+  .solution-proposal details[open] summary ~ * { display: block; }
+
+  /* Force color on the branded header in print */
+  .solution-proposal .bg-gradient-to-r { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+
+/* Toast animation */
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(8px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+.animate-in { animation: fadeSlideIn 0.25s ease-out; }
