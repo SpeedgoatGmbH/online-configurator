@@ -40,3 +40,5 @@ next-env.d.ts
 /playwright-profile/
 /playwright-report/
 /test-results/
+
+/crawl-output-docs/

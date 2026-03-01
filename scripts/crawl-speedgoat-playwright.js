@@ -1,8 +1,29 @@
 /* eslint-disable no-console */
 const crypto = require("crypto");
+const fsSync = require("fs");
 const fs = require("fs/promises");
 const path = require("path");
 const readline = require("readline");
+
+// Load .env.local if present (simple key=value parser, no dependency needed)
+(function loadEnvLocal() {
+  const envPath = path.join(process.cwd(), ".env.local");
+  if (!fsSync.existsSync(envPath)) return;
+  const lines = fsSync.readFileSync(envPath, "utf8").split(/\r?\n/);
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith("#")) continue;
+    const eqIdx = trimmed.indexOf("=");
+    if (eqIdx < 1) continue;
+    const key = trimmed.slice(0, eqIdx).trim();
+    const value = trimmed.slice(eqIdx + 1).trim();
+    // Don't override explicitly set env vars
+    if (process.env[key] === undefined) {
+      process.env[key] = value;
+    }
+  }
+  console.log("[env] Loaded .env.local");
+})();
 
 function toBool(value, defaultValue = false) {
   if (value === undefined) return defaultValue;
@@ -113,6 +134,12 @@ async function main() {
     process.env.CRAWL_SUBMIT_SELECTOR ||
     'button[type="submit"], input[type="submit"], button:has-text("Sign in"), button:has-text("Log in"), button:has-text("Login")';
 
+  const loginPoll = toBool(process.env.CRAWL_LOGIN_POLL, false);
+  const loginPollTimeoutMs = Math.max(
+    10_000,
+    toInt(process.env.CRAWL_LOGIN_POLL_TIMEOUT_MS, 300_000),
+  );
+
   const userDataDir =
     process.env.CRAWL_USER_DATA_DIR || path.join(outputDir, "profile");
 
@@ -169,11 +196,28 @@ async function main() {
     });
   }
 
-  const page = context.pages()[0] || (await context.newPage());
+  // Use existing page from persistent context, or open a fresh one
+  let page = context.pages()[0];
+  if (!page) {
+    page = await context.newPage();
+  }
 
   const queue = [canonicalize(new URL(START_URL), includeQuery)];
   const visited = new Set();
   const pages = [];
+
+  async function isAuthenticatedPage() {
+    const currentUrl = new URL(page.url());
+    const onSite = currentUrl.host === allowedHost && currentUrl.pathname.startsWith(pathPrefix);
+    if (!onSite) return false;
+    const hasPasswordField = (await page.locator('input[type="password"]').count()) > 0;
+    if (hasPasswordField) return false;
+    // Also catch inline login-wall text (e.g. /help pages)
+    const hasLoginWall = await page.evaluate(() =>
+      /customer only.*login|please login/i.test(document.body?.innerText ?? "")
+    ).catch(() => false);
+    return !hasLoginWall;
+  }
 
   async function tryAutomatedLogin() {
     if (!loginUsername || !loginPassword) return false;
@@ -204,26 +248,39 @@ async function main() {
   }
 
   async function maybeHandleLogin() {
-    // Heuristic: login pages typically contain a password field or redirect away from /extranet.
-    const currentUrl = new URL(page.url());
-    const onExtranet = currentUrl.host === allowedHost && currentUrl.pathname.startsWith(pathPrefix);
-    const hasPasswordField = (await page.locator('input[type="password"]').count()) > 0;
+    if (await tryAutomatedLogin()) {
+      if (await isAuthenticatedPage()) {
+        console.log("[login] Automated login submitted (CRAWL_USERNAME/CRAWL_PASSWORD).");
+        return;
+      }
+    }
 
-    if (onExtranet && !hasPasswordField) return;
+    if (await isAuthenticatedPage()) return;
 
-    if (headless) {
+    if (headless && !loginPoll) {
       throw new Error(
-        `Looks like you are not logged in (current URL: ${page.url()}). Re-run with CRAWL_HEADLESS=false to log in manually.`,
+        `Looks like you are not logged in (current URL: ${page.url()}). Re-run with CRAWL_HEADLESS=false or CRAWL_LOGIN_POLL=true to log in manually.`,
       );
     }
 
-    if (await tryAutomatedLogin()) {
-      console.log("[login] Automated login submitted (CRAWL_USERNAME/CRAWL_PASSWORD).");
-      return;
+    if (loginPoll) {
+      console.log(`[login] Polling for login completion (timeout: ${loginPollTimeoutMs / 1000}s)...`);
+      console.log(`[login] Complete login in the browser window: ${page.url()}`);
+      const deadline = Date.now() + loginPollTimeoutMs;
+      while (!(await isAuthenticatedPage())) {
+        if (Date.now() > deadline) {
+          throw new Error(`Login poll timed out after ${loginPollTimeoutMs / 1000}s (current URL: ${page.url()}).`);
+        }
+        await sleep(2000);
+      }
+      console.log("[login] Login detected via polling.");
+    } else {
+      console.log(`\n[login] Please complete login in the browser window: ${page.url()}`);
+      await waitForEnter("[login] Press Enter here after you are fully logged in... ");
+      if (!(await isAuthenticatedPage())) {
+        throw new Error(`Login not completed (current URL: ${page.url()}).`);
+      }
     }
-
-    console.log(`\n[login] Please complete login in the browser window: ${page.url()}`);
-    await waitForEnter("[login] Press Enter here after you are fully logged in... ");
   }
 
   console.log(`[init] Output: ${outputDir}`);
@@ -243,25 +300,50 @@ async function main() {
     let contentType = "";
 
     try {
+      // Check if page is still usable; if browser tab was closed, create a new one
+      try {
+        await page.evaluate(() => true);
+      } catch {
+        console.log("[recover] Page was closed, opening new tab...");
+        page = await context.newPage();
+      }
+
       const response = await page.goto(current, { waitUntil });
       status = response?.status() ?? 0;
       contentType = response?.headers()?.["content-type"] || "";
       if (renderDelayMs > 0) await sleep(renderDelayMs);
+      // Re-check login only on pages under pathPrefix
+      const currentPathObj = new URL(page.url());
+      if (currentPathObj.pathname.startsWith(pathPrefix)) {
+        await maybeHandleLogin();
+      }
     } catch (error) {
-      pages.push({ url: current, status, contentType, error: `${error}` });
+      // If context/browser is fully dead, break out of the loop
+      const errStr = `${error}`;
+      if (errStr.includes("browser has been closed") || errStr.includes("Target closed") || errStr.includes("context or browser")) {
+        try {
+          page = await context.newPage();
+          console.log(`[recover] Reopened page after error on ${current}`);
+        } catch {
+          console.log(`[fatal] Browser context is dead, stopping crawl.`);
+          break;
+        }
+      }
+      pages.push({ url: current, status, contentType, error: errStr });
       console.log(`[error] ${current} -> ${error}`);
       if (delayMs > 0) await sleep(delayMs);
       continue;
     }
 
-    // If we got bounced to login mid-crawl, handle it once and retry this URL.
-    if (new URL(page.url()).host !== allowedHost || !new URL(page.url()).pathname.startsWith(pathPrefix)) {
-      await maybeHandleLogin();
-      queue.unshift(current);
+    let html;
+    try {
+      html = await page.content();
+    } catch (err) {
+      pages.push({ url: current, status, contentType, error: `content(): ${err}` });
+      console.log(`[error] ${current} -> content() failed: ${err}`);
+      if (delayMs > 0) await sleep(delayMs);
       continue;
     }
-
-    const html = await page.content();
     const urlObj = new URL(current);
     const saveTarget = toSafeHtmlPath(outputDir, urlObj, includeQuery);
     await fs.mkdir(saveTarget.dir, { recursive: true });
@@ -352,5 +434,5 @@ async function main() {
 
 main().catch((error) => {
   console.error(error);
-  process.exitCode = 1;
+  process.exit(1);
 });

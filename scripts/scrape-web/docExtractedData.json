@@ -1,0 +1,1589 @@
+{
+  "meta": {
+    "source": "https://www.speedgoat.com/help/slrt/page/",
+    "extractedAt": "2026-03-01",
+    "totalPages": 437
+  },
+  "fpgaModules": [
+    {
+      "moduleId": "IO306",
+      "fpgaSize": "25k",
+      "fullName": "IO306-25k",
+      "description": "configurable I/O module containing an FPGA with 25k of logic cells and 64 ESD protected TTL I/O lines",
+      "category": "configurable",
+      "logicCells": "25k",
+      "digitalIOLines": 64,
+      "driverBlocks": [
+        "Setup "
+      ],
+      "sourcePage": "help\\slrt\\page\\io_main\\refentry_ref_io306_25k.html",
+      "overviewDescription": "configurable I/O module containing an FPGA with 25k of logic cells and 64 ESD protected TTL I/O lines"
+    },
+    {
+      "moduleId": "IO307",
+      "fpgaSize": "25k",
+      "fullName": "IO307-25k",
+      "description": "configurable I/O module containing an FPGA with 25k of logic cells, 32 x TTL I/O lines and 16 x ESD protected RS422/RS485 I/O lines.",
+      "category": "configurable",
+      "logicCells": "25k",
+      "digitalIOLines": 48,
+      "ttlLines": 32,
+      "rs422Lines": 16,
+      "driverBlocks": [
+        "Setup "
+      ],
+      "sourcePage": "help\\slrt\\page\\io_main\\refentry_ref_io307_25k.html",
+      "overviewDescription": "configurable I/O module containing an FPGA with 25k of logic cells, 32 x TTL I/O lines and 16 x ESD protected RS422/RS485 I/O lines."
+    },
+    {
+      "moduleId": "IO308",
+      "fpgaSize": "25k",
+      "fullName": "IO308-25k",
+      "description": "configurable I/O module containing an FPGA with 25k of logic cells and 32 x ESD protected RS422/RS485 I/O lines.",
+      "category": "configurable",
+      "logicCells": "25k",
+      "digitalIOLines": 32,
+      "driverBlocks": [
+        "Setup "
+      ],
+      "sourcePage": "help\\slrt\\page\\io_main\\refentry_ref_io308_25k.html",
+      "overviewDescription": "configurable I/O module containing an FPGA with 25k of logic cells and 32 x ESD protected RS422/RS485 I/O lines."
+    },
+    {
+      "moduleId": "IO309A",
+      "fpgaSize": "100k",
+      "fullName": "IO309A-100k",
+      "description": "100k IO309-A-100k — The IO309-A-100k is a configurable I/O module containing an FPGA with 100k of logic cells and 64 x TTL I/O lines",
+      "category": "configurable",
+      "logicCells": "100k",
+      "digitalIOLines": 64,
+      "driverBlocks": [
+        "Setup "
+      ],
+      "sourcePage": "help\\slrt\\page\\io_main\\refentry_ref_io309a_100k.html"
+    },
+    {
+      "moduleId": "IO309B",
+      "fpgaSize": "100k",
+      "fullName": "IO309B-100k",
+      "description": "100k IO309-B-100k — The IO309-B-100k is a configurable I/O module containing an FPGA with 100k of logic cells, 32 x TTL I/O lines and 16 x RS422/RS485 I/O lines",
+      "category": "configurable",
+      "logicCells": "100k",
+      "digitalIOLines": 48,
+      "ttlLines": 32,
+      "rs422Lines": 16,
+      "driverBlocks": [
+        "Setup "
+      ],
+      "sourcePage": "help\\slrt\\page\\io_main\\refentry_ref_io309b_100k.html"
+    },
+    {
+      "moduleId": "IO309C",
+      "fpgaSize": "100k",
+      "fullName": "IO309C-100k",
+      "description": "100k IO309-C-100k — The IO309-C-100k is a configurable I/O module containing an FPGA with 100k of logic cells and 32 x RS422/RS485 I/O lines",
+      "category": "configurable",
+      "logicCells": "100k",
+      "digitalIOLines": 32,
+      "driverBlocks": [
+        "Setup "
+      ],
+      "sourcePage": "help\\slrt\\page\\io_main\\refentry_ref_io309c_100k.html"
+    },
+    {
+      "moduleId": "IO316",
+      "fpgaSize": "100k",
+      "fullName": "IO316-100k",
+      "description": "FPGA I/O module with 100k of logic cells and 64 ESD protected TTL I/O lines",
+      "category": "configurable",
+      "logicCells": "100k",
+      "digitalIOLines": 64,
+      "driverBlocks": [
+        "Setup "
+      ],
+      "sourcePage": "help\\slrt\\page\\io_main\\refentry_ref_io316-100k.html",
+      "overviewDescription": "FPGA I/O module with 100k of logic cells and 64 ESD protected TTL I/O lines"
+    },
+    {
+      "moduleId": "IO316",
+      "fpgaSize": "45k",
+      "fullName": "IO316-45k",
+      "description": "configurable I/O module containing an FPGA with 45k of logic cells and 64 ESD protected TTL I/O lines",
+      "category": "configurable",
+      "logicCells": "45k",
+      "digitalIOLines": 64,
+      "driverBlocks": [
+        "Setup "
+      ],
+      "sourcePage": "help\\slrt\\page\\io_main\\refentry_ref_io316.html"
+    },
+    {
+      "moduleId": "IO317",
+      "fpgaSize": "100k",
+      "fullName": "IO317-100k",
+      "description": "FPGA I/O module with 100k of logic cells, 32 x TTL I/O lines and 16 x ESD protected RS422/RS485 I/O lines.",
+      "category": "configurable",
+      "logicCells": "100k",
+      "digitalIOLines": 48,
+      "ttlLines": 32,
+      "rs422Lines": 16,
+      "driverBlocks": [
+        "Setup "
+      ],
+      "sourcePage": "help\\slrt\\page\\io_main\\refentry_ref_io317-100k.html",
+      "overviewDescription": "FPGA I/O module with 100k of logic cells, 32 x TTL I/O lines and 16 x ESD protected RS422/RS485 I/O lines."
+    },
+    {
+      "moduleId": "IO317",
+      "fpgaSize": "45k",
+      "fullName": "IO317-45k",
+      "description": "configurable I/O module containing an FPGA with 45k of logic cells, 32 x TTL I/O lines and 16 x ESD protected RS422/RS485 I/O lines.",
+      "category": "configurable",
+      "logicCells": "45k",
+      "digitalIOLines": 48,
+      "ttlLines": 32,
+      "rs422Lines": 16,
+      "driverBlocks": [
+        "Setup "
+      ],
+      "sourcePage": "help\\slrt\\page\\io_main\\refentry_ref_io317.html"
+    },
+    {
+      "moduleId": "IO318",
+      "fpgaSize": "100k",
+      "fullName": "IO318-100k",
+      "description": "FPGA I/O module with 100k of logic cells and 32 x RS422 differential I/O lines",
+      "category": "configurable",
+      "logicCells": "100k",
+      "digitalIOLines": 32,
+      "driverBlocks": [
+        "Setup "
+      ],
+      "sourcePage": "help\\slrt\\page\\io_main\\refentry_ref_io318-100k.html",
+      "overviewDescription": "FPGA I/O module with 100k of logic cells and 32 x RS422 differential I/O lines"
+    },
+    {
+      "moduleId": "IO318",
+      "fpgaSize": "45k",
+      "fullName": "IO318-45k",
+      "description": "configurable I/O module containing an FPGA with 45k of logic cells and 32 x RS422 differential I/O lines",
+      "category": "configurable",
+      "logicCells": "45k",
+      "digitalIOLines": 32,
+      "driverBlocks": [
+        "Setup "
+      ],
+      "sourcePage": "help\\slrt\\page\\io_main\\refentry_ref_io318.html"
+    },
+    {
+      "moduleId": "IO322",
+      "fpgaSize": "45k",
+      "fullName": "IO322-45k",
+      "description": "configurable I/O module containing an FPGA with 45k of logic cells, 42 TTL I/O lines, 32/16 x 16-bit single-ended/differential analog inputs and 8 x 16-bit analog outputs",
+      "category": "configurable",
+      "logicCells": "45k",
+      "analogInputChannels": "32/16",
+      "analogInputBits": 16,
+      "analogOutputChannels": 8,
+      "analogOutputBits": 16,
+      "digitalIOLines": 42,
+      "driverBlocks": [
+        "Setup ",
+        "Analog "
+      ],
+      "sourcePage": "help\\slrt\\page\\io_main\\refentry_ref_io322.html"
+    },
+    {
+      "moduleId": "IO323",
+      "fpgaSize": "100k",
+      "fullName": "IO323-100k",
+      "description": "configurable I/O module containing an FPGA with 100k of logic cells, 42 TTL I/O lines, 32/16 x 16-bit single-ended/differential analog inputs and 8 x 16-bit analog outputs",
+      "category": "configurable",
+      "logicCells": "100k",
+      "analogInputChannels": "32/16",
+      "analogInputBits": 16,
+      "analogOutputChannels": 8,
+      "analogOutputBits": 16,
+      "digitalIOLines": 42,
+      "driverBlocks": [
+        "Setup ",
+        "Analog "
+      ],
+      "sourcePage": "help\\slrt\\page\\io_main\\refentry_ref_io323.html"
+    },
+    {
+      "moduleId": "IO324",
+      "fpgaSize": "200k",
+      "fullName": "IO324-200k",
+      "description": "FPGA I/O module with 200k of logic cells, 32 TTL I/O lines (of which up to 16 lines can be configured as RS422/RS485), 32/16 x 16-bit single-ended/differential analog inputs and 8 x 16-bit analog outputs",
+      "category": "simulink-programmable",
+      "logicCells": "200k",
+      "analogInputChannels": "32/16",
+      "analogInputBits": 16,
+      "analogOutputChannels": 8,
+      "analogOutputBits": 16,
+      "digitalIOLines": 32,
+      "driverBlocks": [
+        "Setup ",
+        "Analog ",
+        "Analog Setup v1",
+        "Analog Input v1",
+        "Analog Output v1"
+      ],
+      "sourcePage": "help\\slrt\\page\\io_main\\refentry_ref_io324_200k.html",
+      "overviewDescription": "FPGA I/O module with 200k of logic cells, 32 TTL I/O lines (of which up to 16 lines can be configured as RS422/RS485), 32/16 x 16-bit single-ended/differential analog inputs and 8 x 16-bit analog outputs X"
+    },
+    {
+      "moduleId": "IO325",
+      "fpgaSize": "160k",
+      "fullName": "IO325-160k",
+      "description": "FPGA I/O module with 160k logic cells, 32 TTL I/O lines (of which up to 16 lines can be configured as RS422/RS485), 8 x 16-bit differential analog inputs and 4 x 16-bit analog outputs",
+      "category": "simulink-programmable",
+      "logicCells": "160k",
+      "analogInputChannels": "8",
+      "analogInputBits": 16,
+      "analogOutputChannels": 4,
+      "analogOutputBits": 16,
+      "digitalIOLines": 32,
+      "driverBlocks": [
+        "Setup ",
+        "Analog ",
+        "Analog Setup v1",
+        "Analog Input v1",
+        "Analog Output v1"
+      ],
+      "sourcePage": "help\\slrt\\page\\io_main\\refentry_ref_io325_160k.html",
+      "overviewDescription": "FPGA I/O module with 160k logic cells, 32 TTL I/O lines (of which up to 16 lines can be configured as RS422/RS485), 8 x 16-bit differential analog inputs and 4 x 16-bit analog outputs X"
+    },
+    {
+      "moduleId": "IO331",
+      "fpgaSize": "150k",
+      "fullName": "IO331-150k",
+      "description": "configurable I/O module containing an FPGA with 150k of logic cells. Optional I/O interfaces allow a variety of digital (TTL, LVDS, CMOS), RS485/RS422, and analog functionality to be added. Optional I/O interface extensions allow to extend the number of digital lines from the front of the enclosure",
+      "category": "configurable",
+      "logicCells": "150k",
+      "hasOptionalInterfaces": true,
+      "hasInterfaceExtensions": true,
+      "driverBlocks": [
+        "Setup "
+      ],
+      "sourcePage": "help\\slrt\\page\\io_main\\refentry_ref_io331.html"
+    },
+    {
+      "moduleId": "IO332",
+      "fpgaSize": "200k",
+      "fullName": "IO332-200k",
+      "description": "FPGA I/O module with 200k of logic cells. Optional I/O interfaces allow a variety of digital (TTL, LVDS, CMOS), RS485/RS422, and analog functionality to be added. Optional I/O interface extensions allow to extend the number of digital lines from the front of the enclosure",
+      "category": "simulink-programmable",
+      "logicCells": "200k",
+      "hasOptionalInterfaces": true,
+      "hasInterfaceExtensions": true,
+      "driverBlocks": [
+        "Setup "
+      ],
+      "sourcePage": "help\\slrt\\page\\io_main\\refentry_ref_io332-200k.html",
+      "overviewDescription": "FPGA I/O module with 200k of logic cells. Optional I/O interfaces allow a variety of digital (TTL, LVDS, CMOS), RS485/RS422, and analog functionality to be added. Optional I/O interface extensions allow to extend the number of digital lines from the front of the enclosure X"
+    },
+    {
+      "moduleId": "IO333",
+      "fpgaSize": "325k",
+      "fullName": "IO333-325k",
+      "description": "FPGA I/O module with 325k of logic cells. Optional I/O interfaces allow a variety of digital (TTL, LVDS, CMOS), RS485/RS422, and analog functionality to be added. Optional I/O interface extensions allow to extend the number of digital lines from the front of the enclosure",
+      "category": "simulink-programmable",
+      "logicCells": "325k",
+      "hasOptionalInterfaces": true,
+      "hasInterfaceExtensions": true,
+      "driverBlocks": [
+        "Setup "
+      ],
+      "sourcePage": "help\\slrt\\page\\io_main\\refentry_ref_io333-325k.html",
+      "overviewDescription": "FPGA I/O module with 325k of logic cells. Optional I/O interfaces allow a variety of digital (TTL, LVDS, CMOS), RS485/RS422, and analog functionality to be added. Optional I/O interface extensions allow to extend the number of digital lines from the front of the enclosure X"
+    },
+    {
+      "moduleId": "IO333",
+      "fpgaSize": "410k",
+      "fullName": "IO333-410k",
+      "description": "FPGA I/O module with 410k of logic cells. Optional I/O interfaces allow a variety of digital (TTL, LVDS, CMOS), RS485/RS422, and analog functionality to be added. Optional I/O interface extensions allow to extend the number of digital lines from the front of the enclosure",
+      "category": "simulink-programmable",
+      "logicCells": "410k",
+      "hasOptionalInterfaces": true,
+      "hasInterfaceExtensions": true,
+      "driverBlocks": [
+        "Setup "
+      ],
+      "sourcePage": "help\\slrt\\page\\io_main\\refentry_ref_io333-410k.html",
+      "overviewDescription": "FPGA I/O module with 410k of logic cells. Optional I/O interfaces allow a variety of digital (TTL, LVDS, CMOS), RS485/RS422, and analog functionality to be added. Optional I/O interface extensions allow to extend the number of digital lines from the front of the enclosure X"
+    },
+    {
+      "moduleId": "IO334",
+      "fpgaSize": "325k",
+      "fullName": "IO334-325k",
+      "description": "FPGA I/O module with 325k logic cells, 16 x 16-bit differential analog inputs and 16 x 16-bit analog outputs",
+      "category": "simulink-programmable",
+      "logicCells": "325k",
+      "analogInputChannels": "16",
+      "analogInputBits": 16,
+      "analogOutputChannels": 16,
+      "analogOutputBits": 16,
+      "driverBlocks": [
+        "Setup ",
+        "Analog ",
+        "Analog Setup v1",
+        "Analog Input v1",
+        "Analog Output v1"
+      ],
+      "sourcePage": "help\\slrt\\page\\io_main\\refentry_ref_io334_325k.html",
+      "overviewDescription": "FPGA I/O module with 325k logic cells, 16 x 16-bit differential analog inputs and 16 x 16-bit analog outputs X"
+    },
+    {
+      "moduleId": "IO335",
+      "fpgaSize": "325k",
+      "fullName": "IO335-325k",
+      "description": "FPGA I/O module with 325k of logic cells, 3 x differential digital inputs and 24 x 16-bit differential analog inputs.",
+      "category": "simulink-programmable",
+      "logicCells": "325k",
+      "analogInputChannels": "24",
+      "analogInputBits": 16,
+      "driverBlocks": [],
+      "sourcePage": "help\\slrt\\page\\refentry_simulink_programmable_fpga_io.html"
+    },
+    {
+      "moduleId": "IO336",
+      "fpgaSize": "325k",
+      "fullName": "IO336-325k",
+      "description": "FPGA I/O module with 325k logic cells, 32 TTL I/O lines (of which up to 16 lines can be configured as RS422/RS485), 16 x 16-bit differential analog inputs and 8 x 16-bit analog outputs",
+      "category": "simulink-programmable",
+      "logicCells": "325k",
+      "analogInputChannels": "16",
+      "analogInputBits": 16,
+      "analogOutputChannels": 8,
+      "analogOutputBits": 16,
+      "digitalIOLines": 32,
+      "driverBlocks": [
+        "Setup ",
+        "Analog ",
+        "Analog Setup v1",
+        "Analog Input v1",
+        "Analog Output v1"
+      ],
+      "sourcePage": "help\\slrt\\page\\io_main\\refentry_ref_io336_325k.html",
+      "overviewDescription": "FPGA I/O module with 325k logic cells, 32 TTL I/O lines (of which up to 16 lines can be configured as RS422/RS485), 16 x 16-bit differential analog inputs and 8 x 16-bit analog outputs X"
+    },
+    {
+      "moduleId": "IO337",
+      "fpgaSize": "650k",
+      "fullName": "IO337-650k",
+      "description": "configurable I/O module containing 650k logic cells, 8 x 16-bit differential analog inputs, 32 x 16-bit analog outputs, and 4 x LVDS digital I/O channels",
+      "category": "simulink-programmable",
+      "logicCells": "650k",
+      "analogInputChannels": "8",
+      "analogInputBits": 16,
+      "analogOutputChannels": 32,
+      "analogOutputBits": 16,
+      "digitalIOLines": 4,
+      "lvdsChannels": 4,
+      "driverBlocks": [
+        "Setup ",
+        "Analog Setup v1",
+        "Analog Input v1",
+        "Analog Output v1"
+      ],
+      "sourcePage": "help\\slrt\\page\\io_main\\refentry_ref_io337_650k.html",
+      "overviewDescription": "configurable I/O module containing 650k logic cells, 8 x 16-bit differential analog inputs, 32 x 16-bit analog outputs, and 4 x LVDS digital I/O channels X"
+    },
+    {
+      "moduleId": "IO342",
+      "fpgaSize": "1080k",
+      "fullName": "IO342-1080k",
+      "description": "FPGA I/O module with 1080k of logic cells and up to 2 FMC slots with your choice of FMCs installed",
+      "category": "simulink-programmable",
+      "logicCells": "1080k",
+      "fmcSlots": 2,
+      "driverBlocks": [],
+      "sourcePage": "help\\slrt\\page\\refentry_simulink_programmable_fpga_io.html"
+    },
+    {
+      "moduleId": "IO342",
+      "fpgaSize": "1450k",
+      "fullName": "IO342-1450k",
+      "description": "FPGA I/O module with 1450k of logic cells and up to 2 FMC slots with your choice of FMCs installed",
+      "category": "simulink-programmable",
+      "logicCells": "1450k",
+      "fmcSlots": 2,
+      "driverBlocks": [],
+      "sourcePage": "help\\slrt\\page\\refentry_simulink_programmable_fpga_io.html"
+    },
+    {
+      "moduleId": "IO360A",
+      "fpgaSize": "190k",
+      "fullName": "IO360A-190k",
+      "description": "190k IO360-A-190k — The IO360-A-190k is a configurable I/O module containing an FPGA with 190k of logic cells and 64 x TTL I/O lines",
+      "category": "configurable",
+      "logicCells": "190k",
+      "digitalIOLines": 64,
+      "driverBlocks": [
+        "Setup "
+      ],
+      "sourcePage": "help\\slrt\\page\\io_main\\refentry_ref_io360a_190k.html"
+    },
+    {
+      "moduleId": "IO360B",
+      "fpgaSize": "190k",
+      "fullName": "IO360B-190k",
+      "description": "190k IO360-B-190k — The IO360-B-190k is a configurable I/O module containing an FPGA with 190k of logic cells, 32 x TTL I/O lines and 16 x RS422/RS485 I/O lines",
+      "category": "configurable",
+      "logicCells": "190k",
+      "digitalIOLines": 48,
+      "ttlLines": 32,
+      "rs422Lines": 16,
+      "driverBlocks": [
+        "Setup "
+      ],
+      "sourcePage": "help\\slrt\\page\\io_main\\refentry_ref_io360b_190k.html"
+    },
+    {
+      "moduleId": "IO360C",
+      "fpgaSize": "190k",
+      "fullName": "IO360C-190k",
+      "description": "190k IO360-C-190k — The IO360-C-190k is a configurable I/O module containing an FPGA with 190k of logic cells and 32 x RS422/RS485 I/O lines",
+      "category": "configurable",
+      "logicCells": "190k",
+      "digitalIOLines": 32,
+      "driverBlocks": [
+        "Setup "
+      ],
+      "sourcePage": "help\\slrt\\page\\io_main\\refentry_ref_io360c_190k.html"
+    },
+    {
+      "moduleId": "IO361A",
+      "fpgaSize": "469k",
+      "fullName": "IO361A-469k",
+      "description": "469k IO361-A-469k — The IO361-A-469k is a configurable I/O module containing an FPGA with 469k of logic cells and 40 x TTL I/O lines",
+      "category": "configurable",
+      "logicCells": "469k",
+      "digitalIOLines": 40,
+      "driverBlocks": [
+        "Setup "
+      ],
+      "sourcePage": "help\\slrt\\page\\io_main\\refentry_ref_io361a_469k.html"
+    },
+    {
+      "moduleId": "IO361B",
+      "fpgaSize": "469k",
+      "fullName": "IO361B-469k",
+      "description": "469k IO361-B-469k — The IO361-B-469k is a configurable I/O module containing an FPGA with 469k of logic cells, 24 x TTL I/O lines and 8 x RS422/RS485 I/O lines",
+      "category": "configurable",
+      "logicCells": "469k",
+      "digitalIOLines": 32,
+      "ttlLines": 24,
+      "rs422Lines": 8,
+      "driverBlocks": [
+        "Setup "
+      ],
+      "sourcePage": "help\\slrt\\page\\io_main\\refentry_ref_io361b_469k.html"
+    },
+    {
+      "moduleId": "IO361C",
+      "fpgaSize": "469k",
+      "fullName": "IO361C-469k",
+      "description": "469k IO361-C-469k — The IO361-C-469k is a configurable I/O module containing an FPGA with 469k of logic cells and 20 x RS422/RS485 I/O lines",
+      "category": "configurable",
+      "logicCells": "469k",
+      "digitalIOLines": 20,
+      "driverBlocks": [
+        "Setup "
+      ],
+      "sourcePage": "help\\slrt\\page\\io_main\\refentry_ref_io361c_469k.html"
+    },
+    {
+      "moduleId": "IO391",
+      "fpgaSize": "50k",
+      "fullName": "IO391-50k",
+      "description": "configurable I/O module containing an FPGA with 50k of logic cells and 26 x ESD protected TTL I/O lines",
+      "category": "configurable",
+      "logicCells": "50k",
+      "digitalIOLines": 26,
+      "driverBlocks": [
+        "Setup "
+      ],
+      "sourcePage": "help\\slrt\\page\\io_main\\refentry_ref_io391_50k.html",
+      "overviewDescription": "configurable I/O module containing an FPGA with 50k of logic cells and 26 x ESD protected TTL I/O lines"
+    },
+    {
+      "moduleId": "IO392",
+      "fpgaSize": "50k",
+      "fullName": "IO392-50k",
+      "description": "configurable I/O module containing an FPGA with 50k of logic cells and 13 x RS422/485 differential I/O lines",
+      "category": "configurable",
+      "logicCells": "50k",
+      "driverBlocks": [
+        "Setup "
+      ],
+      "sourcePage": "help\\slrt\\page\\io_main\\refentry_ref_io392_50k.html",
+      "overviewDescription": "configurable I/O module containing an FPGA with 50k of logic cells and 13 x RS422/485 differential I/O lines"
+    },
+    {
+      "moduleId": "IO393",
+      "fpgaSize": "50k",
+      "fullName": "IO393-50k",
+      "description": "configurable I/O module containing an FPGA with 50k of logic cells, 6x differential digital I/O lines and 14 x ESD protected TTL I/O lines",
+      "category": "configurable",
+      "logicCells": "50k",
+      "digitalIOLines": 14,
+      "driverBlocks": [
+        "Setup "
+      ],
+      "sourcePage": "help\\slrt\\page\\io_main\\refentry_ref_io393_50k.html",
+      "overviewDescription": "configurable I/O module containing an FPGA with 50k of logic cells, 6x differential digital I/O lines and 14 x ESD protected TTL I/O lines"
+    },
+    {
+      "moduleId": "IO394",
+      "fpgaSize": "50k",
+      "fullName": "IO394-50k",
+      "description": "configurable I/O module containing an FPGA with 50k of logic cells and 13 x LVDS differential I/O lines",
+      "category": "configurable",
+      "logicCells": "50k",
+      "digitalIOLines": 13,
+      "driverBlocks": [
+        "Setup "
+      ],
+      "sourcePage": "help\\slrt\\page\\io_main\\refentry_ref_io394_50k.html",
+      "overviewDescription": "configurable I/O module containing an FPGA with 50k of logic cells and 13 x LVDS differential I/O lines"
+    },
+    {
+      "moduleId": "IO397",
+      "fpgaSize": "50k",
+      "fullName": "IO397-50k",
+      "description": "configurable I/O module containing an FPGA with 50k of logic cells, 14 x ESD protected TTL I/O lines, 4 x 16-bit analog inputs and 4 x 16-bit analog outputs",
+      "category": "simulink-programmable",
+      "logicCells": "50k",
+      "analogInputChannels": "4",
+      "analogInputBits": 16,
+      "analogOutputChannels": 4,
+      "analogOutputBits": 16,
+      "digitalIOLines": 14,
+      "driverBlocks": [
+        "Setup "
+      ],
+      "sourcePage": "help\\slrt\\page\\io_main\\refentry_ref_io397_50k.html",
+      "overviewDescription": "configurable I/O module containing an FPGA with 50k of logic cells, 14 x ESD protected TTL I/O lines, 4 x 16-bit analog inputs and 4 x 16-bit analog outputs X"
+    }
+  ],
+  "ioInterfaces": [
+    {
+      "interfaceId": "IO33X-1-LV",
+      "description": "64 x digital LVTTL (3.3V) front I/O lines",
+      "channelCount": 64,
+      "channelType": "digital LVTTL (3.3V)",
+      "hasAnalog": false,
+      "hasDigital": true
+    },
+    {
+      "interfaceId": "IO33X-2",
+      "description": "30 x RS485 (RS422 compliant) front I/O lines",
+      "channelCount": 30,
+      "channelType": "RS485 (RS422 compliant)",
+      "hasAnalog": false,
+      "hasDigital": true
+    },
+    {
+      "interfaceId": "IO33X-3",
+      "description": "16 x CMOS (5V) and 22 RS485 (RS422 compliant) front I/O lines",
+      "channelCount": 16,
+      "channelType": "CMOS (5V) and 22 RS485 (RS422 compliant)",
+      "hasAnalog": false,
+      "hasDigital": true
+    },
+    {
+      "interfaceId": "IO33X-4",
+      "description": "30 x LVDS I/O lines",
+      "channelCount": 30,
+      "channelType": "LVDS",
+      "hasAnalog": false,
+      "hasDigital": true
+    },
+    {
+      "interfaceId": "IO33X-5",
+      "description": "2 x 16-bit 105 MHz differential simultaneous analog inputs",
+      "channelCount": null,
+      "channelType": null,
+      "hasAnalog": true,
+      "hasDigital": false
+    },
+    {
+      "interfaceId": "IO33X-6",
+      "description": "16 x 16-bit 500kHz ADs, 8 x 16-bit DAs with 10µs settling time, 16 x digital TTL I/O lines",
+      "channelCount": 16,
+      "channelType": "16-bit 500kHz ADs, 8 x 16-bit DAs with 10µs settling time, 16 x digital TTL",
+      "hasAnalog": true,
+      "hasDigital": true
+    },
+    {
+      "interfaceId": "IO33X-7",
+      "description": "16 x 16-bit analog outputs with 2µs settling time, +/- 10V",
+      "channelCount": null,
+      "channelType": null,
+      "hasAnalog": true,
+      "hasDigital": true
+    },
+    {
+      "interfaceId": "IO33X-8",
+      "description": "8 x 16-bit analog outputs with 2µs settling time, +/- 10V",
+      "channelCount": null,
+      "channelType": null,
+      "hasAnalog": true,
+      "hasDigital": true
+    }
+  ],
+  "ioInterfaceExtensions": [
+    {
+      "extensionId": "-21",
+      "description": "Converts the rear I/O lines from LVCMOS to 3.3 V/5 V TTL, and makes them accessible from the front of the enclosure",
+      "type": "TTL Signal Conditioning",
+      "hasAnalog": false,
+      "hasDigital": true
+    },
+    {
+      "extensionId": "-22",
+      "description": "Converts the rear I/O lines from LVCMOS to RS422, RS485, and 3.3 V/5 V TTL and makes them accessible from the front of the enclosure",
+      "type": "RS422/RS485/TTL Signal Conditioning",
+      "hasAnalog": false,
+      "hasDigital": true
+    },
+    {
+      "extensionId": "-24",
+      "description": "Makes use of the LVCMOS rear I/O lines to interface with two Resolver-to-Digital Converters. Converts some of the rear I/O lines from LVCMOS to RS422, RS485, and 3.3 V/5 V TTL and makes them accessible from the front of the enclosure",
+      "type": "Resolver-to-Digital Converter + Signal Conditioning",
+      "hasAnalog": false,
+      "hasDigital": true
+    },
+    {
+      "extensionId": "-40",
+      "description": "Provides two A2B nodes of type AD2433, and makes them accessible from the front of the enclosure",
+      "type": "A2B (Automotive Audio Bus)",
+      "hasAnalog": false,
+      "hasDigital": false
+    },
+    {
+      "extensionId": "-120",
+      "description": "Provides the following analog functionality: 16 x 16-bit analog inputs up to 1.5 MSPS sampling rate 16 x 16-bit analog outputs up to 10 MSPS update rate",
+      "type": "Analog I/O Extension",
+      "hasAnalog": true,
+      "hasDigital": false
+    }
+  ],
+  "analogModules": [
+    {
+      "moduleId": "IO101",
+      "description": "16-bit analog module with 32/16 sequential analog inputs, 8 analog outputs, and 16 digital TTL channel",
+      "category": "analog",
+      "resolutionBits": 16,
+      "analogInputChannels": 32,
+      "analogOutputChannels": 8
+    },
+    {
+      "moduleId": "IO102",
+      "description": "Fast 16-bit analog module with 32/16 multiplexed analog input channels and 4 analog output channels, and 16 digital TTL channels",
+      "category": "analog",
+      "resolutionBits": 16,
+      "analogInputChannels": 32,
+      "analogOutputChannels": 4
+    },
+    {
+      "moduleId": "IO103",
+      "description": "Fast 16-bit analog module with 16/8 multiplexed analog input channels, 8 analog output channels and 4 digital TTL output",
+      "category": "analog",
+      "resolutionBits": 16,
+      "analogInputChannels": 16,
+      "analogOutputChannels": 8
+    },
+    {
+      "moduleId": "IO104",
+      "description": "Very fast 16-bit analog module with 8 simultaneous sampling analog input channels, 4 analog output channels, 16 digital TTL channels",
+      "category": "analog",
+      "resolutionBits": 16,
+      "analogInputChannels": 8,
+      "analogOutputChannels": 4
+    },
+    {
+      "moduleId": "IO105",
+      "description": "Fast 16-bit analog module with 64/32 multiplexed analog input channels",
+      "category": "analog",
+      "resolutionBits": 16,
+      "analogInputChannels": 64,
+      "analogOutputChannels": null
+    },
+    {
+      "moduleId": "IO106",
+      "description": "Fast 16-bit analog module with 64/32 multiplexed analog input channels",
+      "category": "analog",
+      "resolutionBits": 16,
+      "analogInputChannels": 64,
+      "analogOutputChannels": null
+    },
+    {
+      "moduleId": "IO107",
+      "description": "Fast 16-bit analog module with 16 differential analog output channels",
+      "category": "analog",
+      "resolutionBits": 16,
+      "analogInputChannels": null,
+      "analogOutputChannels": 16
+    },
+    {
+      "moduleId": "IO108",
+      "description": "Fast 16-bit analog module with 8 differential analog output channels",
+      "category": "analog",
+      "resolutionBits": 16,
+      "analogInputChannels": null,
+      "analogOutputChannels": 8
+    },
+    {
+      "moduleId": "IO109",
+      "description": "High-resolution 24-bit sigma-delta analog module with 12 differential analog input channels",
+      "category": "analog",
+      "resolutionBits": 24,
+      "analogInputChannels": 12,
+      "analogOutputChannels": null
+    },
+    {
+      "moduleId": "IO110",
+      "description": "Fast 16-bit analog module with 32 single-ended analog output channels",
+      "category": "analog",
+      "resolutionBits": 16,
+      "analogInputChannels": null,
+      "analogOutputChannels": null
+    },
+    {
+      "moduleId": "IO111",
+      "description": "Fast 16-bit analog module with 16 single-ended analog output channels",
+      "category": "analog",
+      "resolutionBits": 16,
+      "analogInputChannels": null,
+      "analogOutputChannels": null
+    },
+    {
+      "moduleId": "IO112",
+      "description": "High-resolution 16 or 18-bit simultaneous sampling analog input I/O module with 4, 8, 16, or 32 differential channels",
+      "category": "analog",
+      "resolutionBits": 18,
+      "analogInputChannels": null,
+      "analogOutputChannels": null
+    },
+    {
+      "moduleId": "IO113",
+      "description": "18-bit analog module with 8 single-ended or 3-wire differential output channels",
+      "category": "analog",
+      "resolutionBits": 18,
+      "analogInputChannels": null,
+      "analogOutputChannels": null
+    },
+    {
+      "moduleId": "IO113-20",
+      "description": "20-bit analog module with 8 single-ended or 3-wire differential output channels",
+      "category": "analog",
+      "resolutionBits": 20,
+      "analogInputChannels": null,
+      "analogOutputChannels": null
+    },
+    {
+      "moduleId": "IO114A",
+      "description": "15-bit (14-bit guarantee) analog module with 8 current outputs (optionally isolated), 4 digital inputs, 4 digital outputs",
+      "category": "analog",
+      "resolutionBits": 15,
+      "analogInputChannels": null,
+      "analogOutputChannels": null
+    },
+    {
+      "moduleId": "IO114B",
+      "description": "12-bit (11-bit guarantee) analog module with 8 current outputs (optionally isolated), 4 digital inputs, 4 digital outputs",
+      "category": "analog",
+      "resolutionBits": 12,
+      "analogInputChannels": null,
+      "analogOutputChannels": null
+    },
+    {
+      "moduleId": "IO116",
+      "description": "16-bit analog module with 8 current loop inputs, 4 current loop outputs",
+      "category": "analog",
+      "resolutionBits": 16,
+      "analogInputChannels": null,
+      "analogOutputChannels": null
+    },
+    {
+      "moduleId": "IO117",
+      "description": "16-bit analog module with 32 galvanically isolated input channels",
+      "category": "analog",
+      "resolutionBits": 16,
+      "analogInputChannels": null,
+      "analogOutputChannels": null
+    },
+    {
+      "moduleId": "IO130",
+      "description": "Fast simultaneous sampling 16-bit isolated analog input and output module",
+      "category": "analog",
+      "resolutionBits": 16,
+      "analogInputChannels": null,
+      "analogOutputChannels": null
+    },
+    {
+      "moduleId": "IO131",
+      "description": "Fast simultaneous sampling 16-bit isolated analog input and output module",
+      "category": "analog",
+      "resolutionBits": 16,
+      "analogInputChannels": null,
+      "analogOutputChannels": null
+    },
+    {
+      "moduleId": "IO132",
+      "description": "Fast simultaneous sampling 16-bit analog input and output module",
+      "category": "analog",
+      "resolutionBits": 16,
+      "analogInputChannels": null,
+      "analogOutputChannels": null
+    },
+    {
+      "moduleId": "IO133",
+      "description": "Fast simultaneous sampling 16-bit analog input and output module",
+      "category": "analog",
+      "resolutionBits": 16,
+      "analogInputChannels": null,
+      "analogOutputChannels": null
+    },
+    {
+      "moduleId": "IO134",
+      "description": "Fast, simultaneous-sampling, 16-bit analog input module",
+      "category": "analog",
+      "resolutionBits": 16,
+      "analogInputChannels": null,
+      "analogOutputChannels": null
+    },
+    {
+      "moduleId": "IO135",
+      "description": "Fast simultaneous sampling 16-bit analog input and output module",
+      "category": "analog",
+      "resolutionBits": 16,
+      "analogInputChannels": null,
+      "analogOutputChannels": null
+    },
+    {
+      "moduleId": "IO141",
+      "description": "Fast sampling 16-bit analog input and output module",
+      "category": "analog",
+      "resolutionBits": 16,
+      "analogInputChannels": null,
+      "analogOutputChannels": null
+    },
+    {
+      "moduleId": "IO142",
+      "description": "Fast sampling 16-bit analog input and output module",
+      "category": "analog",
+      "resolutionBits": 16,
+      "analogInputChannels": null,
+      "analogOutputChannels": null
+    },
+    {
+      "moduleId": "IO143",
+      "description": "Fast simultaneous sampling 16-bit analog voltage/current output module",
+      "category": "analog",
+      "resolutionBits": 16,
+      "analogInputChannels": null,
+      "analogOutputChannels": null
+    },
+    {
+      "moduleId": "IO144",
+      "description": "Fast simultaneous sampling 16-bit analog voltage/current output module",
+      "category": "analog",
+      "resolutionBits": 16,
+      "analogInputChannels": null,
+      "analogOutputChannels": null
+    },
+    {
+      "moduleId": "IO145",
+      "description": "Fast sampling 16-bit analog input and output module IO17x Thermocouple, resistive sensors and strain gauge measurement modules",
+      "category": "analog",
+      "resolutionBits": 16,
+      "analogInputChannels": null,
+      "analogOutputChannels": null
+    },
+    {
+      "moduleId": "IO183",
+      "description": "Fast 16-bit analog input and output module",
+      "category": "analog",
+      "resolutionBits": 16,
+      "analogInputChannels": null,
+      "analogOutputChannels": null
+    },
+    {
+      "moduleId": "IO191",
+      "description": "Fast 16-bit analog input and output module",
+      "category": "analog",
+      "resolutionBits": 16,
+      "analogInputChannels": null,
+      "analogOutputChannels": null
+    }
+  ],
+  "digitalModules": [
+    {
+      "moduleId": "IO203",
+      "description": "digital I/O module providing a total of 64 TTL channels.",
+      "category": "digital",
+      "totalChannels": 64
+    },
+    {
+      "moduleId": "IO204",
+      "description": "digital I/O module providing 16x 24V inputs and 16x 24V/0.5A outputs.",
+      "category": "digital",
+      "totalChannels": null
+    },
+    {
+      "moduleId": "IO205",
+      "description": "digital I/O module providing 32 digital 24V/0.5A outputs; high side switches.",
+      "category": "digital",
+      "totalChannels": 32
+    },
+    {
+      "moduleId": "IO206",
+      "description": "digital I/O module providing 32 digital inputs",
+      "category": "digital",
+      "totalChannels": 32
+    },
+    {
+      "moduleId": "IO207",
+      "description": "I/O module provides a total of 128 digital TTL lines.",
+      "category": "digital",
+      "totalChannels": 128
+    },
+    {
+      "moduleId": "IO290",
+      "description": "Digital I/O module with isolated inputs, solid state FET outputs and LVTTL I/O lines.",
+      "category": "digital",
+      "totalChannels": null
+    },
+    {
+      "moduleId": "IO291",
+      "description": "Digital I/O module with isolated inputs, solid state FET outputs and LVTTL I/O lines.",
+      "category": "digital",
+      "totalChannels": null
+    },
+    {
+      "moduleId": "IO292",
+      "description": "Digital I/O module with 24 I/O lines.",
+      "category": "digital",
+      "totalChannels": null
+    }
+  ],
+  "communicationModules": [
+    {
+      "moduleId": "IO629",
+      "description": "ARINC 629 I/O module with emulation of up to 240 Remote Terminals",
+      "protocol": "arinc",
+      "category": "communication"
+    },
+    {
+      "moduleId": "IO682",
+      "description": "Intelligent ARINC 429 I/O module featuring 2 to 16 RX channels, and 2 to 16 TX channels",
+      "protocol": "arinc",
+      "category": "communication"
+    },
+    {
+      "moduleId": "IO781",
+      "description": "AFDX (ARINC 664 Part 7) I/O module supporting the simulation of multiple ARINC 664 End Systems on a single I/O module ARINC 825 Blockset for ARINC 825 with up to 4 independent channels",
+      "protocol": "arinc",
+      "category": "communication"
+    },
+    {
+      "moduleId": "IO643",
+      "description": "Configurable CANopen Master I/O module",
+      "protocol": "canopen",
+      "category": "communication"
+    },
+    {
+      "moduleId": "IO644",
+      "description": "Configurable CANopen Slave I/O module",
+      "protocol": "canopen",
+      "category": "communication"
+    },
+    {
+      "moduleId": "IO601",
+      "description": "Intelligent CAN module with 2 isolated, software-selectable high/low speed CAN channels",
+      "protocol": "can",
+      "category": "communication"
+    },
+    {
+      "moduleId": "IO602",
+      "description": "Intelligent CAN module with 2x or 4x CAN channels configurable as CAN FD or high-speed CAN",
+      "protocol": "can",
+      "category": "communication"
+    },
+    {
+      "moduleId": "IO603",
+      "description": "Intelligent CAN module with 4x CAN channels configurable as CAN FD or high-speed CAN, 2x LIN channels configurable as Master or Slave and 4 GPIO channels",
+      "protocol": "can",
+      "category": "communication"
+    },
+    {
+      "moduleId": "IO610",
+      "description": "Intelligent CAN module with 2x CAN channels configurable as CAN FD or high-speed CAN",
+      "protocol": "can",
+      "category": "communication"
+    },
+    {
+      "moduleId": "IO611",
+      "description": "Intelligent CAN module with 2x CAN channels configurable as CAN FD, high-speed CAN or low-speed CAN, and 2x LIN channels",
+      "protocol": "can",
+      "category": "communication"
+    },
+    {
+      "moduleId": "IO612",
+      "description": "Intelligent CAN module with 4 HS channels",
+      "protocol": "can",
+      "category": "communication"
+    },
+    {
+      "moduleId": "IO613",
+      "description": "Intelligent CAN module with 2x CAN channels configurable as CAN FD or high-speed CAN",
+      "protocol": "can",
+      "category": "communication"
+    },
+    {
+      "moduleId": "IO614",
+      "description": "Intelligent CAN module with 4x CAN HS channels (channel 1 can be LS instead) and 1x LIN channel",
+      "protocol": "can",
+      "category": "communication"
+    },
+    {
+      "moduleId": "IO691",
+      "description": "Intelligent CAN module with 2x CAN channels configurable as CAN FD or high-speed CAN Utilities J1939 CAN Database Parser CAN Message Utilities (CRC and Counter for E2E Protection)",
+      "protocol": "can",
+      "category": "communication"
+    },
+    {
+      "moduleId": "IO750",
+      "description": "Configurable EtherCAT Subordinate Device I/O module EtherCAT SubDevice Emulator Simulink",
+      "protocol": "ethercat",
+      "category": "communication"
+    },
+    {
+      "moduleId": "IO710",
+      "description": "Intel 82541",
+      "protocol": "ethernet_interfaces",
+      "category": "communication"
+    },
+    {
+      "moduleId": "IO712",
+      "description": "Intel 82574IT",
+      "protocol": "ethernet_interfaces",
+      "category": "communication"
+    },
+    {
+      "moduleId": "IO713",
+      "description": "Intel 82574IT",
+      "protocol": "ethernet_interfaces",
+      "category": "communication"
+    },
+    {
+      "moduleId": "IO715",
+      "description": "Intel I210",
+      "protocol": "ethernet_interfaces",
+      "category": "communication"
+    },
+    {
+      "moduleId": "IO716",
+      "description": "Realtek RTL8111H",
+      "protocol": "ethernet_interfaces",
+      "category": "communication"
+    },
+    {
+      "moduleId": "IO717",
+      "description": "Intel X550",
+      "protocol": "ethernet_interfaces",
+      "category": "communication"
+    },
+    {
+      "moduleId": "IO791",
+      "description": "Intel I210",
+      "protocol": "ethernet_interfaces",
+      "category": "communication"
+    },
+    {
+      "moduleId": "IO755",
+      "description": "Configurable EtherNet/IP Scanner I/O module",
+      "protocol": "ethernet_ip",
+      "category": "communication"
+    },
+    {
+      "moduleId": "IO756",
+      "description": "Configurable EtherNet/IP Adapter I/O module",
+      "protocol": "ethernet_ip",
+      "category": "communication"
+    },
+    {
+      "moduleId": "IO623",
+      "description": "FlexRay I/O module with 1, 2 or 4 bus interfaces",
+      "protocol": "flexray",
+      "category": "communication"
+    },
+    {
+      "moduleId": "IO821",
+      "description": "Precision timing module with IRIG and 1PPS interfaces and optional GNSS",
+      "protocol": "gnss",
+      "category": "communication"
+    },
+    {
+      "moduleId": "IO672",
+      "description": "High performance MIL-STD-1553 I/O module",
+      "protocol": "mil-std-1553",
+      "category": "communication"
+    },
+    {
+      "moduleId": "IO619",
+      "description": "Configurable MVB I/O Module",
+      "protocol": "mvb",
+      "category": "communication"
+    },
+    {
+      "moduleId": "IO758",
+      "description": "POWERLINK Controlled Node I/O module",
+      "protocol": "powerlink",
+      "category": "communication"
+    },
+    {
+      "moduleId": "IO641",
+      "description": "Configurable PROFIBUS DP Master I/O module",
+      "protocol": "profibus",
+      "category": "communication"
+    },
+    {
+      "moduleId": "IO642",
+      "description": "Configurable PROFIBUS DP Slave I/O module",
+      "protocol": "profibus",
+      "category": "communication"
+    },
+    {
+      "moduleId": "IO751",
+      "description": "Configurable PROFINET Controller I/O module",
+      "protocol": "profinet",
+      "category": "communication"
+    },
+    {
+      "moduleId": "IO752",
+      "description": "Configurable PROFINET Device I/O module",
+      "protocol": "profinet",
+      "category": "communication"
+    },
+    {
+      "moduleId": "IO624",
+      "description": "PSI5 and wheel speed sensor I/O module with eight channels",
+      "protocol": "psi5",
+      "category": "communication"
+    },
+    {
+      "moduleId": "IO723",
+      "description": "Configurable Restbus Simulation I/O Module",
+      "protocol": "restbus",
+      "category": "communication"
+    },
+    {
+      "moduleId": "IO511",
+      "description": "4 port serial I/O module supporting SDLC, HDLC, RS232, RS422 and RS485 .",
+      "protocol": "sdlc",
+      "category": "communication"
+    },
+    {
+      "moduleId": "IO581",
+      "description": "IO50X/IO581 I/O modules are serial modules supporting RS232/422/485 protocols",
+      "protocol": "serial",
+      "category": "communication"
+    },
+    {
+      "moduleId": "IO511",
+      "description": "I/O module is a serial module supporting the SDLC and HDLC protocols",
+      "protocol": "serial",
+      "category": "communication"
+    },
+    {
+      "moduleId": "IO512",
+      "description": "I/O module is a serial module supporting the SDLC and HDLC protocols",
+      "protocol": "serial",
+      "category": "communication"
+    },
+    {
+      "moduleId": "IO902",
+      "description": "are shared memory I/O modules",
+      "protocol": "shared_memory",
+      "category": "communication"
+    },
+    {
+      "moduleId": "IO907",
+      "description": "shared memory I/O module",
+      "protocol": "shared_memory",
+      "category": "communication"
+    },
+    {
+      "moduleId": "IO908",
+      "description": "shared memory I/O module",
+      "protocol": "shared_memory",
+      "category": "communication"
+    },
+    {
+      "moduleId": "IO731",
+      "description": "Time Sensitive Networking I/O Module",
+      "protocol": "tsn",
+      "category": "communication"
+    }
+  ],
+  "configPackages": [
+    {
+      "moduleId": "IO306",
+      "configName": "Communication",
+      "description": "Communication protocol functionality with SPI master/slave and I2C master/slave for IO306 configurable I/O"
+    },
+    {
+      "moduleId": "IO306",
+      "configName": "modules HIL",
+      "description": "Hardware-in-the-Loop functionality with PWM Generation and Capture, Quadrature Encoder, Pulse Counter and Interrupt Input for IO306 configurable I/O"
+    },
+    {
+      "moduleId": "IO306",
+      "configName": "modules RCP",
+      "description": "Rapid Control Prototyping functionality with PWM Generation and Capture, Quadrature Decoder, Pulse Counter and Interrupt Input for IO306 configurable I/O modules"
+    },
+    {
+      "moduleId": "IO307",
+      "configName": "Communication",
+      "description": "Communication protocol functionality with Serial Master/Slave, SPI master/slave and I2C master/slave for IO307 configurable I/O"
+    },
+    {
+      "moduleId": "IO307",
+      "configName": "modules HIL",
+      "description": "Hardware-in-the-Loop functionality with SSI Slave, BiSS Slave, EnDat Slave, Quadrature Encoder, PWM Generation and Capture, Pulse Counter and Interrupt Input for IO307 configurable I/O"
+    },
+    {
+      "moduleId": "IO307",
+      "configName": "modules RCP",
+      "description": "Rapid Control Prototyping functionality with SSI Master, BiSS Master, EnDat Master, Quadrature Decoder, PWM Generation and Capture, Pulse Counter and Interrupt Input for IO307 configurable I/O modules"
+    },
+    {
+      "moduleId": "IO324",
+      "configName": "Communication TTL",
+      "description": "Communication protocol functionality with SPI master/slave, I2C master/slave and Serial for IO324 configurable I/O modules. The majority of I/O pins use the single-ended TTL switching logic."
+    },
+    {
+      "moduleId": "IO324",
+      "configName": "Communication RS422",
+      "description": "Communication protocol functionality with SPI master/slave, I2C master/slave and Serial for IO324 configurable I/O modules. The majority of I/O pins use the differential RS422 switching logic."
+    },
+    {
+      "moduleId": "IO324",
+      "configName": "HIL TTL",
+      "description": "Hardware-in-the-Loop functionality with PWM Generation and Capture, Pulse Counter, Quadrature Encoder and Interrupt Input for IO324 configurable I/O modules. The majority of I/O pins use the single-ended TTL switching logic."
+    },
+    {
+      "moduleId": "IO324",
+      "configName": "HIL RS422",
+      "description": "Hardware-in-the-Loop functionality with PWM Generation and Capture, SSI Slave, EnDat Slave, Quadrature Encoder and Interrupt Input for IO324 configurable I/O modules. The majority of I/O pins use the differential RS422 switching logic."
+    },
+    {
+      "moduleId": "IO324",
+      "configName": "RCP TTL",
+      "description": "Rapid Control Prototyping functionality with PWM Generation and Capture, Pulse Counter, Quadrature Decoder and Interrupt Input for IO324 configurable I/O modules. The majority of I/O pins use the single-ended TTL switching logic."
+    },
+    {
+      "moduleId": "IO324",
+      "configName": "RCP RS422",
+      "description": "Rapid Control Prototyping functionality with PWM, SSI Master, EnDat Master, Quadrature Decoder and Interrupt Input for IO324 configurable I/O modules. The majority of I/O pins use the differential RS422 switching logic."
+    },
+    {
+      "moduleId": "IO324",
+      "configName": "TPI6020",
+      "description": "Two PWR-TPI6020 Three-Phase Inverter Modules with PWM Generation and Quadrature Decoder for IO324 configurable I/O"
+    },
+    {
+      "moduleId": "IO324",
+      "configName": "modules Resolver TTL",
+      "description": "Resolver Emulation and Measurement functionality with I2C Master and Slave, PWM Generation and Capture, Quadrature Decoder and Encoder, Serial, SPI Master and Slave, Pulse Counter and interrupt input for IO324 configurable I/O modules. The majority of I/O pins use the single-ended TTL switching logi"
+    },
+    {
+      "moduleId": "IO334",
+      "configName": "Communication TTL",
+      "description": "Communication protocol functionality with SPI master/slave, I2C master/slave and Serial for IO334 configurable I/O modules. The majority of I/O pins use the single-ended TTL switching logic."
+    },
+    {
+      "moduleId": "IO334",
+      "configName": "Communication RS422",
+      "description": "Communication protocol functionality with SPI master/slave, I2C master/slave and Serial for IO334 configurable I/O modules. The majority of I/O pins use the differential RS422 switching logic."
+    },
+    {
+      "moduleId": "IO334",
+      "configName": "HIL TTL",
+      "description": "Hardware-in-the-Loop functionality with PWM Generation and Capture, Pulse Counter, Quadrature Encoder and Interrupt Input for IO334 configurable I/O modules. The majority of I/O pins use the single-ended TTL switching logic."
+    },
+    {
+      "moduleId": "IO334",
+      "configName": "HIL RS422",
+      "description": "Hardware-in-the-Loop functionality with PWM Generation and Capture, SSI Slave, EnDat Slave, Quadrature Encoder and Interrupt Input for IO334 configurable I/O modules. The majority of I/O pins use the differential RS422 switching logic."
+    },
+    {
+      "moduleId": "IO334",
+      "configName": "RCP TTL",
+      "description": "Rapid Control Prototyping functionality with PWM Generation and Capture, Pulse Counter, Quadrature Decoder and Interrupt Input for IO334 configurable I/O modules. The majority of I/O pins use the single-ended TTL switching logic."
+    },
+    {
+      "moduleId": "IO334",
+      "configName": "RCP RS422",
+      "description": "Rapid Control Prototyping functionality with PWM, SSI Master, EnDat Master, Quadrature Decoder and Interrupt Input for IO334 configurable I/O modules. The majority of I/O pins use the differential RS422 switching logic."
+    },
+    {
+      "moduleId": "IO334",
+      "configName": "Resolver TTL",
+      "description": "Resolver Emulation and Measurement functionality with I2C Master and Slave, PWM Generation and Capture, Quadrature Decoder and Encoder, Serial, SPI Master and Slave, Pulse Counter and interrupt input for IO334 configurable I/O modules. The majority of I/O pins use the single-ended TTL switching logi"
+    },
+    {
+      "moduleId": "IO336",
+      "configName": "Communication TTL",
+      "description": "Communication protocol functionality with SPI master/slave, I2C master/slave and Serial for IO336 configurable I/O modules. The majority of I/O pins use the single-ended TTL switching logic."
+    },
+    {
+      "moduleId": "IO336",
+      "configName": "Communication RS422",
+      "description": "Communication protocol functionality with SPI master/slave, I2C master/slave and Serial for IO336 configurable I/O modules. The majority of I/O pins use the differential RS422 switching logic."
+    },
+    {
+      "moduleId": "IO336",
+      "configName": "HIL TTL",
+      "description": "Hardware-in-the-Loop functionality with PWM Generation and Capture, Pulse Counter, Quadrature Encoder and Interrupt Input for IO336 configurable I/O modules. The majority of I/O pins use the single-ended TTL switching logic."
+    },
+    {
+      "moduleId": "IO336",
+      "configName": "HIL RS422",
+      "description": "Hardware-in-the-Loop functionality with PWM Generation and Capture, SSI Slave, EnDat Slave, Quadrature Encoder and Interrupt Input for IO336 configurable I/O modules. The majority of I/O pins use the differential RS422 switching logic."
+    },
+    {
+      "moduleId": "IO336",
+      "configName": "RCP TTL",
+      "description": "Rapid Control Prototyping functionality with PWM Generation and Capture, Pulse Counter, Quadrature Decoder and Interrupt Input for IO336 configurable I/O modules. The majority of I/O pins use the single-ended TTL switching logic."
+    },
+    {
+      "moduleId": "IO336",
+      "configName": "RCP RS422",
+      "description": "Rapid Control Prototyping functionality with PWM, SSI Master, EnDat Master, Quadrature Decoder and Interrupt Input for IO336 configurable I/O modules. The majority of I/O pins use the differential RS422 switching logic."
+    },
+    {
+      "moduleId": "IO336",
+      "configName": "TPI6020",
+      "description": "Two PWR-TPI6020 Three-Phase Inverter Modules with PWM Generation and Quadrature Decoder for IO336 configurable I/O"
+    },
+    {
+      "moduleId": "IO336",
+      "configName": "modules Resolver TTL",
+      "description": "Resolver Emulation and Measurement functionality with I2C Master and Slave, PWM Generation and Capture, Quadrature Decoder and Encoder, Serial, SPI Master and Slave, Pulse Counter and interrupt input for IO336 configurable I/O modules. The majority of I/O pins use the single-ended TTL switching logi"
+    },
+    {
+      "moduleId": "IO337",
+      "configName": "Communication TTL",
+      "description": "Communication protocol functionality with SPI master/slave, I2C master/slave and Serial for IO337 configurable I/O modules. The majority of I/O pins use the single-ended TTL switching logic."
+    },
+    {
+      "moduleId": "IO337",
+      "configName": "Communication RS422",
+      "description": "Communication protocol functionality with SPI master/slave, I2C master/slave and Serial for IO337 configurable I/O modules. The majority of I/O pins use the differential RS422 switching logic."
+    },
+    {
+      "moduleId": "IO337",
+      "configName": "HIL TTL",
+      "description": "Hardware-in-the-Loop functionality with PWM Generation and Capture, Pulse Counter, Quadrature Encoder and Interrupt Input for IO337 configurable I/O modules. The majority of I/O pins use the single-ended TTL switching logic."
+    },
+    {
+      "moduleId": "IO337",
+      "configName": "HIL RS422",
+      "description": "Hardware-in-the-Loop functionality with PWM Generation and Capture, SSI Slave, EnDat Slave, Quadrature Encoder and Interrupt Input for IO337 configurable I/O modules. The majority of I/O pins use the differential RS422 switching logic."
+    },
+    {
+      "moduleId": "IO397",
+      "configName": "Communication",
+      "description": "Communication protocol functionality with SPI master/slave, I2C master/slave and Serial for IO397 configurable I/O"
+    },
+    {
+      "moduleId": "IO397",
+      "configName": "modules HIL",
+      "description": "Hardware-in-the-Loop functionality with PWM Capture, Quadrature Encoder and Interrupt Input for IO397 configurable I/O"
+    },
+    {
+      "moduleId": "IO397",
+      "configName": "modules RCP",
+      "description": "Rapid Control Prototyping functionality with PWM Generation, Quadrature Decoder and Interrupt Input for IO397 configurable I/O"
+    },
+    {
+      "moduleId": "IO397",
+      "configName": "modules TPI6020",
+      "description": "PWR-TPI6020 Three-Phase Inverter Module with PWM Generation and Quadrature Decoder for IO397 configurable I/O modules Pulse I/O"
+    },
+    {
+      "moduleId": "IO397",
+      "configName": "Configuration Package Communication TTL",
+      "description": "Communication protocol functionality with SPI master/slave, I2C master/slave and Serial for Pulse I/O configurable I/O modules. The majority of I/O pins use the single-ended TTL switching logic."
+    },
+    {
+      "moduleId": "IO397",
+      "configName": "Communication RS422",
+      "description": "Communication protocol functionality with SPI master/slave, I2C master/slave and Serial for Pulse I/O configurable I/O modules. The majority of I/O pins use the differential RS422 switching logic."
+    },
+    {
+      "moduleId": "IO397",
+      "configName": "HIL TTL",
+      "description": "Hardware-in-the-Loop functionality with PWM Generation and Capture, Pulse Counter, Quadrature Encoder and Interrupt Input for Pulse I/O configurable I/O modules. The majority of I/O pins use the single-ended TTL switching logic."
+    },
+    {
+      "moduleId": "IO397",
+      "configName": "HIL RS422",
+      "description": "Hardware-in-the-Loop functionality with PWM Generation and Capture, SSI Slave, EnDat Slave, Quadrature Encoder and Interrupt Input for Pulse I/O configurable I/O modules. The majority of I/O pins use the differential RS422 switching logic."
+    },
+    {
+      "moduleId": "IO397",
+      "configName": "RCP TTL",
+      "description": "Rapid Control Prototyping functionality with PWM Generation and Capture, Pulse Counter, Quadrature Decoder and Interrupt Input for Pulse I/O configurable I/O modules. The majority of I/O pins use the single-ended TTL switching logic."
+    },
+    {
+      "moduleId": "IO397",
+      "configName": "RCP RS422",
+      "description": "Rapid Control Prototyping functionality with PWM, SSI Master, EnDat Master, Quadrature Decoder and Interrupt Input for Pulse I/O configurable I/O modules. The majority of I/O pins use the differential RS422 switching logic."
+    },
+    {
+      "moduleId": "IO397",
+      "configName": "Resolver TTL",
+      "description": "Resolver Emulation and Measurement functionality with I2C Master and Slave, PWM Generation and Capture, Quadrature Decoder and Encoder, Serial, SPI Master and Slave, Pulse Counter and interrupt input for Pulse I/O. The majority of I/O pins use the single-ended TTL switching logic. Follow Speedgoat A"
+    }
+  ],
+  "otherModuleInfo": [
+    {
+      "moduleId": "IO421",
+      "description": "an LVDT/RVDT and Synchro/Resolver converter I/O module",
+      "category": "lvdt"
+    },
+    {
+      "moduleId": "IO423",
+      "description": "Synchro/Resolver to digital converter I/O module",
+      "category": "lvdt"
+    },
+    {
+      "moduleId": "IO424",
+      "description": "an LVDT/RVDT/Resolver/(Synchro) to digital converter I/O module",
+      "category": "lvdt"
+    },
+    {
+      "moduleId": "IO425",
+      "description": "LVDT/RVDT/Resolver emulation I/O module",
+      "category": "lvdt"
+    },
+    {
+      "moduleId": "IO975",
+      "description": "are thermocouple simulation I/O modules",
+      "category": "temperature"
+    },
+    {
+      "moduleId": "IO976",
+      "description": "allows 16 thermocouples to be measured",
+      "category": "temperature"
+    },
+    {
+      "moduleId": "IO811",
+      "description": "Camera Link ® frame grabber I/O module",
+      "category": "video"
+    },
+    {
+      "moduleId": "IO104",
+      "description": "Very fast 16-bit analog module with 8 simultaneous sampling analog input channels, 4 analog output channels, 16 digital TTL channels",
+      "category": "audio_and_speech"
+    },
+    {
+      "moduleId": "IO107",
+      "description": "Fast 16-bit analog module with 16 differential analog output channels",
+      "category": "audio_and_speech"
+    },
+    {
+      "moduleId": "IO108",
+      "description": "Fast 16-bit analog module with 8 differential analog output channels",
+      "category": "audio_and_speech"
+    },
+    {
+      "moduleId": "IO109",
+      "description": "High-resolution 24-bit sigma-delta analog module with 12 differential analog input channels",
+      "category": "audio_and_speech"
+    },
+    {
+      "moduleId": "IO117",
+      "description": "16-bit analog module with 32 galvanically isolated input channels IO99x The IO99X is a battery simulation I/O module",
+      "category": "battery_emulation"
+    },
+    {
+      "moduleId": "IO973",
+      "description": "High precision resistor modules",
+      "category": "resistors"
+    },
+    {
+      "moduleId": "IO811",
+      "description": "Camera Link I/O module can capture a timing signal generated by a camera when an image is acquired. The complete model can then be executed based on this signal to ensure complete synchronization. An ",
+      "category": "timing_and_synchronization"
+    },
+    {
+      "moduleId": "IO106",
+      "description": "analog I/O module. Synchronization of Different Components of the Same Target Machine For motor control, a configurable I/O module can be used to generate PWM commands using the PWM Generation Code Mo",
+      "category": "timing_and_synchronization"
+    },
+    {
+      "moduleId": "IO821",
+      "description": "IRIG timing module which can be used to generate an interrupt to trigger a Simulink model at very precise intervals. The timing source for the",
+      "category": "timing_and_synchronization"
+    },
+    {
+      "moduleId": "IO821",
+      "description": "can be either GPS, any dedicated timing device, or the I/O module itself (OCXO), and it can be used to synchronize other real-time target machines with",
+      "category": "timing_and_synchronization"
+    },
+    {
+      "moduleId": "IO821",
+      "description": "I/O modules installed.",
+      "category": "timing_and_synchronization"
+    },
+    {
+      "moduleId": "IO104",
+      "description": "Very fast 16-bit analog module with 8 simultaneous sampling analog input channels, 4 analog output channels, 16 digital TTL channels",
+      "category": "vibration"
+    },
+    {
+      "moduleId": "IO106",
+      "description": "Fast 16-bit analog module with 64/32 multiplexed analog input channels",
+      "category": "vibration"
+    },
+    {
+      "moduleId": "IO109",
+      "description": "High-resolution 24-bit sigma-delta analog module with 12 differential analog input channels",
+      "category": "vibration"
+    },
+    {
+      "moduleId": "IO112",
+      "description": "High-resolution 16 or 18-bit simultaneous sampling analog input I/O module with 4, 8, 16, or 32 differential channels IO33X-6 I/O interface 16 x 16-bit 500kHz ADs, 8 x 16-bit DAs with 10us settling ti",
+      "category": "vibration"
+    },
+    {
+      "moduleId": "IO710",
+      "description": "Gigabit Ethernet I/O module with 1 port",
+      "category": "vibration"
+    },
+    {
+      "moduleId": "IO712",
+      "description": "Gigabit Ethernet I/O module with 2 ports",
+      "category": "vibration"
+    },
+    {
+      "moduleId": "IO713",
+      "description": "Gigabit Ethernet I/O module with 4 ports",
+      "category": "vibration"
+    },
+    {
+      "moduleId": "IO715",
+      "description": "Gigabit Ethernet I/O module with 4 ports Support for EtherCAT Master protocol is provided by MathWorks. Refer to the EtherCAT web documentation, or for the local help, enter the following code in the ",
+      "category": "vibration"
+    }
+  ]
+}

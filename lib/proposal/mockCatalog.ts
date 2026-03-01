@@ -52,6 +52,26 @@ export type MockModuleCatalogEntry = {
   webSourcePage?: string
   /** Path to the source HRM document (if extracted from HRM) */
   hrmDocPath?: string
+
+  /* ── Documentation-enriched fields (from Speedgoat authenticated docs) ── */
+  /** Full description from documentation */
+  docDescription?: string
+  /** FPGA logic cell count (e.g. "325k", "650k") */
+  fpgaLogicCells?: string
+  /** FPGA module category */
+  fpgaCategory?: 'configurable' | 'simulink-programmable'
+  /** Analog input channels from FPGA module (e.g. "32/16" or 16) */
+  fpgaAnalogInputChannels?: string | number
+  /** Analog output channels from FPGA module */
+  fpgaAnalogOutputChannels?: number
+  /** Digital I/O lines from FPGA module */
+  fpgaDigitalIOLines?: number
+  /** Whether this module supports optional IO33X-N interface boards */
+  supportsIOInterfaces?: boolean
+  /** Whether this module supports IO interface extensions (-21, -22, etc.) */
+  supportsIOExtensions?: boolean
+  /** Available IO Configuration Package names for this module */
+  configPackages?: string[]
 }
 
 /**
@@ -95,6 +115,7 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     inputChannelSpec: '8 DF',
     outputChannelSpec: '4 SE',
     webSourcePage: 'analog',
+    docDescription: 'Fast simultaneous sampling 16-bit isolated analog input and output module',
   },
   {
     moduleId: 'IO131',
@@ -126,6 +147,7 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     inputChannelSpec: '16 DF',
     outputChannelSpec: '8 SE',
     webSourcePage: 'analog',
+    docDescription: 'Fast simultaneous sampling 16-bit isolated analog input and output module',
   },
   {
     moduleId: 'IO134',
@@ -150,6 +172,7 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     samplingMode: 'SM/-',
     inputChannelSpec: '32 DF',
     webSourcePage: 'analog',
+    docDescription: 'Fast, simultaneous-sampling, 16-bit analog input module',
   },
   {
     moduleId: 'IO106',
@@ -174,6 +197,7 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     samplingMode: 'SM/-',
     inputChannelSpec: '64 SE / 32 DF',
     webSourcePage: 'analog',
+    docDescription: 'Fast 16-bit analog module with 64/32 multiplexed analog input channels',
   },
   {
     moduleId: 'IO141',
@@ -206,6 +230,7 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     inputChannelSpec: '16 SE / 8 DF',
     outputChannelSpec: '4 SE',
     webSourcePage: 'analog',
+    docDescription: 'Fast sampling 16-bit analog input and output module',
   },
   {
     moduleId: 'IO142',
@@ -233,6 +258,7 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     inputChannelSpec: '32 SE / 16 DF',
     outputChannelSpec: '8 SE',
     webSourcePage: 'analog',
+    docDescription: 'Fast sampling 16-bit analog input and output module',
   },
   {
     moduleId: 'IO145',
@@ -265,6 +291,7 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     inputChannelSpec: '16 SE / 8 DF',
     outputChannelSpec: '8 SE',
     webSourcePage: 'analog',
+    docDescription: 'Fast sampling 16-bit analog input and output module IO17x Thermocouple, resistive sensors and strain gauge measurement modules',
   },
   {
     moduleId: 'IO109',
@@ -289,6 +316,7 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     samplingMode: 'SM/-',
     inputChannelSpec: '12 DF',
     webSourcePage: 'analog',
+    docDescription: 'High-resolution 24-bit sigma-delta analog module with 12 differential analog input channels',
   },
   {
     moduleId: 'IO191',
@@ -316,6 +344,7 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     inputChannelSpec: '8 SE / 4 DF',
     outputChannelSpec: '4 SE',
     webSourcePage: 'analog',
+    docDescription: 'Fast 16-bit analog input and output module',
   },
   {
     moduleId: 'IO104',
@@ -346,6 +375,7 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     inputChannelSpec: '8 SE / 8 DF',
     outputChannelSpec: '4 SE',
     webSourcePage: 'analog',
+    docDescription: 'Very fast 16-bit analog module with 8 simultaneous sampling analog input channels, 4 analog output channels, 16 digital TTL channels',
   },
   {
     moduleId: 'IO112',
@@ -370,6 +400,7 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     samplingMode: 'SM/-',
     inputChannelSpec: '4, 8, 16, 32 DF',
     webSourcePage: 'analog',
+    docDescription: 'High-resolution 16 or 18-bit simultaneous sampling analog input I/O module with 4, 8, 16, or 32 differential channels',
   },
   {
     moduleId: 'IO108',
@@ -394,6 +425,7 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     samplingMode: '-/SM',
     outputChannelSpec: '8 SE / 8 DF',
     webSourcePage: 'analog',
+    docDescription: 'Fast 16-bit analog module with 8 differential analog output channels',
   },
   {
     moduleId: 'IO111',
@@ -423,6 +455,7 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     samplingMode: '-/SM',
     outputChannelSpec: '16 SE',
     webSourcePage: 'analog',
+    docDescription: 'Fast 16-bit analog module with 16 single-ended analog output channels',
   },
   {
     moduleId: 'IO113',
@@ -449,6 +482,7 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     samplingMode: '-/SM',
     outputChannelSpec: '8 SE',
     webSourcePage: 'analog',
+    docDescription: '18-bit analog module with 8 single-ended or 3-wire differential output channels',
   },
   {
     moduleId: 'IO117',
@@ -472,6 +506,7 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     samplingMode: 'SQ/-',
     inputChannelSpec: '32 SE / 16 DF',
     webSourcePage: 'analog',
+    docDescription: '16-bit analog module with 32 galvanically isolated input channels',
   },
   {
     moduleId: 'IO116',
@@ -499,6 +534,7 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     inputChannelSpec: '16 SE / 8 DF',
     outputChannelSpec: '4 SE',
     webSourcePage: 'analog',
+    docDescription: '16-bit analog module with 8 current loop inputs, 4 current loop outputs',
   },
   {
     moduleId: 'IO325',
@@ -525,6 +561,12 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     inputChannelSpec: '8 DF',
     outputChannelSpec: '4 SE',
     webSourcePage: 'analog',
+    docDescription: 'FPGA I/O module with 160k logic cells, 32 TTL I/O lines (of which up to 16 lines can be configured as RS422/RS485), 8 x 16-bit differential analog inputs and 4 x 16-bit analog outputs',
+    fpgaLogicCells: '160k',
+    fpgaCategory: 'simulink-programmable',
+    fpgaAnalogInputChannels: '8',
+    fpgaAnalogOutputChannels: 4,
+    fpgaDigitalIOLines: 32,
   },
   {
     moduleId: 'IO336',
@@ -551,6 +593,13 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     inputChannelSpec: '16 DF',
     outputChannelSpec: '8 SE',
     webSourcePage: 'analog',
+    docDescription: 'FPGA I/O module with 325k logic cells, 32 TTL I/O lines (of which up to 16 lines can be configured as RS422/RS485), 16 x 16-bit differential analog inputs and 8 x 16-bit analog outputs',
+    fpgaLogicCells: '325k',
+    fpgaCategory: 'simulink-programmable',
+    fpgaAnalogInputChannels: '16',
+    fpgaAnalogOutputChannels: 8,
+    fpgaDigitalIOLines: 32,
+    configPackages: ['Communication TTL', 'Communication RS422', 'HIL TTL', 'HIL RS422', 'RCP TTL', 'RCP RS422', 'TPI6020', 'modules Resolver TTL'],
   },
   {
     moduleId: 'IO397',
@@ -577,6 +626,13 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     inputChannelSpec: '4 SE / 4 DF',
     outputChannelSpec: '4 SE',
     webSourcePage: 'analog',
+    docDescription: 'configurable I/O module containing an FPGA with 50k of logic cells, 14 x ESD protected TTL I/O lines, 4 x 16-bit analog inputs and 4 x 16-bit analog outputs',
+    fpgaLogicCells: '50k',
+    fpgaCategory: 'simulink-programmable',
+    fpgaAnalogInputChannels: '4',
+    fpgaAnalogOutputChannels: 4,
+    fpgaDigitalIOLines: 14,
+    configPackages: ['Communication', 'modules HIL', 'modules RCP', 'modules TPI6020', 'Configuration Package Communication TTL', 'Communication RS422', 'HIL TTL', 'HIL RS422', 'RCP TTL', 'RCP RS422', 'Resolver TTL'],
   },
   // IO335  — 24-input 3-output FPGA Analog 5 MHz (XMC)
   {
@@ -605,6 +661,10 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     samplingMode: 'SM/-',
     inputChannelSpec: '24 DF',
     webSourcePage: 'analog',
+    docDescription: 'FPGA I/O module with 325k of logic cells, 3 x differential digital inputs and 24 x 16-bit differential analog inputs.',
+    fpgaLogicCells: '325k',
+    fpgaCategory: 'simulink-programmable',
+    fpgaAnalogInputChannels: '24',
   },
   // IO337  — 8-input 32-output FPGA Analog (XMC)
   {
@@ -625,6 +685,13 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     fpgaFamily: 'IO337',
     fpgaTotalLines: 56,
     interfaceBoard: { moduleId: 'IO337-21', friendlyName: 'Interface Board IO337-21' },
+    docDescription: 'configurable I/O module containing 650k logic cells, 8 x 16-bit differential analog inputs, 32 x 16-bit analog outputs, and 4 x LVDS digital I/O channels',
+    fpgaLogicCells: '650k',
+    fpgaCategory: 'simulink-programmable',
+    fpgaAnalogInputChannels: '8',
+    fpgaAnalogOutputChannels: 32,
+    fpgaDigitalIOLines: 4,
+    configPackages: ['Communication TTL', 'Communication RS422', 'HIL TTL', 'HIL RS422'],
   },
   // IO344  — Ultra-high-speed FPGA Analog 8in+8out 4 GSPS (XMC)
   {
@@ -683,6 +750,11 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     inputChannelSpec: '16 DF',
     outputChannelSpec: '8 SE',
     webSourcePage: 'analog',
+    docDescription: 'FPGA I/O module with 200k of logic cells. Optional I/O interfaces allow a variety of digital (TTL, LVDS, CMOS), RS485/RS422, and analog functionality to be added. Optional I/O interface extensions allow to extend the number of digital lines from the front of the enclosure',
+    fpgaLogicCells: '200k',
+    fpgaCategory: 'simulink-programmable',
+    supportsIOInterfaces: true,
+    supportsIOExtensions: true,
   },
   // --- Analog Outputs --------------------------------------------------------
   {
@@ -710,6 +782,7 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     inputChannelSpec: '32 DF',
     outputChannelSpec: '16 SE',
     webSourcePage: 'analog',
+    docDescription: 'Fast simultaneous sampling 16-bit analog input and output module',
   },
   {
     moduleId: 'IO110',
@@ -739,6 +812,7 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     samplingMode: '-/SM',
     outputChannelSpec: '32 SE',
     webSourcePage: 'analog',
+    docDescription: 'Fast 16-bit analog module with 32 single-ended analog output channels',
   },
   {
     moduleId: 'IO107',
@@ -763,6 +837,7 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     samplingMode: '-/SM',
     outputChannelSpec: '16 SE / 16 DF',
     webSourcePage: 'analog',
+    docDescription: 'Fast 16-bit analog module with 16 differential analog output channels',
   },
   {
     moduleId: 'IO143',
@@ -792,6 +867,7 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     samplingMode: '-/SM',
     outputChannelSpec: '8 SE',
     webSourcePage: 'analog',
+    docDescription: 'Fast simultaneous sampling 16-bit analog voltage/current output module',
   },
   {
     moduleId: 'IO144',
@@ -816,6 +892,7 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     samplingMode: '-/SM',
     outputChannelSpec: '16 SE',
     webSourcePage: 'analog',
+    docDescription: 'Fast simultaneous sampling 16-bit analog voltage/current output module',
   },
   {
     moduleId: 'IO334',
@@ -845,6 +922,12 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     inputChannelSpec: '16 DF',
     outputChannelSpec: '16 SE',
     webSourcePage: 'analog',
+    docDescription: 'FPGA I/O module with 325k logic cells, 16 x 16-bit differential analog inputs and 16 x 16-bit analog outputs',
+    fpgaLogicCells: '325k',
+    fpgaCategory: 'simulink-programmable',
+    fpgaAnalogInputChannels: '16',
+    fpgaAnalogOutputChannels: 16,
+    configPackages: ['Communication TTL', 'Communication RS422', 'HIL TTL', 'HIL RS422', 'RCP TTL', 'RCP RS422', 'Resolver TTL'],
   },
   {
     moduleId: 'IO337',
@@ -881,6 +964,7 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     /* web-enriched (speedgoat.com/digital) */
     lifecycleStatus: 'active',
     webSourcePage: 'digital',
+    docDescription: 'I/O module provides a total of 128 digital TTL lines.',
   },
   // --- Digital Inputs --------------------------------------------------------
   {
@@ -899,6 +983,7 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     /* web-enriched (speedgoat.com/digital) */
     lifecycleStatus: 'active',
     webSourcePage: 'digital',
+    docDescription: 'digital I/O module providing a total of 64 TTL channels.',
   },
   {
     moduleId: 'IO306',
@@ -918,6 +1003,11 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     /* web-enriched (speedgoat.com/digital) */
     lifecycleStatus: 'active',
     webSourcePage: 'digital',
+    docDescription: 'configurable I/O module containing an FPGA with 25k of logic cells and 64 ESD protected TTL I/O lines',
+    fpgaLogicCells: '25k',
+    fpgaCategory: 'configurable',
+    fpgaDigitalIOLines: 64,
+    configPackages: ['Communication', 'modules HIL', 'modules RCP'],
   },
   {
     moduleId: 'IO307',
@@ -937,6 +1027,11 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     /* web-enriched (speedgoat.com/digital) */
     lifecycleStatus: 'active',
     webSourcePage: 'digital',
+    docDescription: 'configurable I/O module containing an FPGA with 25k of logic cells, 32 x TTL I/O lines and 16 x ESD protected RS422/RS485 I/O lines.',
+    fpgaLogicCells: '25k',
+    fpgaCategory: 'configurable',
+    fpgaDigitalIOLines: 48,
+    configPackages: ['Communication', 'modules HIL', 'modules RCP'],
   },
   {
     moduleId: 'IO308',
@@ -956,6 +1051,10 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     /* web-enriched (speedgoat.com/digital) */
     lifecycleStatus: 'active',
     webSourcePage: 'digital',
+    docDescription: 'configurable I/O module containing an FPGA with 25k of logic cells and 32 x ESD protected RS422/RS485 I/O lines.',
+    fpgaLogicCells: '25k',
+    fpgaCategory: 'configurable',
+    fpgaDigitalIOLines: 32,
   },
   {
     moduleId: 'IO317',
@@ -976,6 +1075,10 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     /* web-enriched (speedgoat.com/digital) */
     lifecycleStatus: 'active',
     webSourcePage: 'digital',
+    docDescription: 'FPGA I/O module with 100k of logic cells, 32 x TTL I/O lines and 16 x ESD protected RS422/RS485 I/O lines.',
+    fpgaLogicCells: '100k',
+    fpgaCategory: 'configurable',
+    fpgaDigitalIOLines: 48,
   },
   {
     moduleId: 'IO318',
@@ -996,6 +1099,10 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     /* web-enriched (speedgoat.com/digital) */
     lifecycleStatus: 'active',
     webSourcePage: 'digital',
+    docDescription: 'FPGA I/O module with 100k of logic cells and 32 x RS422 differential I/O lines',
+    fpgaLogicCells: '100k',
+    fpgaCategory: 'configurable',
+    fpgaDigitalIOLines: 32,
   },
   {
     moduleId: 'IO292',
@@ -1013,6 +1120,7 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     /* web-enriched (speedgoat.com/digital) */
     lifecycleStatus: 'active',
     webSourcePage: 'digital',
+    docDescription: 'Digital I/O module with 24 I/O lines.',
   },
   {
     moduleId: 'IO391',
@@ -1032,6 +1140,10 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     /* web-enriched (speedgoat.com/digital) */
     lifecycleStatus: 'active',
     webSourcePage: 'digital',
+    docDescription: 'configurable I/O module containing an FPGA with 50k of logic cells and 26 x ESD protected TTL I/O lines',
+    fpgaLogicCells: '50k',
+    fpgaCategory: 'configurable',
+    fpgaDigitalIOLines: 26,
   },
   {
     moduleId: 'IO393',
@@ -1051,6 +1163,10 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     /* web-enriched (speedgoat.com/digital) */
     lifecycleStatus: 'active',
     webSourcePage: 'digital',
+    docDescription: 'configurable I/O module containing an FPGA with 50k of logic cells, 6x differential digital I/O lines and 14 x ESD protected TTL I/O lines',
+    fpgaLogicCells: '50k',
+    fpgaCategory: 'configurable',
+    fpgaDigitalIOLines: 14,
   },
   {
     moduleId: 'IO206',
@@ -1068,6 +1184,7 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     /* web-enriched (speedgoat.com/digital) */
     lifecycleStatus: 'active',
     webSourcePage: 'digital',
+    docDescription: 'digital I/O module providing 32 digital inputs',
   },
   {
     moduleId: 'IO290',
@@ -1085,6 +1202,7 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     /* web-enriched (speedgoat.com/digital) */
     lifecycleStatus: 'active',
     webSourcePage: 'digital',
+    docDescription: 'Digital I/O module with isolated inputs, solid state FET outputs and LVTTL I/O lines.',
   },
   {
     moduleId: 'IO291',
@@ -1102,6 +1220,7 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     /* web-enriched (speedgoat.com/digital) */
     lifecycleStatus: 'active',
     webSourcePage: 'digital',
+    docDescription: 'Digital I/O module with isolated inputs, solid state FET outputs and LVTTL I/O lines.',
   },
   {
     moduleId: 'IO205',
@@ -1120,6 +1239,7 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     /* web-enriched (speedgoat.com/digital) */
     lifecycleStatus: 'active',
     webSourcePage: 'digital',
+    docDescription: 'digital I/O module providing 32 digital 24V/0.5A outputs; high side switches.',
   },
   {
     moduleId: 'IO204',
@@ -1138,6 +1258,7 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     /* web-enriched (speedgoat.com/digital) */
     lifecycleStatus: 'active',
     webSourcePage: 'digital',
+    docDescription: 'digital I/O module providing 16x 24V inputs and 16x 24V/0.5A outputs.',
   },
   {
     moduleId: 'IO392',
@@ -1156,6 +1277,9 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     /* web-enriched (speedgoat.com/digital) */
     lifecycleStatus: 'active',
     webSourcePage: 'digital',
+    docDescription: 'configurable I/O module containing an FPGA with 50k of logic cells and 13 x RS422/485 differential I/O lines',
+    fpgaLogicCells: '50k',
+    fpgaCategory: 'configurable',
   },
   {
     moduleId: 'IO394',
@@ -1174,6 +1298,10 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     /* web-enriched (speedgoat.com/digital) */
     lifecycleStatus: 'active',
     webSourcePage: 'digital',
+    docDescription: 'configurable I/O module containing an FPGA with 50k of logic cells and 13 x LVDS differential I/O lines',
+    fpgaLogicCells: '50k',
+    fpgaCategory: 'configurable',
+    fpgaDigitalIOLines: 13,
   },
   // --- Configurable FPGA I/O boards ------------------------------------------
   // Each FPGA board appears once per functional category it can serve.
@@ -1199,6 +1327,12 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     fpgaFamily: 'IO323',
     fpgaTotalLines: 96,
     interfaceBoard: { moduleId: 'IO323-21', friendlyName: 'Interface Board IO323-21' },
+    docDescription: 'configurable I/O module containing an FPGA with 100k of logic cells, 42 TTL I/O lines, 32/16 x 16-bit single-ended/differential analog inputs and 8 x 16-bit analog outputs',
+    fpgaLogicCells: '100k',
+    fpgaCategory: 'configurable',
+    fpgaAnalogInputChannels: '32/16',
+    fpgaAnalogOutputChannels: 8,
+    fpgaDigitalIOLines: 42,
   },
   {
     moduleId: 'IO323',
@@ -1243,6 +1377,13 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     inputChannelSpec: '32 SE / 16 DF',
     outputChannelSpec: '8 SE',
     webSourcePage: 'analog',
+    docDescription: 'FPGA I/O module with 200k of logic cells, 32 TTL I/O lines (of which up to 16 lines can be configured as RS422/RS485), 32/16 x 16-bit single-ended/differential analog inputs and 8 x 16-bit analog outputs',
+    fpgaLogicCells: '200k',
+    fpgaCategory: 'simulink-programmable',
+    fpgaAnalogInputChannels: '32/16',
+    fpgaAnalogOutputChannels: 8,
+    fpgaDigitalIOLines: 32,
+    configPackages: ['Communication TTL', 'Communication RS422', 'HIL TTL', 'HIL RS422', 'RCP TTL', 'RCP RS422', 'TPI6020', 'modules Resolver TTL'],
   },
   {
     moduleId: 'IO324',
@@ -1290,6 +1431,10 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     /* web-enriched (speedgoat.com/digital) */
     lifecycleStatus: 'active',
     webSourcePage: 'digital',
+    docDescription: 'FPGA I/O module with 100k of logic cells and 64 ESD protected TTL I/O lines',
+    fpgaLogicCells: '100k',
+    fpgaCategory: 'configurable',
+    fpgaDigitalIOLines: 64,
   },
   {
     moduleId: 'IO316',
@@ -1327,6 +1472,11 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     fpgaFamily: 'IO331',
     fpgaTotalLines: 48,
     interfaceBoard: { moduleId: 'IO331-21', friendlyName: 'Interface Board IO331-21' },
+    docDescription: 'configurable I/O module containing an FPGA with 150k of logic cells. Optional I/O interfaces allow a variety of digital (TTL, LVDS, CMOS), RS485/RS422, and analog functionality to be added. Optional I/O interface extensions allow to extend the number of digital lines from the front of the enclosure',
+    fpgaLogicCells: '150k',
+    fpgaCategory: 'configurable',
+    supportsIOInterfaces: true,
+    supportsIOExtensions: true,
   },
   {
     moduleId: 'IO331',
@@ -1371,6 +1521,11 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     inputChannelSpec: '16 DF',
     outputChannelSpec: '8 SE',
     webSourcePage: 'analog',
+    docDescription: 'FPGA I/O module with 325k of logic cells. Optional I/O interfaces allow a variety of digital (TTL, LVDS, CMOS), RS485/RS422, and analog functionality to be added. Optional I/O interface extensions allow to extend the number of digital lines from the front of the enclosure',
+    fpgaLogicCells: '325k',
+    fpgaCategory: 'simulink-programmable',
+    supportsIOInterfaces: true,
+    supportsIOExtensions: true,
   },
   {
     moduleId: 'IO333',
@@ -1866,6 +2021,7 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     },
     protocolSupport: ['IRIG + GPS'],
     compatibleMachines: ['performance', 'baseline', 'mobile'],
+    docDescription: 'I/O modules installed.',
   },
   {
     moduleId: 'IO723',
@@ -1988,6 +2144,7 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     connector: 'RJ-45 x 4',
     maxDataRateMbps: 1000,
     webSourcePage: 'communications',
+    docDescription: 'Gigabit Ethernet I/O module with 4 ports Support for EtherCAT Master protocol is provided by MathWorks. Refer to the EtherCAT web documentation, or for the local help, enter the following code in the ',
   },
   {
     moduleId: 'IO717',
@@ -2305,6 +2462,7 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     connector: 'RJ-45',
     maxDataRateMbps: 1000,
     webSourcePage: 'communications',
+    docDescription: 'Gigabit Ethernet I/O module with 1 port',
   },
   {
     moduleId: 'IO716',
@@ -2421,6 +2579,7 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     /* web-enriched (speedgoat.com/synchro-resolver) */
     lifecycleStatus: 'active',
     webSourcePage: 'synchro-resolver',
+    docDescription: 'an LVDT/RVDT/Resolver/(Synchro) to digital converter I/O module',
   },
   {
     moduleId: 'IO425',
@@ -2438,6 +2597,7 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     /* web-enriched (speedgoat.com/synchro-resolver) */
     lifecycleStatus: 'active',
     webSourcePage: 'synchro-resolver',
+    docDescription: 'LVDT/RVDT/Resolver emulation I/O module',
   },
   {
     moduleId: 'IO3xx-Res',
@@ -2501,6 +2661,7 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     /* web-enriched (speedgoat.com/temperature-strain) */
     lifecycleStatus: 'active',
     webSourcePage: 'temperature-strain',
+    docDescription: 'are thermocouple simulation I/O modules',
   },
   {
     moduleId: 'IO970',
@@ -2792,3 +2953,603 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     compatibleMachines: ['performance', 'mobile', 'baseline', 'unit'],
   },
 ]
+
+/**
+ * IO Interface Boards (IO33X-N) for FPGA I/O modules.
+ * These are front I/O boards that plug into IO33x series modules.
+ */
+export const IO_INTERFACE_BOARDS = [
+  {
+    "interfaceId": "IO33X-1-LV",
+    "description": "64 x digital LVTTL (3.3V) front I/O lines",
+    "channelCount": 64,
+    "channelType": "digital LVTTL (3.3V)",
+    "hasAnalog": false,
+    "hasDigital": true
+  },
+  {
+    "interfaceId": "IO33X-2",
+    "description": "30 x RS485 (RS422 compliant) front I/O lines",
+    "channelCount": 30,
+    "channelType": "RS485 (RS422 compliant)",
+    "hasAnalog": false,
+    "hasDigital": true
+  },
+  {
+    "interfaceId": "IO33X-3",
+    "description": "16 x CMOS (5V) and 22 RS485 (RS422 compliant) front I/O lines",
+    "channelCount": 16,
+    "channelType": "CMOS (5V) and 22 RS485 (RS422 compliant)",
+    "hasAnalog": false,
+    "hasDigital": true
+  },
+  {
+    "interfaceId": "IO33X-4",
+    "description": "30 x LVDS I/O lines",
+    "channelCount": 30,
+    "channelType": "LVDS",
+    "hasAnalog": false,
+    "hasDigital": true
+  },
+  {
+    "interfaceId": "IO33X-5",
+    "description": "2 x 16-bit 105 MHz differential simultaneous analog inputs",
+    "channelCount": null,
+    "channelType": null,
+    "hasAnalog": true,
+    "hasDigital": false
+  },
+  {
+    "interfaceId": "IO33X-6",
+    "description": "16 x 16-bit 500kHz ADs, 8 x 16-bit DAs with 10µs settling time, 16 x digital TTL I/O lines",
+    "channelCount": 16,
+    "channelType": "16-bit 500kHz ADs, 8 x 16-bit DAs with 10µs settling time, 16 x digital TTL",
+    "hasAnalog": true,
+    "hasDigital": true
+  },
+  {
+    "interfaceId": "IO33X-7",
+    "description": "16 x 16-bit analog outputs with 2µs settling time, +/- 10V",
+    "channelCount": null,
+    "channelType": null,
+    "hasAnalog": true,
+    "hasDigital": true
+  },
+  {
+    "interfaceId": "IO33X-8",
+    "description": "8 x 16-bit analog outputs with 2µs settling time, +/- 10V",
+    "channelCount": null,
+    "channelType": null,
+    "hasAnalog": true,
+    "hasDigital": true
+  }
+] as const;
+
+/**
+ * IO Interface Extensions (-21, -22, -24, -40, -120).
+ * Signal conditioning boards extending rear LVCMOS lines.
+ */
+export const IO_INTERFACE_EXTENSIONS = [
+  {
+    "extensionId": "-21",
+    "description": "Converts the rear I/O lines from LVCMOS to 3.3 V/5 V TTL, and makes them accessible from the front of the enclosure",
+    "type": "TTL Signal Conditioning",
+    "hasAnalog": false,
+    "hasDigital": true
+  },
+  {
+    "extensionId": "-22",
+    "description": "Converts the rear I/O lines from LVCMOS to RS422, RS485, and 3.3 V/5 V TTL and makes them accessible from the front of the enclosure",
+    "type": "RS422/RS485/TTL Signal Conditioning",
+    "hasAnalog": false,
+    "hasDigital": true
+  },
+  {
+    "extensionId": "-24",
+    "description": "Makes use of the LVCMOS rear I/O lines to interface with two Resolver-to-Digital Converters. Converts some of the rear I/O lines from LVCMOS to RS422, RS485, and 3.3 V/5 V TTL and makes them accessible from the front of the enclosure",
+    "type": "Resolver-to-Digital Converter + Signal Conditioning",
+    "hasAnalog": false,
+    "hasDigital": true
+  },
+  {
+    "extensionId": "-40",
+    "description": "Provides two A2B nodes of type AD2433, and makes them accessible from the front of the enclosure",
+    "type": "A2B (Automotive Audio Bus)",
+    "hasAnalog": false,
+    "hasDigital": false
+  },
+  {
+    "extensionId": "-120",
+    "description": "Provides the following analog functionality: 16 x 16-bit analog inputs up to 1.5 MSPS sampling rate 16 x 16-bit analog outputs up to 10 MSPS update rate",
+    "type": "Analog I/O Extension",
+    "hasAnalog": true,
+    "hasDigital": false
+  }
+] as const;
+
+/**
+ * Summary of all FPGA/Configurable modules with specs from authenticated docs.
+ */
+export const FPGA_MODULE_SPECS = [
+  {
+    "moduleId": "IO306",
+    "fullName": "IO306-25k",
+    "fpgaSize": "25k",
+    "category": "configurable",
+    "description": "configurable I/O module containing an FPGA with 25k of logic cells and 64 ESD protected TTL I/O lines",
+    "logicCells": "25k",
+    "analogInputChannels": null,
+    "analogOutputChannels": null,
+    "digitalIOLines": 64,
+    "hasOptionalInterfaces": false,
+    "hasInterfaceExtensions": false
+  },
+  {
+    "moduleId": "IO307",
+    "fullName": "IO307-25k",
+    "fpgaSize": "25k",
+    "category": "configurable",
+    "description": "configurable I/O module containing an FPGA with 25k of logic cells, 32 x TTL I/O lines and 16 x ESD protected RS422/RS485 I/O lines.",
+    "logicCells": "25k",
+    "analogInputChannels": null,
+    "analogOutputChannels": null,
+    "digitalIOLines": 48,
+    "hasOptionalInterfaces": false,
+    "hasInterfaceExtensions": false
+  },
+  {
+    "moduleId": "IO308",
+    "fullName": "IO308-25k",
+    "fpgaSize": "25k",
+    "category": "configurable",
+    "description": "configurable I/O module containing an FPGA with 25k of logic cells and 32 x ESD protected RS422/RS485 I/O lines.",
+    "logicCells": "25k",
+    "analogInputChannels": null,
+    "analogOutputChannels": null,
+    "digitalIOLines": 32,
+    "hasOptionalInterfaces": false,
+    "hasInterfaceExtensions": false
+  },
+  {
+    "moduleId": "IO309A",
+    "fullName": "IO309A-100k",
+    "fpgaSize": "100k",
+    "category": "configurable",
+    "description": "100k IO309-A-100k — The IO309-A-100k is a configurable I/O module containing an FPGA with 100k of logic cells and 64 x TTL I/O lines",
+    "logicCells": "100k",
+    "analogInputChannels": null,
+    "analogOutputChannels": null,
+    "digitalIOLines": 64,
+    "hasOptionalInterfaces": false,
+    "hasInterfaceExtensions": false
+  },
+  {
+    "moduleId": "IO309B",
+    "fullName": "IO309B-100k",
+    "fpgaSize": "100k",
+    "category": "configurable",
+    "description": "100k IO309-B-100k — The IO309-B-100k is a configurable I/O module containing an FPGA with 100k of logic cells, 32 x TTL I/O lines and 16 x RS422/RS485 I/O lines",
+    "logicCells": "100k",
+    "analogInputChannels": null,
+    "analogOutputChannels": null,
+    "digitalIOLines": 48,
+    "hasOptionalInterfaces": false,
+    "hasInterfaceExtensions": false
+  },
+  {
+    "moduleId": "IO309C",
+    "fullName": "IO309C-100k",
+    "fpgaSize": "100k",
+    "category": "configurable",
+    "description": "100k IO309-C-100k — The IO309-C-100k is a configurable I/O module containing an FPGA with 100k of logic cells and 32 x RS422/RS485 I/O lines",
+    "logicCells": "100k",
+    "analogInputChannels": null,
+    "analogOutputChannels": null,
+    "digitalIOLines": 32,
+    "hasOptionalInterfaces": false,
+    "hasInterfaceExtensions": false
+  },
+  {
+    "moduleId": "IO316",
+    "fullName": "IO316-100k",
+    "fpgaSize": "100k",
+    "category": "configurable",
+    "description": "FPGA I/O module with 100k of logic cells and 64 ESD protected TTL I/O lines",
+    "logicCells": "100k",
+    "analogInputChannels": null,
+    "analogOutputChannels": null,
+    "digitalIOLines": 64,
+    "hasOptionalInterfaces": false,
+    "hasInterfaceExtensions": false
+  },
+  {
+    "moduleId": "IO316",
+    "fullName": "IO316-45k",
+    "fpgaSize": "45k",
+    "category": "configurable",
+    "description": "configurable I/O module containing an FPGA with 45k of logic cells and 64 ESD protected TTL I/O lines",
+    "logicCells": "45k",
+    "analogInputChannels": null,
+    "analogOutputChannels": null,
+    "digitalIOLines": 64,
+    "hasOptionalInterfaces": false,
+    "hasInterfaceExtensions": false
+  },
+  {
+    "moduleId": "IO317",
+    "fullName": "IO317-100k",
+    "fpgaSize": "100k",
+    "category": "configurable",
+    "description": "FPGA I/O module with 100k of logic cells, 32 x TTL I/O lines and 16 x ESD protected RS422/RS485 I/O lines.",
+    "logicCells": "100k",
+    "analogInputChannels": null,
+    "analogOutputChannels": null,
+    "digitalIOLines": 48,
+    "hasOptionalInterfaces": false,
+    "hasInterfaceExtensions": false
+  },
+  {
+    "moduleId": "IO317",
+    "fullName": "IO317-45k",
+    "fpgaSize": "45k",
+    "category": "configurable",
+    "description": "configurable I/O module containing an FPGA with 45k of logic cells, 32 x TTL I/O lines and 16 x ESD protected RS422/RS485 I/O lines.",
+    "logicCells": "45k",
+    "analogInputChannels": null,
+    "analogOutputChannels": null,
+    "digitalIOLines": 48,
+    "hasOptionalInterfaces": false,
+    "hasInterfaceExtensions": false
+  },
+  {
+    "moduleId": "IO318",
+    "fullName": "IO318-100k",
+    "fpgaSize": "100k",
+    "category": "configurable",
+    "description": "FPGA I/O module with 100k of logic cells and 32 x RS422 differential I/O lines",
+    "logicCells": "100k",
+    "analogInputChannels": null,
+    "analogOutputChannels": null,
+    "digitalIOLines": 32,
+    "hasOptionalInterfaces": false,
+    "hasInterfaceExtensions": false
+  },
+  {
+    "moduleId": "IO318",
+    "fullName": "IO318-45k",
+    "fpgaSize": "45k",
+    "category": "configurable",
+    "description": "configurable I/O module containing an FPGA with 45k of logic cells and 32 x RS422 differential I/O lines",
+    "logicCells": "45k",
+    "analogInputChannels": null,
+    "analogOutputChannels": null,
+    "digitalIOLines": 32,
+    "hasOptionalInterfaces": false,
+    "hasInterfaceExtensions": false
+  },
+  {
+    "moduleId": "IO322",
+    "fullName": "IO322-45k",
+    "fpgaSize": "45k",
+    "category": "configurable",
+    "description": "configurable I/O module containing an FPGA with 45k of logic cells, 42 TTL I/O lines, 32/16 x 16-bit single-ended/differential analog inputs and 8 x 16-bit analog outputs",
+    "logicCells": "45k",
+    "analogInputChannels": "32/16",
+    "analogOutputChannels": 8,
+    "digitalIOLines": 42,
+    "hasOptionalInterfaces": false,
+    "hasInterfaceExtensions": false
+  },
+  {
+    "moduleId": "IO323",
+    "fullName": "IO323-100k",
+    "fpgaSize": "100k",
+    "category": "configurable",
+    "description": "configurable I/O module containing an FPGA with 100k of logic cells, 42 TTL I/O lines, 32/16 x 16-bit single-ended/differential analog inputs and 8 x 16-bit analog outputs",
+    "logicCells": "100k",
+    "analogInputChannels": "32/16",
+    "analogOutputChannels": 8,
+    "digitalIOLines": 42,
+    "hasOptionalInterfaces": false,
+    "hasInterfaceExtensions": false
+  },
+  {
+    "moduleId": "IO324",
+    "fullName": "IO324-200k",
+    "fpgaSize": "200k",
+    "category": "simulink-programmable",
+    "description": "FPGA I/O module with 200k of logic cells, 32 TTL I/O lines (of which up to 16 lines can be configured as RS422/RS485), 32/16 x 16-bit single-ended/differential analog inputs and 8 x 16-bit analog outputs",
+    "logicCells": "200k",
+    "analogInputChannels": "32/16",
+    "analogOutputChannels": 8,
+    "digitalIOLines": 32,
+    "hasOptionalInterfaces": false,
+    "hasInterfaceExtensions": false
+  },
+  {
+    "moduleId": "IO325",
+    "fullName": "IO325-160k",
+    "fpgaSize": "160k",
+    "category": "simulink-programmable",
+    "description": "FPGA I/O module with 160k logic cells, 32 TTL I/O lines (of which up to 16 lines can be configured as RS422/RS485), 8 x 16-bit differential analog inputs and 4 x 16-bit analog outputs",
+    "logicCells": "160k",
+    "analogInputChannels": "8",
+    "analogOutputChannels": 4,
+    "digitalIOLines": 32,
+    "hasOptionalInterfaces": false,
+    "hasInterfaceExtensions": false
+  },
+  {
+    "moduleId": "IO331",
+    "fullName": "IO331-150k",
+    "fpgaSize": "150k",
+    "category": "configurable",
+    "description": "configurable I/O module containing an FPGA with 150k of logic cells. Optional I/O interfaces allow a variety of digital (TTL, LVDS, CMOS), RS485/RS422, and analog functionality to be added. Optional I/O interface extensions allow to extend the number of digital lines from the front of the enclosure",
+    "logicCells": "150k",
+    "analogInputChannels": null,
+    "analogOutputChannels": null,
+    "digitalIOLines": null,
+    "hasOptionalInterfaces": true,
+    "hasInterfaceExtensions": true
+  },
+  {
+    "moduleId": "IO332",
+    "fullName": "IO332-200k",
+    "fpgaSize": "200k",
+    "category": "simulink-programmable",
+    "description": "FPGA I/O module with 200k of logic cells. Optional I/O interfaces allow a variety of digital (TTL, LVDS, CMOS), RS485/RS422, and analog functionality to be added. Optional I/O interface extensions allow to extend the number of digital lines from the front of the enclosure",
+    "logicCells": "200k",
+    "analogInputChannels": null,
+    "analogOutputChannels": null,
+    "digitalIOLines": null,
+    "hasOptionalInterfaces": true,
+    "hasInterfaceExtensions": true
+  },
+  {
+    "moduleId": "IO333",
+    "fullName": "IO333-325k",
+    "fpgaSize": "325k",
+    "category": "simulink-programmable",
+    "description": "FPGA I/O module with 325k of logic cells. Optional I/O interfaces allow a variety of digital (TTL, LVDS, CMOS), RS485/RS422, and analog functionality to be added. Optional I/O interface extensions allow to extend the number of digital lines from the front of the enclosure",
+    "logicCells": "325k",
+    "analogInputChannels": null,
+    "analogOutputChannels": null,
+    "digitalIOLines": null,
+    "hasOptionalInterfaces": true,
+    "hasInterfaceExtensions": true
+  },
+  {
+    "moduleId": "IO333",
+    "fullName": "IO333-410k",
+    "fpgaSize": "410k",
+    "category": "simulink-programmable",
+    "description": "FPGA I/O module with 410k of logic cells. Optional I/O interfaces allow a variety of digital (TTL, LVDS, CMOS), RS485/RS422, and analog functionality to be added. Optional I/O interface extensions allow to extend the number of digital lines from the front of the enclosure",
+    "logicCells": "410k",
+    "analogInputChannels": null,
+    "analogOutputChannels": null,
+    "digitalIOLines": null,
+    "hasOptionalInterfaces": true,
+    "hasInterfaceExtensions": true
+  },
+  {
+    "moduleId": "IO334",
+    "fullName": "IO334-325k",
+    "fpgaSize": "325k",
+    "category": "simulink-programmable",
+    "description": "FPGA I/O module with 325k logic cells, 16 x 16-bit differential analog inputs and 16 x 16-bit analog outputs",
+    "logicCells": "325k",
+    "analogInputChannels": "16",
+    "analogOutputChannels": 16,
+    "digitalIOLines": null,
+    "hasOptionalInterfaces": false,
+    "hasInterfaceExtensions": false
+  },
+  {
+    "moduleId": "IO335",
+    "fullName": "IO335-325k",
+    "fpgaSize": "325k",
+    "category": "simulink-programmable",
+    "description": "FPGA I/O module with 325k of logic cells, 3 x differential digital inputs and 24 x 16-bit differential analog inputs.",
+    "logicCells": "325k",
+    "analogInputChannels": "24",
+    "analogOutputChannels": null,
+    "digitalIOLines": null,
+    "hasOptionalInterfaces": false,
+    "hasInterfaceExtensions": false
+  },
+  {
+    "moduleId": "IO336",
+    "fullName": "IO336-325k",
+    "fpgaSize": "325k",
+    "category": "simulink-programmable",
+    "description": "FPGA I/O module with 325k logic cells, 32 TTL I/O lines (of which up to 16 lines can be configured as RS422/RS485), 16 x 16-bit differential analog inputs and 8 x 16-bit analog outputs",
+    "logicCells": "325k",
+    "analogInputChannels": "16",
+    "analogOutputChannels": 8,
+    "digitalIOLines": 32,
+    "hasOptionalInterfaces": false,
+    "hasInterfaceExtensions": false
+  },
+  {
+    "moduleId": "IO337",
+    "fullName": "IO337-650k",
+    "fpgaSize": "650k",
+    "category": "simulink-programmable",
+    "description": "configurable I/O module containing 650k logic cells, 8 x 16-bit differential analog inputs, 32 x 16-bit analog outputs, and 4 x LVDS digital I/O channels",
+    "logicCells": "650k",
+    "analogInputChannels": "8",
+    "analogOutputChannels": 32,
+    "digitalIOLines": 4,
+    "hasOptionalInterfaces": false,
+    "hasInterfaceExtensions": false
+  },
+  {
+    "moduleId": "IO342",
+    "fullName": "IO342-1080k",
+    "fpgaSize": "1080k",
+    "category": "simulink-programmable",
+    "description": "FPGA I/O module with 1080k of logic cells and up to 2 FMC slots with your choice of FMCs installed",
+    "logicCells": "1080k",
+    "analogInputChannels": null,
+    "analogOutputChannels": null,
+    "digitalIOLines": null,
+    "hasOptionalInterfaces": false,
+    "hasInterfaceExtensions": false
+  },
+  {
+    "moduleId": "IO342",
+    "fullName": "IO342-1450k",
+    "fpgaSize": "1450k",
+    "category": "simulink-programmable",
+    "description": "FPGA I/O module with 1450k of logic cells and up to 2 FMC slots with your choice of FMCs installed",
+    "logicCells": "1450k",
+    "analogInputChannels": null,
+    "analogOutputChannels": null,
+    "digitalIOLines": null,
+    "hasOptionalInterfaces": false,
+    "hasInterfaceExtensions": false
+  },
+  {
+    "moduleId": "IO360A",
+    "fullName": "IO360A-190k",
+    "fpgaSize": "190k",
+    "category": "configurable",
+    "description": "190k IO360-A-190k — The IO360-A-190k is a configurable I/O module containing an FPGA with 190k of logic cells and 64 x TTL I/O lines",
+    "logicCells": "190k",
+    "analogInputChannels": null,
+    "analogOutputChannels": null,
+    "digitalIOLines": 64,
+    "hasOptionalInterfaces": false,
+    "hasInterfaceExtensions": false
+  },
+  {
+    "moduleId": "IO360B",
+    "fullName": "IO360B-190k",
+    "fpgaSize": "190k",
+    "category": "configurable",
+    "description": "190k IO360-B-190k — The IO360-B-190k is a configurable I/O module containing an FPGA with 190k of logic cells, 32 x TTL I/O lines and 16 x RS422/RS485 I/O lines",
+    "logicCells": "190k",
+    "analogInputChannels": null,
+    "analogOutputChannels": null,
+    "digitalIOLines": 48,
+    "hasOptionalInterfaces": false,
+    "hasInterfaceExtensions": false
+  },
+  {
+    "moduleId": "IO360C",
+    "fullName": "IO360C-190k",
+    "fpgaSize": "190k",
+    "category": "configurable",
+    "description": "190k IO360-C-190k — The IO360-C-190k is a configurable I/O module containing an FPGA with 190k of logic cells and 32 x RS422/RS485 I/O lines",
+    "logicCells": "190k",
+    "analogInputChannels": null,
+    "analogOutputChannels": null,
+    "digitalIOLines": 32,
+    "hasOptionalInterfaces": false,
+    "hasInterfaceExtensions": false
+  },
+  {
+    "moduleId": "IO361A",
+    "fullName": "IO361A-469k",
+    "fpgaSize": "469k",
+    "category": "configurable",
+    "description": "469k IO361-A-469k — The IO361-A-469k is a configurable I/O module containing an FPGA with 469k of logic cells and 40 x TTL I/O lines",
+    "logicCells": "469k",
+    "analogInputChannels": null,
+    "analogOutputChannels": null,
+    "digitalIOLines": 40,
+    "hasOptionalInterfaces": false,
+    "hasInterfaceExtensions": false
+  },
+  {
+    "moduleId": "IO361B",
+    "fullName": "IO361B-469k",
+    "fpgaSize": "469k",
+    "category": "configurable",
+    "description": "469k IO361-B-469k — The IO361-B-469k is a configurable I/O module containing an FPGA with 469k of logic cells, 24 x TTL I/O lines and 8 x RS422/RS485 I/O lines",
+    "logicCells": "469k",
+    "analogInputChannels": null,
+    "analogOutputChannels": null,
+    "digitalIOLines": 32,
+    "hasOptionalInterfaces": false,
+    "hasInterfaceExtensions": false
+  },
+  {
+    "moduleId": "IO361C",
+    "fullName": "IO361C-469k",
+    "fpgaSize": "469k",
+    "category": "configurable",
+    "description": "469k IO361-C-469k — The IO361-C-469k is a configurable I/O module containing an FPGA with 469k of logic cells and 20 x RS422/RS485 I/O lines",
+    "logicCells": "469k",
+    "analogInputChannels": null,
+    "analogOutputChannels": null,
+    "digitalIOLines": 20,
+    "hasOptionalInterfaces": false,
+    "hasInterfaceExtensions": false
+  },
+  {
+    "moduleId": "IO391",
+    "fullName": "IO391-50k",
+    "fpgaSize": "50k",
+    "category": "configurable",
+    "description": "configurable I/O module containing an FPGA with 50k of logic cells and 26 x ESD protected TTL I/O lines",
+    "logicCells": "50k",
+    "analogInputChannels": null,
+    "analogOutputChannels": null,
+    "digitalIOLines": 26,
+    "hasOptionalInterfaces": false,
+    "hasInterfaceExtensions": false
+  },
+  {
+    "moduleId": "IO392",
+    "fullName": "IO392-50k",
+    "fpgaSize": "50k",
+    "category": "configurable",
+    "description": "configurable I/O module containing an FPGA with 50k of logic cells and 13 x RS422/485 differential I/O lines",
+    "logicCells": "50k",
+    "analogInputChannels": null,
+    "analogOutputChannels": null,
+    "digitalIOLines": null,
+    "hasOptionalInterfaces": false,
+    "hasInterfaceExtensions": false
+  },
+  {
+    "moduleId": "IO393",
+    "fullName": "IO393-50k",
+    "fpgaSize": "50k",
+    "category": "configurable",
+    "description": "configurable I/O module containing an FPGA with 50k of logic cells, 6x differential digital I/O lines and 14 x ESD protected TTL I/O lines",
+    "logicCells": "50k",
+    "analogInputChannels": null,
+    "analogOutputChannels": null,
+    "digitalIOLines": 14,
+    "hasOptionalInterfaces": false,
+    "hasInterfaceExtensions": false
+  },
+  {
+    "moduleId": "IO394",
+    "fullName": "IO394-50k",
+    "fpgaSize": "50k",
+    "category": "configurable",
+    "description": "configurable I/O module containing an FPGA with 50k of logic cells and 13 x LVDS differential I/O lines",
+    "logicCells": "50k",
+    "analogInputChannels": null,
+    "analogOutputChannels": null,
+    "digitalIOLines": 13,
+    "hasOptionalInterfaces": false,
+    "hasInterfaceExtensions": false
+  },
+  {
+    "moduleId": "IO397",
+    "fullName": "IO397-50k",
+    "fpgaSize": "50k",
+    "category": "simulink-programmable",
+    "description": "configurable I/O module containing an FPGA with 50k of logic cells, 14 x ESD protected TTL I/O lines, 4 x 16-bit analog inputs and 4 x 16-bit analog outputs",
+    "logicCells": "50k",
+    "analogInputChannels": "4",
+    "analogOutputChannels": 4,
+    "digitalIOLines": 14,
+    "hasOptionalInterfaces": false,
+    "hasInterfaceExtensions": false
+  }
+] as const;
