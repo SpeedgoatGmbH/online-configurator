@@ -5,14 +5,11 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  // When deploying to GitHub Pages under a sub-path (e.g. /product_configurator),
-  // set basePath and assetPrefix to the repo name. Leave empty for custom domains.
+  // When deploying to GitHub Pages under a sub-path (e.g. /online-configurator),
+  // set basePath and assetPrefix via PAGES_BASE_PATH env var. Leave empty for custom domains.
+  // next/image automatically prepends basePath to src – do NOT manually prefix image paths.
   basePath: process.env.PAGES_BASE_PATH || '',
   assetPrefix: process.env.PAGES_BASE_PATH || '',
-  // Expose basePath to client-side code so images can be prefixed correctly.
-  env: {
-    NEXT_PUBLIC_BASE_PATH: process.env.PAGES_BASE_PATH || '',
-  },
   webpack: (config, { dev }) => {
     if (dev) {
       // Mitigate rare dev-time chunk cache desyncs on Windows.

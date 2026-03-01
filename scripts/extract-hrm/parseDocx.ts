@@ -22,9 +22,6 @@ const EXCLUDE_PATTERNS = [
   /template/i,
 ]
 
-/** Section heading patterns in HRM documents */
-const SECTION_HEADING_RE = /^(?:\d+\.?\d*\.?\d*\s+)?([A-Z][A-Za-z &/,\-]+)\s*$/gm
-
 /**
  * Scan the IO Modules directory and build a map of moduleId → HRM DOCX path.
  * Only picks the "best" HRM if multiple versions exist (prefers unnumbered filename).

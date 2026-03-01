@@ -116,12 +116,6 @@ function candidateReason(c: CandidateScore, isWinner: boolean): string {
 
 // ─── Node snapshot generation ───────────────────────────────────────────────────
 
-const NODE_IDS = [
-  'input', 'normalize', 'catalog_filter', 'score', 'pick_best', 'accumulate',
-  'fpga_detect', 'fpga_consolidate', 'fpga_interface',
-  'slot_check', 'compat_check', 'output',
-] as const
-
 function buildNodeSnapshots(sim: SimulationWithCandidates, machineName: string): NodeSnapshot[] {
   const { response, perRow, fpgaConsolidation, catalogSize } = sim
   const rowCount = perRow.length
@@ -174,8 +168,6 @@ function buildOverviewFacts(sim: SimulationWithCandidates, machineName: string):
   const candidateCounts = perRow.map((r) => r.allCandidates.length).filter((n) => n > 0)
   const minCandidates = candidateCounts.length > 0 ? Math.min(...candidateCounts) : 0
   const maxCandidates = candidateCounts.length > 0 ? Math.max(...candidateCounts) : 0
-
-  const uniqueModules = new Set(response.recommendedModules.map((m) => m.moduleId)).size
 
   // Top 3 winner facts
   const winnerFacts = perRow

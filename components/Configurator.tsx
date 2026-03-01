@@ -4,7 +4,6 @@ import { useState } from 'react'
 import { CATEGORIES } from './configurator/data'
 import SubCategoryCard from './configurator/SubCategoryCard'
 import WarningBanner from './configurator/WarningBanner'
-import MachineSelection from './configurator/MachineSelection'
 import {
   createInitialState,
   createInitialTempSpecs,
@@ -26,10 +25,6 @@ function createInitialStateWithDefaults(categories: typeof CATEGORIES) {
 }
 
 export default function Configurator({}: ConfiguratorProps = {}) {
-  // Machine selection state
-  const [selectedMachineType, setSelectedMachineType] = useState<string>('')
-  const [selectedMachineModel, setSelectedMachineModel] = useState<string>('')
-  
   const [enabledCategories, setEnabledCategories] = useState<Record<string, boolean>>({})
   const [showingConfig, setShowingConfig] = useState<Record<string, Record<string, boolean>>>({})
   const [editingRow, setEditingRow] = useState<string | null>(null)
@@ -38,11 +33,6 @@ export default function Configurator({}: ConfiguratorProps = {}) {
   const [showSummary, setShowSummary] = useState(false)
   const [expandedAdditionalIO, setExpandedAdditionalIO] = useState(false)
   const [state, setState] = useState(() => createInitialStateWithDefaults(CATEGORIES))
-
-  const handleMachineSelect = (machineType: string, machineModel: string) => {
-    setSelectedMachineType(machineType)
-    setSelectedMachineModel(machineModel)
-  }
 
   const addCategory = (categoryId: string) => {
     const category = CATEGORIES.find((c) => c.id === categoryId)

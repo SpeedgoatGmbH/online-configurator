@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/compact'
 import { cn } from '@/lib/cn'
 import { CATEGORIES } from './configurator/data'
-import { INDUSTRIES, getIndustry, isCommonSub, reorderProtocols, type IndustryDefinition, type StarterRow } from './configurator/industries'
+import { INDUSTRIES, getIndustry, isCommonSub, reorderProtocols, type StarterRow } from './configurator/industries'
 import type { FieldKey, SubCategory } from './configurator/types'
 import {
   CHANNEL_PRESET_COUNTS,
@@ -63,7 +63,6 @@ export default function ConfiguratorV5({ onSummaryChange, onRequirementsChange, 
     editingTarget,
     editingContext,
     draftEdit,
-    isDraftDirty,
     showAdvancedEditor,
     setShowAdvancedEditor,
     showDiscardConfirm,
@@ -72,8 +71,6 @@ export default function ConfiguratorV5({ onSummaryChange, onRequirementsChange, 
     setTier1Open,
     tier2Open,
     setTier2Open,
-    tier1Categories,
-    tier2Categories,
     editorAnchor,
     protocolSelectorContext,
     setProtocolSelectorContext,
@@ -81,7 +78,6 @@ export default function ConfiguratorV5({ onSummaryChange, onRequirementsChange, 
     setCustomChannelRows,
     isAdditionalStepOpen,
     setIsAdditionalStepOpen,
-    addSignalRow,
     removeSignalRow,
     openEditor,
     updateDraftSpec,
@@ -91,12 +87,10 @@ export default function ConfiguratorV5({ onSummaryChange, onRequirementsChange, 
     discardDraftAndClose,
     handleAddVariant,
     handleProtocolSelect,
-    createTier1OpenMap,
     createTier2OpenMap,
     getSubTotal,
     getCategoryTotal,
     additionalTotalSignals,
-    hasAnyAdditionalRows,
     additionalCollapsedActionLabel,
   } = hook
 
@@ -391,11 +385,11 @@ export default function ConfiguratorV5({ onSummaryChange, onRequirementsChange, 
         <div className="pointer-events-none absolute inset-0">
           <div
             className="pointer-events-auto fixed"
-            style={{ top: panelTop, left: panelLeft, width: panelWidth }}
+            style={{ top: `${panelTop}px`, left: `${panelLeft}px`, width: `${panelWidth}px` }}
           >
             <div
               className="relative flex flex-col overflow-hidden rounded-[var(--ui-radius-lg)] border border-slate-200 bg-white/95 shadow-2xl backdrop-blur"
-              style={{ height: panelHeight }}
+              style={{ height: `${panelHeight}px` }}
             >
               <div className="flex items-center justify-between gap-2 border-b border-slate-200 px-3 py-2">
                 <div className="min-w-0">

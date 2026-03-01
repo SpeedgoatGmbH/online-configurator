@@ -5,7 +5,6 @@ import ProposalResultCard from '@/components/ProposalResultCard'
 import { CompactButton, CompactChip } from '@/components/ui/compact'
 import type { ProposalGenerateResponse, ProposalRowDiff } from '@/components/configurator/proposalTypes'
 import { cn } from '@/lib/cn'
-import Image from 'next/image'
 import { useCallback, useState } from 'react'
 
 // ─── Types ───────────────────────────────────────────────────────────────────
@@ -87,7 +86,7 @@ function ToastBanner({ message, onDone }: { message: string; onDone: () => void 
 export default function SolutionProposal({
   proposal,
   machine,
-  summary,
+  summary: _summary,
 }: SolutionProposalProps) {
   const [toast, setToast] = useState<string | null>(null)
 

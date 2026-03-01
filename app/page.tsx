@@ -19,16 +19,13 @@ import { cn } from '@/lib/cn'
 import Image from 'next/image'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
-/** basePath injected at build time for GitHub Pages sub-path deploys */
-const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH || ''
-
 const MACHINE_OPTIONS = [
   {
     id: 'performance',
     name: 'Performance',
     keywords: 'High performance • Maximum expansion',
     blurb: 'For office and lab use.',
-    image: `${BASE_PATH}/assets/machine-performance.png`,
+    image: '/assets/machine-performance.png',
     maxSlots: 7,
     maxSlotsExpanded: 42,
   },
@@ -37,7 +34,7 @@ const MACHINE_OPTIONS = [
     name: 'Pulse',
     keywords: 'Scalable desktop • Controller testing',
     blurb: 'Control design and validation.',
-    image: `${BASE_PATH}/assets/machine-pulse.png`,
+    image: '/assets/machine-pulse.png',
     maxSlots: 3,
     maxSlotsExpanded: 8,
   },
@@ -46,7 +43,7 @@ const MACHINE_OPTIONS = [
     name: 'Mobile',
     keywords: 'Rugged • Field testing',
     blurb: 'Withstands shock and vibration.',
-    image: `${BASE_PATH}/assets/machine-mobile.png`,
+    image: '/assets/machine-mobile.png',
     maxSlots: 5,
     maxSlotsExpanded: 14,
   },
@@ -55,7 +52,7 @@ const MACHINE_OPTIONS = [
     name: 'Baseline',
     keywords: 'Entry level • Compact',
     blurb: 'For office to in-vehicle use.',
-    image: `${BASE_PATH}/assets/machine-baseline.png`,
+    image: '/assets/machine-baseline.png',
     maxSlots: 4,
     maxSlotsExpanded: 6,
     variants: [
@@ -68,7 +65,7 @@ const MACHINE_OPTIONS = [
     name: 'Unit',
     keywords: 'Small form factor • Flexible',
     blurb: 'For field and confined spaces.',
-    image: `${BASE_PATH}/assets/machine-unit.png`,
+    image: '/assets/machine-unit.png',
     maxSlots: 1,
     maxSlotsExpanded: 1,
   },
@@ -77,7 +74,7 @@ const MACHINE_OPTIONS = [
     name: 'Tailored Rack-System',
     keywords: 'Modular rack • Customizable',
     blurb: 'Built for advanced setups.',
-    image: `${BASE_PATH}/assets/machine-rack.svg`,
+    image: '/assets/machine-rack.svg',
     maxSlots: 99,
     maxSlotsExpanded: 99,
   },

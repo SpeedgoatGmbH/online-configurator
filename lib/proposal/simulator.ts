@@ -1117,7 +1117,7 @@ type RecommendedEntry = {
  */
 function validateFpgaOverhead(
   recommended: Map<string, RecommendedEntry>,
-  rowDiffs: ProposalRowDiff[],
+  _rowDiffs: ProposalRowDiff[],
   requirements: RequirementRow[],
   moduleUsage: Map<string, number>,
   seededRandom: () => number,
