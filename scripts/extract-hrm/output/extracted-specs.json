@@ -1,0 +1,194 @@
+{
+  "_meta": {
+    "generatedAt": "2026-03-01T14:24:13.211Z",
+    "ioModulesRoot": "C:\\Users\\daniel.hediger\\OneDrive - Speedgoat GmbH\\Technologies - Documents\\General\\Products\\IO Modules",
+    "totalHrmFiles": 31,
+    "successCount": 9,
+    "errorCount": 22,
+    "enrichableCount": 9,
+    "newModuleCount": 0
+  },
+  "modules": [
+    {
+      "moduleId": "IO104",
+      "hrmFile": "IO104 - Hardware Reference Manual.docx",
+      "hrmDocPath": "C:\\Users\\daniel.hediger\\OneDrive - Speedgoat GmbH\\Technologies - Documents\\General\\Products\\IO Modules\\IO104\\Documentation\\IO104 - Hardware Reference Manual.docx",
+      "_warnings": [
+        "No voltage or current range found",
+        "No sample rate found",
+        "No power consumption found"
+      ],
+      "lifecycleStatus": "active",
+      "operatingTempC": {
+        "min": -40,
+        "max": 85
+      }
+    },
+    {
+      "moduleId": "IO110",
+      "hrmFile": "IO110 - Hardware Reference Manual.docx",
+      "hrmDocPath": "C:\\Users\\daniel.hediger\\OneDrive - Speedgoat GmbH\\Technologies - Documents\\General\\Products\\IO Modules\\IO110_TPMC553-10R\\Documentation\\IO110 - Hardware Reference Manual.docx",
+      "_warnings": [
+        "No sample rate found",
+        "No power consumption found"
+      ],
+      "formFactor": "PMC",
+      "lifecycleStatus": "active",
+      "voltageRange": {
+        "min": 0,
+        "max": 10.8,
+        "unit": "V"
+      },
+      "resolutionBits": 16,
+      "operatingTempC": {
+        "min": -40,
+        "max": 85
+      }
+    },
+    {
+      "moduleId": "IO111",
+      "hrmFile": "IO111 - Hardware Reference Manual (Please update chapters 4 and 5 only).docx",
+      "hrmDocPath": "C:\\Users\\daniel.hediger\\OneDrive - Speedgoat GmbH\\Technologies - Documents\\General\\Products\\IO Modules\\IO111_TPMC553-11R\\Documentation\\IO111 - Hardware Reference Manual (Please update chapters 4 and 5 only).docx",
+      "_warnings": [
+        "No sample rate found",
+        "No power consumption found"
+      ],
+      "formFactor": "PMC",
+      "lifecycleStatus": "active",
+      "voltageRange": {
+        "min": 0,
+        "max": 10.8,
+        "unit": "V"
+      },
+      "resolutionBits": 16,
+      "operatingTempC": {
+        "min": -40,
+        "max": 85
+      }
+    },
+    {
+      "moduleId": "IO113",
+      "hrmFile": "IO113-20 - Hardware Reference Manual.docx",
+      "hrmDocPath": "C:\\Users\\daniel.hediger\\OneDrive - Speedgoat GmbH\\Technologies - Documents\\General\\Products\\IO Modules\\IO113-20\\Documentation\\IO113-20 - Hardware Reference Manual.docx",
+      "_warnings": [
+        "No voltage or current range found",
+        "No sample rate found",
+        "No power consumption found"
+      ],
+      "lifecycleStatus": "active"
+    },
+    {
+      "moduleId": "IO130",
+      "hrmFile": "IO130 - Hardware Reference Manual.docx",
+      "hrmDocPath": "C:\\Users\\daniel.hediger\\OneDrive - Speedgoat GmbH\\Technologies - Documents\\General\\Products\\IO Modules\\IO130_TPMC530-20R\\Documentation\\IO130 - Hardware Reference Manual.docx",
+      "_warnings": [
+        "No sample rate found",
+        "No power consumption found"
+      ],
+      "formFactor": "PMC",
+      "lifecycleStatus": "active",
+      "voltageRange": {
+        "min": -5,
+        "max": 5,
+        "unit": "V"
+      },
+      "resolutionBits": 16,
+      "operatingTempC": {
+        "min": -40,
+        "max": 85
+      }
+    },
+    {
+      "moduleId": "IO131",
+      "hrmFile": "IO131 - Hardware Reference Manual.docx",
+      "hrmDocPath": "C:\\Users\\daniel.hediger\\OneDrive - Speedgoat GmbH\\Technologies - Documents\\General\\Products\\IO Modules\\IO131_TPMC530-10R\\Documentation\\IO131 - Hardware Reference Manual.docx",
+      "_warnings": [
+        "No sample rate found",
+        "No power consumption found"
+      ],
+      "formFactor": "PMC",
+      "lifecycleStatus": "active",
+      "voltageRange": {
+        "min": -5,
+        "max": 5,
+        "unit": "V"
+      },
+      "resolutionBits": 16,
+      "operatingTempC": {
+        "min": -40,
+        "max": 85
+      }
+    },
+    {
+      "moduleId": "IO141",
+      "hrmFile": "IO141 - Hardware Reference Manual.docx",
+      "hrmDocPath": "C:\\Users\\daniel.hediger\\OneDrive - Speedgoat GmbH\\Technologies - Documents\\General\\Products\\IO Modules\\IO141 & IO142_TPMC541\\Documentation\\IO141 - Hardware Reference Manual.docx",
+      "_warnings": [
+        "No voltage or current range found",
+        "No sample rate found",
+        "No power consumption found"
+      ],
+      "formFactor": "PMC",
+      "lifecycleStatus": "active",
+      "operatingTempC": {
+        "min": -40,
+        "max": 85
+      }
+    },
+    {
+      "moduleId": "IO143",
+      "hrmFile": "IO143 - Hardware Reference Manual (Bug in document. Do not remove or accept track changes).docx",
+      "hrmDocPath": "C:\\Users\\daniel.hediger\\OneDrive - Speedgoat GmbH\\Technologies - Documents\\General\\Products\\IO Modules\\IO143 & IO144_TPMC542\\Documentation\\IO143 - Hardware Reference Manual (Bug in document. Do not remove or accept track changes).docx",
+      "_warnings": [
+        "No voltage or current range found",
+        "No sample rate found",
+        "No power consumption found"
+      ],
+      "formFactor": "PMC",
+      "lifecycleStatus": "active",
+      "resolutionBits": 16,
+      "operatingTempC": {
+        "min": -40,
+        "max": 85
+      }
+    },
+    {
+      "moduleId": "IO145",
+      "hrmFile": "IO145 - Hardware Reference Manual.docx",
+      "hrmDocPath": "C:\\Users\\daniel.hediger\\OneDrive - Speedgoat GmbH\\Technologies - Documents\\General\\Products\\IO Modules\\IO145_TXMC543\\Documentation\\IO145 - Hardware Reference Manual.docx",
+      "_warnings": [
+        "No sample rate found",
+        "No power consumption found"
+      ],
+      "formFactor": "XMC",
+      "lifecycleStatus": "active",
+      "voltageRange": {
+        "min": -10,
+        "max": 10,
+        "unit": "V"
+      },
+      "operatingTempC": {
+        "min": -40,
+        "max": 85
+      }
+    }
+  ],
+  "discontinuedModuleIds": [
+    "IO119",
+    "IO120",
+    "IO121",
+    "IO180",
+    "IO181",
+    "IO201",
+    "IO301",
+    "IO302",
+    "IO303",
+    "IO304",
+    "IO401",
+    "IO501",
+    "IO502",
+    "IO702",
+    "IO703",
+    "IO707"
+  ]
+}

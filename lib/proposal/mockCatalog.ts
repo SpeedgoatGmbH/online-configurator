@@ -14,6 +14,44 @@ export type MockModuleCatalogEntry = {
   fpgaTotalLines?: number
   /** The interface / connector board that must accompany this module (e.g. 'IO323-21'). When set, the simulator auto-adds it. */
   interfaceBoard?: { moduleId: string; friendlyName: string }
+
+  /* ── Enriched fields (from speedgoat.com product pages + HRM docs) ── */
+  /** Physical form factor: PMC, XMC, mPCIe, PCIe, or TPCE */
+  formFactor?: 'PMC' | 'XMC' | 'mPCIe' | 'PCIe' | 'TPCE'
+  /** Product lifecycle status */
+  lifecycleStatus?: 'active' | 'recommended' | 'eol' | 'discontinued'
+  /** Input voltage range from product page / HRM */
+  voltageRange?: { min: number; max: number; unit: string }
+  /** Output voltage range (when different from input) */
+  outputVoltageRange?: { min: number; max: number; unit: string }
+  /** Input/output current range */
+  currentRange?: { min: number; max: number; unit: string }
+  /** Supported sample rates in Hz (may list multiple configurations) */
+  sampleRateHz?: number[]
+  /** ADC/DAC resolution in bits (parsed from e.g. "16-bit") */
+  resolutionBits?: number
+  /** Galvanic isolation rating */
+  isolationVoltage?: string
+  /** Accuracy specification (e.g. "±0.01% FSR") */
+  accuracyClass?: string
+  /** Typical power consumption in watts */
+  powerConsumptionW?: number
+  /** Operating temperature range in °C */
+  operatingTempC?: { min: number; max: number }
+  /** Sampling mode from product page (e.g. "SM/SM", "SQ/SM") */
+  samplingMode?: string
+  /** Connector type from product page */
+  connector?: string
+  /** Max data rate in Mbps for communication modules */
+  maxDataRateMbps?: number
+  /** Input channel spec from product page (e.g. "16 DF", "32 SE / 16 DF") */
+  inputChannelSpec?: string
+  /** Output channel spec from product page (e.g. "8 SE", "16 SE / 16 DF") */
+  outputChannelSpec?: string
+  /** Source page on speedgoat.com where the data was scraped from */
+  webSourcePage?: string
+  /** Path to the source HRM document (if extracted from HRM) */
+  hrmDocPath?: string
 }
 
 /**
@@ -42,6 +80,21 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
       speed: ['100 kHz'],
     },
     compatibleMachines: ['performance', 'pulse', 'baseline', 'mobile'],
+  
+    /* HRM-enriched */
+    formFactor: 'PMC',
+    voltageRange: { min: -5, max: 5, unit: 'V' },
+    resolutionBits: 16,
+    operatingTempC: { min: -40, max: 85 },
+    hrmDocPath: 'IO130_TPMC530-20R/Documentation/IO130 - Hardware Reference Manual.docx',
+    /* web-enriched (speedgoat.com/analog) */
+    lifecycleStatus: 'active',
+    sampleRateHz: [200000],
+    outputVoltageRange: { min: -10, max: 10, unit: 'V' },
+    samplingMode: 'SM/SM',
+    inputChannelSpec: '8 DF',
+    outputChannelSpec: '4 SE',
+    webSourcePage: 'analog',
   },
   {
     moduleId: 'IO131',
@@ -58,6 +111,21 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
       speed: ['100 kHz'],
     },
     compatibleMachines: ['performance', 'pulse', 'baseline', 'mobile'],
+  
+    /* HRM-enriched */
+    formFactor: 'PMC',
+    voltageRange: { min: -5, max: 5, unit: 'V' },
+    resolutionBits: 16,
+    operatingTempC: { min: -40, max: 85 },
+    hrmDocPath: 'IO131_TPMC530-10R/Documentation/IO131 - Hardware Reference Manual.docx',
+    /* web-enriched (speedgoat.com/analog) */
+    lifecycleStatus: 'active',
+    sampleRateHz: [200000],
+    outputVoltageRange: { min: -10, max: 10, unit: 'V' },
+    samplingMode: 'SM/SM',
+    inputChannelSpec: '16 DF',
+    outputChannelSpec: '8 SE',
+    webSourcePage: 'analog',
   },
   {
     moduleId: 'IO134',
@@ -74,6 +142,14 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
       speed: ['100 kHz'],
     },
     compatibleMachines: ['performance', 'pulse', 'baseline', 'mobile'],
+    /* web-enriched (speedgoat.com/analog) */
+    lifecycleStatus: 'active',
+    resolutionBits: 16,
+    sampleRateHz: [200000],
+    voltageRange: { min: -10, max: 10, unit: 'V' },
+    samplingMode: 'SM/-',
+    inputChannelSpec: '32 DF',
+    webSourcePage: 'analog',
   },
   {
     moduleId: 'IO106',
@@ -90,6 +166,14 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
       speed: ['100 kHz'],
     },
     compatibleMachines: ['performance', 'baseline', 'mobile'],
+    /* web-enriched (speedgoat.com/analog) */
+    lifecycleStatus: 'active',
+    resolutionBits: 16,
+    sampleRateHz: [200000],
+    voltageRange: { min: -10, max: 10, unit: 'V' },
+    samplingMode: 'SM/-',
+    inputChannelSpec: '64 SE / 32 DF',
+    webSourcePage: 'analog',
   },
   {
     moduleId: 'IO141',
@@ -106,6 +190,22 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
       speed: ['500 kHz'],
     },
     compatibleMachines: ['performance', 'pulse', 'baseline', 'mobile'],
+  
+    /* HRM-enriched */
+    formFactor: 'PMC',
+    operatingTempC: { min: -40, max: 85 },
+    hrmDocPath: 'IO141 & IO142_TPMC541/Documentation/IO141 - Hardware Reference Manual.docx',
+    /* web-enriched (speedgoat.com/analog) */
+    lifecycleStatus: 'active',
+    resolutionBits: 16,
+    sampleRateHz: [800000],
+    voltageRange: { min: -25, max: 25, unit: 'V' },
+    outputVoltageRange: { min: -12, max: 12, unit: 'V' },
+    currentRange: { min: 0, max: 24, unit: 'mA' },
+    samplingMode: 'SQ/SM',
+    inputChannelSpec: '16 SE / 8 DF',
+    outputChannelSpec: '4 SE',
+    webSourcePage: 'analog',
   },
   {
     moduleId: 'IO142',
@@ -122,6 +222,17 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
       speed: ['500 kHz'],
     },
     compatibleMachines: ['performance', 'pulse', 'baseline', 'mobile'],
+    /* web-enriched (speedgoat.com/analog) */
+    lifecycleStatus: 'active',
+    resolutionBits: 16,
+    sampleRateHz: [800000],
+    voltageRange: { min: -25, max: 25, unit: 'V' },
+    outputVoltageRange: { min: -12, max: 12, unit: 'V' },
+    currentRange: { min: 0, max: 24, unit: 'mA' },
+    samplingMode: 'SQ/SM',
+    inputChannelSpec: '32 SE / 16 DF',
+    outputChannelSpec: '8 SE',
+    webSourcePage: 'analog',
   },
   {
     moduleId: 'IO145',
@@ -138,6 +249,22 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
       speed: ['500 kHz'],
     },
     compatibleMachines: ['performance', 'pulse', 'baseline', 'mobile'],
+  
+    /* HRM-enriched */
+    formFactor: 'XMC',
+    voltageRange: { min: -10, max: 10, unit: 'V' },
+    operatingTempC: { min: -40, max: 85 },
+    hrmDocPath: 'IO145_TXMC543/Documentation/IO145 - Hardware Reference Manual.docx',
+    /* web-enriched (speedgoat.com/analog) */
+    lifecycleStatus: 'active',
+    resolutionBits: 16,
+    sampleRateHz: [800000],
+    outputVoltageRange: { min: -12, max: 12, unit: 'V' },
+    currentRange: { min: -25, max: 25, unit: 'mA' },
+    samplingMode: 'SQ/SM',
+    inputChannelSpec: '16 SE / 8 DF',
+    outputChannelSpec: '8 SE',
+    webSourcePage: 'analog',
   },
   {
     moduleId: 'IO109',
@@ -154,6 +281,14 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
       speed: ['100 kHz'],
     },
     compatibleMachines: ['performance', 'baseline', 'mobile'],
+    /* web-enriched (speedgoat.com/analog) */
+    lifecycleStatus: 'active',
+    resolutionBits: 24,
+    sampleRateHz: [200000],
+    voltageRange: { min: -10, max: 10, unit: 'V' },
+    samplingMode: 'SM/-',
+    inputChannelSpec: '12 DF',
+    webSourcePage: 'analog',
   },
   {
     moduleId: 'IO191',
@@ -170,6 +305,17 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
       speed: ['100 kHz'],
     },
     compatibleMachines: ['baseline', 'unit'],
+    /* web-enriched (speedgoat.com/analog) */
+    lifecycleStatus: 'active',
+    resolutionBits: 16,
+    sampleRateHz: [250000],
+    voltageRange: { min: -25, max: 25, unit: 'V' },
+    outputVoltageRange: { min: -10, max: 10, unit: 'V' },
+    currentRange: { min: -10, max: 10, unit: 'mA' },
+    samplingMode: 'SQ/SQ',
+    inputChannelSpec: '8 SE / 4 DF',
+    outputChannelSpec: '4 SE',
+    webSourcePage: 'analog',
   },
   {
     moduleId: 'IO104',
@@ -186,6 +332,20 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
       speed: ['500 kHz'],
     },
     compatibleMachines: ['performance', 'baseline', 'mobile'],
+  
+    /* HRM-enriched */
+    operatingTempC: { min: -40, max: 85 },
+    hrmDocPath: 'IO104/Documentation/IO104 - Hardware Reference Manual.docx',
+    /* web-enriched (speedgoat.com/analog) */
+    lifecycleStatus: 'active',
+    resolutionBits: 16,
+    sampleRateHz: [2000000],
+    voltageRange: { min: -10, max: 10, unit: 'V' },
+    outputVoltageRange: { min: -10, max: 10, unit: 'V' },
+    samplingMode: 'SM/SM',
+    inputChannelSpec: '8 SE / 8 DF',
+    outputChannelSpec: '4 SE',
+    webSourcePage: 'analog',
   },
   {
     moduleId: 'IO112',
@@ -202,6 +362,14 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
       speed: ['500 kHz'],
     },
     compatibleMachines: ['performance', 'baseline', 'mobile'],
+    /* web-enriched (speedgoat.com/analog) */
+    lifecycleStatus: 'active',
+    resolutionBits: 18,
+    sampleRateHz: [1000000],
+    voltageRange: { min: -10, max: 10, unit: 'V' },
+    samplingMode: 'SM/-',
+    inputChannelSpec: '4, 8, 16, 32 DF',
+    webSourcePage: 'analog',
   },
   {
     moduleId: 'IO108',
@@ -218,6 +386,14 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
       speed: ['100 kHz'],
     },
     compatibleMachines: ['performance', 'baseline', 'mobile'],
+    /* web-enriched (speedgoat.com/analog) */
+    lifecycleStatus: 'active',
+    resolutionBits: 16,
+    sampleRateHz: [450000],
+    outputVoltageRange: { min: -20, max: 20, unit: 'V' },
+    samplingMode: '-/SM',
+    outputChannelSpec: '8 SE / 8 DF',
+    webSourcePage: 'analog',
   },
   {
     moduleId: 'IO111',
@@ -234,6 +410,19 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
       speed: ['20 kHz'],
     },
     compatibleMachines: ['performance', 'baseline', 'mobile'],
+  
+    /* HRM-enriched */
+    formFactor: 'PMC',
+    voltageRange: { min: 0, max: 10.8, unit: 'V' },
+    resolutionBits: 16,
+    operatingTempC: { min: -40, max: 85 },
+    hrmDocPath: 'IO111_TPMC553-11R/Documentation/IO111 - Hardware Reference Manual (Please update chapters 4 and 5 only).docx',
+    /* web-enriched (speedgoat.com/analog) */
+    lifecycleStatus: 'active',
+    outputVoltageRange: { min: -10.8, max: 10.8, unit: 'V' },
+    samplingMode: '-/SM',
+    outputChannelSpec: '16 SE',
+    webSourcePage: 'analog',
   },
   {
     moduleId: 'IO113',
@@ -250,6 +439,16 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
       speed: ['20 kHz'],
     },
     compatibleMachines: ['performance', 'baseline', 'mobile'],
+  
+    /* HRM-enriched */
+    hrmDocPath: 'IO113-20/Documentation/IO113-20 - Hardware Reference Manual.docx',
+    /* web-enriched (speedgoat.com/analog) */
+    lifecycleStatus: 'active',
+    resolutionBits: 20,
+    outputVoltageRange: { min: -10, max: 10, unit: 'V' },
+    samplingMode: '-/SM',
+    outputChannelSpec: '8 SE',
+    webSourcePage: 'analog',
   },
   {
     moduleId: 'IO117',
@@ -266,6 +465,13 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
       speed: ['20 kHz'],
     },
     compatibleMachines: ['performance', 'baseline', 'mobile'],
+    /* web-enriched (speedgoat.com/analog) */
+    lifecycleStatus: 'active',
+    resolutionBits: 16,
+    voltageRange: { min: -10, max: 10, unit: 'V' },
+    samplingMode: 'SQ/-',
+    inputChannelSpec: '32 SE / 16 DF',
+    webSourcePage: 'analog',
   },
   {
     moduleId: 'IO116',
@@ -282,6 +488,17 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
       speed: ['20 kHz'],
     },
     compatibleMachines: ['performance', 'baseline', 'mobile'],
+    /* web-enriched (speedgoat.com/analog) */
+    lifecycleStatus: 'active',
+    resolutionBits: 16,
+    sampleRateHz: [37500],
+    voltageRange: { min: 0, max: 10, unit: 'V' },
+    outputVoltageRange: { min: 0, max: 10, unit: 'V' },
+    currentRange: { min: 0, max: 20, unit: 'mA' },
+    samplingMode: 'SQ/SM',
+    inputChannelSpec: '16 SE / 8 DF',
+    outputChannelSpec: '4 SE',
+    webSourcePage: 'analog',
   },
   {
     moduleId: 'IO325',
@@ -298,6 +515,16 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
       speed: ['500 kHz'],
     },
     compatibleMachines: ['performance', 'baseline', 'mobile'],
+    /* web-enriched (speedgoat.com/analog) */
+    lifecycleStatus: 'active',
+    resolutionBits: 16,
+    sampleRateHz: [1500000],
+    voltageRange: { min: -10, max: 10, unit: 'V' },
+    outputVoltageRange: { min: -10, max: 10, unit: 'V' },
+    samplingMode: 'SM/SM',
+    inputChannelSpec: '8 DF',
+    outputChannelSpec: '4 SE',
+    webSourcePage: 'analog',
   },
   {
     moduleId: 'IO336',
@@ -314,6 +541,16 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
       speed: ['500 kHz'],
     },
     compatibleMachines: ['performance', 'baseline', 'mobile'],
+    /* web-enriched (speedgoat.com/analog) */
+    lifecycleStatus: 'active',
+    resolutionBits: 16,
+    sampleRateHz: [1000000],
+    voltageRange: { min: -10, max: 10, unit: 'V' },
+    outputVoltageRange: { min: -10, max: 10, unit: 'V' },
+    samplingMode: 'SM/SM',
+    inputChannelSpec: '16 DF',
+    outputChannelSpec: '8 SE',
+    webSourcePage: 'analog',
   },
   {
     moduleId: 'IO397',
@@ -330,6 +567,16 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
       speed: ['100 kHz'],
     },
     compatibleMachines: ['baseline', 'unit'],
+    /* web-enriched (speedgoat.com/analog) */
+    lifecycleStatus: 'active',
+    resolutionBits: 16,
+    sampleRateHz: [200000],
+    voltageRange: { min: -10.24, max: 10.24, unit: 'V' },
+    outputVoltageRange: { min: -10.8, max: 10.8, unit: 'V' },
+    samplingMode: 'SM/SM',
+    inputChannelSpec: '4 SE / 4 DF',
+    outputChannelSpec: '4 SE',
+    webSourcePage: 'analog',
   },
   // IO335  — 24-input 3-output FPGA Analog 5 MHz (XMC)
   {
@@ -350,6 +597,14 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     fpgaFamily: 'IO335',
     fpgaTotalLines: 56,
     interfaceBoard: { moduleId: 'IO335-21', friendlyName: 'Interface Board IO335-21' },
+    /* web-enriched (speedgoat.com/analog) */
+    lifecycleStatus: 'active',
+    resolutionBits: 16,
+    sampleRateHz: [5000000],
+    voltageRange: { min: -7.5, max: 7.5, unit: 'V' },
+    samplingMode: 'SM/-',
+    inputChannelSpec: '24 DF',
+    webSourcePage: 'analog',
   },
   // IO337  — 8-input 32-output FPGA Analog (XMC)
   {
@@ -390,6 +645,14 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     fpgaFamily: 'IO344',
     fpgaTotalLines: 16,
     interfaceBoard: { moduleId: 'IO344-21', friendlyName: 'Interface Board IO344-21' },
+    /* web-enriched (speedgoat.com/analog) */
+    lifecycleStatus: 'active',
+    resolutionBits: 14,
+    sampleRateHz: [4000000000],
+    samplingMode: 'SM/SM',
+    inputChannelSpec: '8 SE',
+    outputChannelSpec: '8 SE',
+    webSourcePage: 'analog',
   },
   // IO332  — FPGA selectable configs (PMC) — 64 LVTTL / 30 RS485 / 16+8 analog+16 TTL
   {
@@ -410,6 +673,16 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     fpgaFamily: 'IO332',
     fpgaTotalLines: 64,
     interfaceBoard: { moduleId: 'IO332-21', friendlyName: 'Interface Board IO332-21' },
+    /* web-enriched (speedgoat.com/analog) */
+    lifecycleStatus: 'active',
+    resolutionBits: 16,
+    sampleRateHz: [500000],
+    voltageRange: { min: -10.24, max: 10.24, unit: 'V' },
+    outputVoltageRange: { min: -10.8, max: 10.8, unit: 'V' },
+    samplingMode: 'SM/SM',
+    inputChannelSpec: '16 DF',
+    outputChannelSpec: '8 SE',
+    webSourcePage: 'analog',
   },
   // --- Analog Outputs --------------------------------------------------------
   {
@@ -427,6 +700,16 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
       speed: ['100 kHz'],
     },
     compatibleMachines: ['performance', 'pulse', 'baseline', 'mobile'],
+    /* web-enriched (speedgoat.com/analog) */
+    lifecycleStatus: 'active',
+    resolutionBits: 16,
+    sampleRateHz: [200000],
+    voltageRange: { min: -10, max: 10, unit: 'V' },
+    outputVoltageRange: { min: -10.8, max: 10.8, unit: 'V' },
+    samplingMode: 'SM/SM',
+    inputChannelSpec: '32 DF',
+    outputChannelSpec: '16 SE',
+    webSourcePage: 'analog',
   },
   {
     moduleId: 'IO110',
@@ -443,6 +726,19 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
       speed: ['20 kHz'],
     },
     compatibleMachines: ['performance', 'pulse', 'baseline', 'mobile'],
+  
+    /* HRM-enriched */
+    formFactor: 'PMC',
+    voltageRange: { min: 0, max: 10.8, unit: 'V' },
+    resolutionBits: 16,
+    operatingTempC: { min: -40, max: 85 },
+    hrmDocPath: 'IO110_TPMC553-10R/Documentation/IO110 - Hardware Reference Manual.docx',
+    /* web-enriched (speedgoat.com/analog) */
+    lifecycleStatus: 'active',
+    outputVoltageRange: { min: -10.8, max: 10.8, unit: 'V' },
+    samplingMode: '-/SM',
+    outputChannelSpec: '32 SE',
+    webSourcePage: 'analog',
   },
   {
     moduleId: 'IO107',
@@ -459,6 +755,14 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
       speed: ['100 kHz'],
     },
     compatibleMachines: ['performance', 'baseline', 'mobile'],
+    /* web-enriched (speedgoat.com/analog) */
+    lifecycleStatus: 'active',
+    resolutionBits: 16,
+    sampleRateHz: [450000],
+    outputVoltageRange: { min: -20, max: 20, unit: 'V' },
+    samplingMode: '-/SM',
+    outputChannelSpec: '16 SE / 16 DF',
+    webSourcePage: 'analog',
   },
   {
     moduleId: 'IO143',
@@ -475,6 +779,19 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
       speed: ['20 kHz'],
     },
     compatibleMachines: ['performance', 'pulse', 'baseline', 'mobile'],
+  
+    /* HRM-enriched */
+    formFactor: 'PMC',
+    resolutionBits: 16,
+    operatingTempC: { min: -40, max: 85 },
+    hrmDocPath: 'IO143 & IO144_TPMC542/Documentation/IO143 - Hardware Reference Manual (Bug in document. Do not remove or accept track changes).docx',
+    /* web-enriched (speedgoat.com/analog) */
+    lifecycleStatus: 'active',
+    outputVoltageRange: { min: -12, max: 12, unit: 'V' },
+    currentRange: { min: 0, max: 24, unit: 'mA' },
+    samplingMode: '-/SM',
+    outputChannelSpec: '8 SE',
+    webSourcePage: 'analog',
   },
   {
     moduleId: 'IO144',
@@ -491,6 +808,14 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
       speed: ['20 kHz'],
     },
     compatibleMachines: ['performance', 'pulse', 'baseline', 'mobile'],
+    /* web-enriched (speedgoat.com/analog) */
+    lifecycleStatus: 'active',
+    resolutionBits: 16,
+    outputVoltageRange: { min: -12, max: 12, unit: 'V' },
+    currentRange: { min: 0, max: 24, unit: 'mA' },
+    samplingMode: '-/SM',
+    outputChannelSpec: '16 SE',
+    webSourcePage: 'analog',
   },
   {
     moduleId: 'IO334',
@@ -510,6 +835,16 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     fpgaFamily: 'IO334',
     fpgaTotalLines: 56,
     interfaceBoard: { moduleId: 'IO334-21', friendlyName: 'Interface Board IO334-21' },
+    /* web-enriched (speedgoat.com/analog) */
+    lifecycleStatus: 'active',
+    resolutionBits: 16,
+    sampleRateHz: [5000000],
+    voltageRange: { min: -20, max: 20, unit: 'V' },
+    outputVoltageRange: { min: -10, max: 10, unit: 'V' },
+    samplingMode: 'SM/SM',
+    inputChannelSpec: '16 DF',
+    outputChannelSpec: '16 SE',
+    webSourcePage: 'analog',
   },
   {
     moduleId: 'IO337',
@@ -543,6 +878,9 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
       resolution: ['None'],
     },
     compatibleMachines: ['performance'],
+    /* web-enriched (speedgoat.com/digital) */
+    lifecycleStatus: 'active',
+    webSourcePage: 'digital',
   },
   // --- Digital Inputs --------------------------------------------------------
   {
@@ -558,6 +896,9 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
       resolution: ['None'],
     },
     compatibleMachines: ['performance', 'pulse', 'baseline', 'mobile'],
+    /* web-enriched (speedgoat.com/digital) */
+    lifecycleStatus: 'active',
+    webSourcePage: 'digital',
   },
   {
     moduleId: 'IO306',
@@ -574,6 +915,9 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     compatibleMachines: ['performance', 'baseline', 'mobile'],
     fpgaFamily: 'IO306',
     fpgaTotalLines: 64,
+    /* web-enriched (speedgoat.com/digital) */
+    lifecycleStatus: 'active',
+    webSourcePage: 'digital',
   },
   {
     moduleId: 'IO307',
@@ -590,6 +934,9 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     compatibleMachines: ['performance', 'baseline', 'mobile'],
     fpgaFamily: 'IO307',
     fpgaTotalLines: 48,
+    /* web-enriched (speedgoat.com/digital) */
+    lifecycleStatus: 'active',
+    webSourcePage: 'digital',
   },
   {
     moduleId: 'IO308',
@@ -606,6 +953,9 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     compatibleMachines: ['performance', 'baseline', 'mobile'],
     fpgaFamily: 'IO308',
     fpgaTotalLines: 32,
+    /* web-enriched (speedgoat.com/digital) */
+    lifecycleStatus: 'active',
+    webSourcePage: 'digital',
   },
   {
     moduleId: 'IO317',
@@ -623,6 +973,9 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     fpgaFamily: 'IO317',
     fpgaTotalLines: 56,
     interfaceBoard: { moduleId: 'IO317-21', friendlyName: 'Interface Board IO317-21' },
+    /* web-enriched (speedgoat.com/digital) */
+    lifecycleStatus: 'active',
+    webSourcePage: 'digital',
   },
   {
     moduleId: 'IO318',
@@ -640,6 +993,9 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     fpgaFamily: 'IO318',
     fpgaTotalLines: 56,
     interfaceBoard: { moduleId: 'IO318-21', friendlyName: 'Interface Board IO318-21' },
+    /* web-enriched (speedgoat.com/digital) */
+    lifecycleStatus: 'active',
+    webSourcePage: 'digital',
   },
   {
     moduleId: 'IO292',
@@ -654,6 +1010,9 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
       resolution: ['None'],
     },
     compatibleMachines: ['baseline', 'unit'],
+    /* web-enriched (speedgoat.com/digital) */
+    lifecycleStatus: 'active',
+    webSourcePage: 'digital',
   },
   {
     moduleId: 'IO391',
@@ -670,6 +1029,9 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     compatibleMachines: ['baseline', 'unit'],
     fpgaFamily: 'IO391',
     fpgaTotalLines: 26,
+    /* web-enriched (speedgoat.com/digital) */
+    lifecycleStatus: 'active',
+    webSourcePage: 'digital',
   },
   {
     moduleId: 'IO393',
@@ -686,6 +1048,9 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     compatibleMachines: ['baseline', 'unit'],
     fpgaFamily: 'IO393',
     fpgaTotalLines: 20,
+    /* web-enriched (speedgoat.com/digital) */
+    lifecycleStatus: 'active',
+    webSourcePage: 'digital',
   },
   {
     moduleId: 'IO206',
@@ -700,6 +1065,9 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
       resolution: ['Isolated Inputs'],
     },
     compatibleMachines: ['performance', 'pulse', 'baseline', 'mobile'],
+    /* web-enriched (speedgoat.com/digital) */
+    lifecycleStatus: 'active',
+    webSourcePage: 'digital',
   },
   {
     moduleId: 'IO290',
@@ -714,6 +1082,9 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
       resolution: ['None', 'Isolated Inputs', 'Isolated Outputs'],
     },
     compatibleMachines: ['performance'],
+    /* web-enriched (speedgoat.com/digital) */
+    lifecycleStatus: 'active',
+    webSourcePage: 'digital',
   },
   {
     moduleId: 'IO291',
@@ -728,6 +1099,9 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
       resolution: ['None', 'Isolated Inputs', 'Isolated Outputs'],
     },
     compatibleMachines: ['baseline', 'unit'],
+    /* web-enriched (speedgoat.com/digital) */
+    lifecycleStatus: 'active',
+    webSourcePage: 'digital',
   },
   {
     moduleId: 'IO205',
@@ -743,6 +1117,9 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
       speed: ['High-side (0.5 A/ch)'],
     },
     compatibleMachines: ['performance', 'pulse', 'baseline', 'mobile'],
+    /* web-enriched (speedgoat.com/digital) */
+    lifecycleStatus: 'active',
+    webSourcePage: 'digital',
   },
   {
     moduleId: 'IO204',
@@ -758,6 +1135,9 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
       speed: ['High-side (0.5 A/ch)', 'Low-side (0.5 A/ch)'],
     },
     compatibleMachines: ['performance', 'baseline', 'mobile'],
+    /* web-enriched (speedgoat.com/digital) */
+    lifecycleStatus: 'active',
+    webSourcePage: 'digital',
   },
   {
     moduleId: 'IO392',
@@ -773,6 +1153,9 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
       speed: ['Driver enabled'],
     },
     compatibleMachines: ['baseline', 'unit'],
+    /* web-enriched (speedgoat.com/digital) */
+    lifecycleStatus: 'active',
+    webSourcePage: 'digital',
   },
   {
     moduleId: 'IO394',
@@ -788,6 +1171,9 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
       speed: ['Driver enabled'],
     },
     compatibleMachines: ['baseline', 'unit'],
+    /* web-enriched (speedgoat.com/digital) */
+    lifecycleStatus: 'active',
+    webSourcePage: 'digital',
   },
   // --- Configurable FPGA I/O boards ------------------------------------------
   // Each FPGA board appears once per functional category it can serve.
@@ -847,6 +1233,16 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     fpgaFamily: 'IO324',
     fpgaTotalLines: 96,
     interfaceBoard: { moduleId: 'IO324-21', friendlyName: 'Interface Board IO324-21' },
+    /* web-enriched (speedgoat.com/analog) */
+    lifecycleStatus: 'active',
+    resolutionBits: 16,
+    sampleRateHz: [1000000],
+    voltageRange: { min: -25, max: 25, unit: 'V' },
+    outputVoltageRange: { min: -10, max: 10, unit: 'V' },
+    samplingMode: 'SQ/SM',
+    inputChannelSpec: '32 SE / 16 DF',
+    outputChannelSpec: '8 SE',
+    webSourcePage: 'analog',
   },
   {
     moduleId: 'IO324',
@@ -864,6 +1260,16 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     fpgaFamily: 'IO324',
     fpgaTotalLines: 96,
     interfaceBoard: { moduleId: 'IO324-21', friendlyName: 'Interface Board IO324-21' },
+    /* web-enriched (speedgoat.com/analog) */
+    lifecycleStatus: 'active',
+    resolutionBits: 16,
+    sampleRateHz: [1000000],
+    voltageRange: { min: -25, max: 25, unit: 'V' },
+    outputVoltageRange: { min: -10, max: 10, unit: 'V' },
+    samplingMode: 'SQ/SM',
+    inputChannelSpec: '32 SE / 16 DF',
+    outputChannelSpec: '8 SE',
+    webSourcePage: 'analog',
   },
   // IO316  — 48-line TTL (XMC)
   {
@@ -881,6 +1287,9 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     fpgaFamily: 'IO316',
     fpgaTotalLines: 48,
     interfaceBoard: { moduleId: 'IO316-21', friendlyName: 'Interface Board IO316-21' },
+    /* web-enriched (speedgoat.com/digital) */
+    lifecycleStatus: 'active',
+    webSourcePage: 'digital',
   },
   {
     moduleId: 'IO316',
@@ -898,6 +1307,9 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     fpgaFamily: 'IO316',
     fpgaTotalLines: 48,
     interfaceBoard: { moduleId: 'IO316-21', friendlyName: 'Interface Board IO316-21' },
+    /* web-enriched (speedgoat.com/digital) */
+    lifecycleStatus: 'active',
+    webSourcePage: 'digital',
   },
   // IO331  — 48-line TTL (PMC)
   {
@@ -949,6 +1361,16 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     fpgaFamily: 'IO333',
     fpgaTotalLines: 96,
     interfaceBoard: { moduleId: 'IO333-21', friendlyName: 'Interface Board IO333-21' },
+    /* web-enriched (speedgoat.com/analog) */
+    lifecycleStatus: 'active',
+    resolutionBits: 16,
+    sampleRateHz: [500000],
+    voltageRange: { min: -10.24, max: 10.24, unit: 'V' },
+    outputVoltageRange: { min: -10.8, max: 10.8, unit: 'V' },
+    samplingMode: 'SM/SM',
+    inputChannelSpec: '16 DF',
+    outputChannelSpec: '8 SE',
+    webSourcePage: 'analog',
   },
   {
     moduleId: 'IO333',
@@ -966,6 +1388,16 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     fpgaFamily: 'IO333',
     fpgaTotalLines: 96,
     interfaceBoard: { moduleId: 'IO333-21', friendlyName: 'Interface Board IO333-21' },
+    /* web-enriched (speedgoat.com/analog) */
+    lifecycleStatus: 'active',
+    resolutionBits: 16,
+    sampleRateHz: [500000],
+    voltageRange: { min: -10.24, max: 10.24, unit: 'V' },
+    outputVoltageRange: { min: -10.8, max: 10.8, unit: 'V' },
+    samplingMode: 'SM/SM',
+    inputChannelSpec: '16 DF',
+    outputChannelSpec: '8 SE',
+    webSourcePage: 'analog',
   },
   // IO332  — selectable config (PMC) — 64 LVTTL / 30 RS485 / LVDS
   {
@@ -983,6 +1415,16 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     fpgaFamily: 'IO332',
     fpgaTotalLines: 64,
     interfaceBoard: { moduleId: 'IO332-21', friendlyName: 'Interface Board IO332-21' },
+    /* web-enriched (speedgoat.com/analog) */
+    lifecycleStatus: 'active',
+    resolutionBits: 16,
+    sampleRateHz: [500000],
+    voltageRange: { min: -10.24, max: 10.24, unit: 'V' },
+    outputVoltageRange: { min: -10.8, max: 10.8, unit: 'V' },
+    samplingMode: 'SM/SM',
+    inputChannelSpec: '16 DF',
+    outputChannelSpec: '8 SE',
+    webSourcePage: 'analog',
   },
   {
     moduleId: 'IO332',
@@ -1000,6 +1442,16 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     fpgaFamily: 'IO332',
     fpgaTotalLines: 64,
     interfaceBoard: { moduleId: 'IO332-21', friendlyName: 'Interface Board IO332-21' },
+    /* web-enriched (speedgoat.com/analog) */
+    lifecycleStatus: 'active',
+    resolutionBits: 16,
+    sampleRateHz: [500000],
+    voltageRange: { min: -10.24, max: 10.24, unit: 'V' },
+    outputVoltageRange: { min: -10.8, max: 10.8, unit: 'V' },
+    samplingMode: 'SM/SM',
+    inputChannelSpec: '16 DF',
+    outputChannelSpec: '8 SE',
+    webSourcePage: 'analog',
   },
   // IO334  — 16AI+16AO FPGA 5 MHz (XMC) — also usable for PWM/encoder via interface
   {
@@ -1017,6 +1469,16 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     fpgaFamily: 'IO334',
     fpgaTotalLines: 56,
     interfaceBoard: { moduleId: 'IO334-21', friendlyName: 'Interface Board IO334-21' },
+    /* web-enriched (speedgoat.com/analog) */
+    lifecycleStatus: 'active',
+    resolutionBits: 16,
+    sampleRateHz: [5000000],
+    voltageRange: { min: -20, max: 20, unit: 'V' },
+    outputVoltageRange: { min: -10, max: 10, unit: 'V' },
+    samplingMode: 'SM/SM',
+    inputChannelSpec: '16 DF',
+    outputChannelSpec: '16 SE',
+    webSourcePage: 'analog',
   },
   {
     moduleId: 'IO334',
@@ -1034,6 +1496,16 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     fpgaFamily: 'IO334',
     fpgaTotalLines: 56,
     interfaceBoard: { moduleId: 'IO334-21', friendlyName: 'Interface Board IO334-21' },
+    /* web-enriched (speedgoat.com/analog) */
+    lifecycleStatus: 'active',
+    resolutionBits: 16,
+    sampleRateHz: [5000000],
+    voltageRange: { min: -20, max: 20, unit: 'V' },
+    outputVoltageRange: { min: -10, max: 10, unit: 'V' },
+    samplingMode: 'SM/SM',
+    inputChannelSpec: '16 DF',
+    outputChannelSpec: '16 SE',
+    webSourcePage: 'analog',
   },
   // IO335  — 24AI+3AO FPGA 5 MHz (XMC) — also can do PWM/encoder
   {
@@ -1051,6 +1523,14 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     fpgaFamily: 'IO335',
     fpgaTotalLines: 56,
     interfaceBoard: { moduleId: 'IO335-21', friendlyName: 'Interface Board IO335-21' },
+    /* web-enriched (speedgoat.com/analog) */
+    lifecycleStatus: 'active',
+    resolutionBits: 16,
+    sampleRateHz: [5000000],
+    voltageRange: { min: -7.5, max: 7.5, unit: 'V' },
+    samplingMode: 'SM/-',
+    inputChannelSpec: '24 DF',
+    webSourcePage: 'analog',
   },
   // IO317  — 48-line TTL+RS422 (XMC) — FPGA PWM/Capture/Encoder
   {
@@ -1068,6 +1548,9 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     fpgaFamily: 'IO317',
     fpgaTotalLines: 56,
     interfaceBoard: { moduleId: 'IO317-21', friendlyName: 'Interface Board IO317-21' },
+    /* web-enriched (speedgoat.com/digital) */
+    lifecycleStatus: 'active',
+    webSourcePage: 'digital',
   },
   {
     moduleId: 'IO317',
@@ -1085,6 +1568,9 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     fpgaFamily: 'IO317',
     fpgaTotalLines: 56,
     interfaceBoard: { moduleId: 'IO317-21', friendlyName: 'Interface Board IO317-21' },
+    /* web-enriched (speedgoat.com/digital) */
+    lifecycleStatus: 'active',
+    webSourcePage: 'digital',
   },
   // IO391  — 26-line TTL Compact (mPCIe)
   {
@@ -1102,6 +1588,9 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     fpgaFamily: 'IO391',
     fpgaTotalLines: 26,
     interfaceBoard: { moduleId: 'IO391-21', friendlyName: 'Interface Board IO391-21' },
+    /* web-enriched (speedgoat.com/digital) */
+    lifecycleStatus: 'active',
+    webSourcePage: 'digital',
   },
   {
     moduleId: 'IO391',
@@ -1119,6 +1608,9 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     fpgaFamily: 'IO391',
     fpgaTotalLines: 26,
     interfaceBoard: { moduleId: 'IO391-21', friendlyName: 'Interface Board IO391-21' },
+    /* web-enriched (speedgoat.com/digital) */
+    lifecycleStatus: 'active',
+    webSourcePage: 'digital',
   },
   // --- Communication Protocols -----------------------------------------------
   {
@@ -1134,6 +1626,11 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     },
     protocolSupport: ['CAN', 'CAN FD', 'LIN', 'XCP over CAN'],
     compatibleMachines: ['performance', 'pulse', 'baseline', 'mobile'],
+    /* web-enriched (speedgoat.com/communications) */
+    lifecycleStatus: 'active',
+    connector: '25-Pin D-Sub to 5x 9-Pin D-Sub cable',
+    maxDataRateMbps: 8,
+    webSourcePage: 'communications',
   },
   {
     moduleId: 'IO602',
@@ -1148,6 +1645,11 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     },
     protocolSupport: ['CAN', 'XCP over CAN'],
     compatibleMachines: ['performance', 'baseline', 'mobile'],
+    /* web-enriched (speedgoat.com/communications) */
+    lifecycleStatus: 'active',
+    connector: '25-pin D-sub or 4x 9-pin D-sub',
+    maxDataRateMbps: 5,
+    webSourcePage: 'communications',
   },
   {
     moduleId: 'IO601',
@@ -1162,6 +1664,11 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     },
     protocolSupport: ['CAN', 'LIN', 'XCP over CAN'],
     compatibleMachines: ['performance', 'baseline', 'mobile'],
+    /* web-enriched (speedgoat.com/communications) */
+    lifecycleStatus: 'active',
+    connector: '9-pin D-sub',
+    maxDataRateMbps: 1,
+    webSourcePage: 'communications',
   },
   {
     moduleId: 'IO691',
@@ -1176,6 +1683,11 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     },
     protocolSupport: ['CAN', 'XCP over CAN'],
     compatibleMachines: ['baseline', 'unit'],
+    /* web-enriched (speedgoat.com/communications) */
+    lifecycleStatus: 'active',
+    connector: '9-pin D-sub x 2',
+    maxDataRateMbps: 8,
+    webSourcePage: 'communications',
   },
   {
     moduleId: 'IO623',
@@ -1190,6 +1702,11 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     },
     protocolSupport: ['FlexRay'],
     compatibleMachines: ['performance', 'baseline', 'mobile'],
+    /* web-enriched (speedgoat.com/communications) */
+    lifecycleStatus: 'active',
+    connector: '4x Binder 712 8-pol',
+    maxDataRateMbps: 10,
+    webSourcePage: 'communications',
   },
   {
     moduleId: 'IO610',
@@ -1204,6 +1721,11 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     },
     protocolSupport: ['CAN', 'XCP over CAN'],
     compatibleMachines: ['performance', 'mobile'],
+    /* web-enriched (speedgoat.com/communications) */
+    lifecycleStatus: 'active',
+    connector: '9-pin D-sub x 2',
+    maxDataRateMbps: 5,
+    webSourcePage: 'communications',
   },
   {
     moduleId: 'IO611',
@@ -1218,6 +1740,11 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     },
     protocolSupport: ['CAN', 'LIN', 'XCP over CAN'],
     compatibleMachines: ['performance', 'mobile'],
+    /* web-enriched (speedgoat.com/communications) */
+    lifecycleStatus: 'active',
+    connector: '9-pin D-sub x 2',
+    maxDataRateMbps: 5,
+    webSourcePage: 'communications',
   },
   {
     moduleId: 'IO612',
@@ -1232,6 +1759,11 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     },
     protocolSupport: ['CAN', 'XCP over CAN'],
     compatibleMachines: ['performance', 'mobile'],
+    /* web-enriched (speedgoat.com/communications) */
+    lifecycleStatus: 'active',
+    connector: '9-pin D-sub x 2',
+    maxDataRateMbps: 1,
+    webSourcePage: 'communications',
   },
   {
     moduleId: 'IO613',
@@ -1246,6 +1778,11 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     },
     protocolSupport: ['CAN', 'XCP over CAN'],
     compatibleMachines: ['baseline'],
+    /* web-enriched (speedgoat.com/communications) */
+    lifecycleStatus: 'active',
+    connector: '9-pin D-sub x 2',
+    maxDataRateMbps: 5,
+    webSourcePage: 'communications',
   },
   {
     moduleId: 'IO614',
@@ -1260,6 +1797,11 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     },
     protocolSupport: ['CAN', 'LIN', 'XCP over CAN'],
     compatibleMachines: ['baseline'],
+    /* web-enriched (speedgoat.com/communications) */
+    lifecycleStatus: 'active',
+    connector: '9-pin D-sub x 4',
+    maxDataRateMbps: 1,
+    webSourcePage: 'communications',
   },
   {
     moduleId: 'IO629',
@@ -1274,6 +1816,9 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     },
     protocolSupport: ['ARINC 429', 'ARINC 629'],
     compatibleMachines: ['performance'],
+    /* web-enriched (speedgoat.com/communications) */
+    lifecycleStatus: 'active',
+    webSourcePage: 'communications',
   },
   {
     moduleId: 'IO624',
@@ -1288,6 +1833,11 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     },
     protocolSupport: ['PSI5'],
     compatibleMachines: ['performance', 'pulse', 'baseline', 'mobile'],
+    /* web-enriched (speedgoat.com/communications) */
+    lifecycleStatus: 'active',
+    connector: '50-pin Mini D (MDR50)',
+    maxDataRateMbps: 0.18,
+    webSourcePage: 'communications',
   },
   {
     moduleId: 'IO625',
@@ -1330,6 +1880,10 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     },
     protocolSupport: ['CAN', 'CAN FD', 'Automotive Ethernet'],
     compatibleMachines: ['performance'],
+    /* web-enriched (speedgoat.com/communications) */
+    lifecycleStatus: 'active',
+    maxDataRateMbps: 1000,
+    webSourcePage: 'communications',
   },
   {
     moduleId: 'IO750',
@@ -1344,6 +1898,11 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     },
     protocolSupport: ['EtherCAT'],
     compatibleMachines: ['performance', 'baseline', 'mobile'],
+    /* web-enriched (speedgoat.com/communications) */
+    lifecycleStatus: 'active',
+    connector: 'RJ-45 x 2',
+    maxDataRateMbps: 100,
+    webSourcePage: 'communications',
   },
   {
     moduleId: 'IO751',
@@ -1358,6 +1917,11 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     },
     protocolSupport: ['PROFINET'],
     compatibleMachines: ['performance', 'baseline', 'mobile', 'unit'],
+    /* web-enriched (speedgoat.com/communications) */
+    lifecycleStatus: 'active',
+    connector: 'RJ-45 x 2',
+    maxDataRateMbps: 100,
+    webSourcePage: 'communications',
   },
   {
     moduleId: 'IO755',
@@ -1372,6 +1936,11 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     },
     protocolSupport: ['EtherNet/IP'],
     compatibleMachines: ['performance', 'baseline', 'mobile', 'unit'],
+    /* web-enriched (speedgoat.com/communications) */
+    lifecycleStatus: 'active',
+    connector: 'RJ-45 x 2',
+    maxDataRateMbps: 100,
+    webSourcePage: 'communications',
   },
   {
     moduleId: 'IO758',
@@ -1386,6 +1955,11 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     },
     protocolSupport: ['POWERLINK'],
     compatibleMachines: ['performance', 'baseline', 'mobile', 'unit'],
+    /* web-enriched (speedgoat.com/communications) */
+    lifecycleStatus: 'active',
+    connector: 'RJ-45 x 2',
+    maxDataRateMbps: 100,
+    webSourcePage: 'communications',
   },
   {
     moduleId: 'IO715',
@@ -1409,6 +1983,11 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
       'IEC 61850',
     ],
     compatibleMachines: ['performance', 'pulse', 'baseline', 'mobile'],
+    /* web-enriched (speedgoat.com/communications) */
+    lifecycleStatus: 'active',
+    connector: 'RJ-45 x 4',
+    maxDataRateMbps: 1000,
+    webSourcePage: 'communications',
   },
   {
     moduleId: 'IO717',
@@ -1430,6 +2009,11 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
       'Raw Ethernet',
     ],
     compatibleMachines: ['performance'],
+    /* web-enriched (speedgoat.com/communications) */
+    lifecycleStatus: 'active',
+    connector: '2x RJ-45',
+    maxDataRateMbps: 10000,
+    webSourcePage: 'communications',
   },
   {
     moduleId: 'IO791',
@@ -1444,6 +2028,11 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     },
     protocolSupport: ['EtherNet/IP', 'Modbus TCP', 'OPC UA', 'DNP3', 'IEC 61850', 'MQTT'],
     compatibleMachines: ['baseline', 'unit'],
+    /* web-enriched (speedgoat.com/communications) */
+    lifecycleStatus: 'active',
+    connector: 'RJ-45 x 2',
+    maxDataRateMbps: 1000,
+    webSourcePage: 'communications',
   },
   {
     moduleId: 'IO641',
@@ -1458,6 +2047,11 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     },
     protocolSupport: ['PROFIBUS'],
     compatibleMachines: ['performance', 'baseline', 'mobile', 'unit'],
+    /* web-enriched (speedgoat.com/communications) */
+    lifecycleStatus: 'active',
+    connector: '9-pin D-sub',
+    maxDataRateMbps: 12,
+    webSourcePage: 'communications',
   },
   {
     moduleId: 'IO642',
@@ -1472,6 +2066,11 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     },
     protocolSupport: ['PROFIBUS'],
     compatibleMachines: ['performance', 'baseline', 'mobile', 'unit'],
+    /* web-enriched (speedgoat.com/communications) */
+    lifecycleStatus: 'active',
+    connector: '9-pin D-sub',
+    maxDataRateMbps: 1,
+    webSourcePage: 'communications',
   },
   {
     moduleId: 'IO643',
@@ -1486,6 +2085,11 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     },
     protocolSupport: ['CANopen'],
     compatibleMachines: ['performance', 'baseline', 'mobile', 'unit'],
+    /* web-enriched (speedgoat.com/communications) */
+    lifecycleStatus: 'active',
+    connector: '9-pin D-sub',
+    maxDataRateMbps: 1,
+    webSourcePage: 'communications',
   },
   {
     moduleId: 'IO644',
@@ -1500,6 +2104,11 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     },
     protocolSupport: ['CANopen'],
     compatibleMachines: ['performance', 'baseline', 'mobile', 'unit'],
+    /* web-enriched (speedgoat.com/communications) */
+    lifecycleStatus: 'active',
+    connector: '9-pin D-sub',
+    maxDataRateMbps: 1,
+    webSourcePage: 'communications',
   },
   {
     moduleId: 'IO503',
@@ -1514,6 +2123,11 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     },
     protocolSupport: ['RS-422', 'RS-485', 'RS-232', 'Modbus RTU'],
     compatibleMachines: ['performance', 'pulse', 'baseline', 'mobile'],
+    /* web-enriched (speedgoat.com/communications) */
+    lifecycleStatus: 'active',
+    connector: '50-pin male SCSI2',
+    maxDataRateMbps: 5.5296,
+    webSourcePage: 'communications',
   },
   {
     moduleId: 'IO504',
@@ -1528,6 +2142,11 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     },
     protocolSupport: ['RS-422', 'RS-485', 'RS-232', 'Modbus RTU'],
     compatibleMachines: ['performance', 'pulse', 'baseline', 'mobile'],
+    /* web-enriched (speedgoat.com/communications) */
+    lifecycleStatus: 'active',
+    connector: '50-pin male SCSI2',
+    maxDataRateMbps: 5.5296,
+    webSourcePage: 'communications',
   },
   {
     moduleId: 'IO505',
@@ -1542,6 +2161,11 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     },
     protocolSupport: ['RS-422', 'RS-485', 'RS-232', 'Modbus RTU'],
     compatibleMachines: ['performance', 'pulse', 'baseline', 'mobile'],
+    /* web-enriched (speedgoat.com/communications) */
+    lifecycleStatus: 'active',
+    connector: '50-pin male SCSI2',
+    maxDataRateMbps: 5.5296,
+    webSourcePage: 'communications',
   },
   {
     moduleId: 'IO512',
@@ -1556,6 +2180,11 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     },
     protocolSupport: ['RS-422', 'RS-485'],
     compatibleMachines: ['performance', 'baseline', 'mobile'],
+    /* web-enriched (speedgoat.com/communications) */
+    lifecycleStatus: 'active',
+    connector: '68-pin male SCSI3',
+    maxDataRateMbps: 10,
+    webSourcePage: 'communications',
   },
   {
     moduleId: 'IO581',
@@ -1570,6 +2199,11 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     },
     protocolSupport: ['RS-422', 'RS-485', 'RS-232', 'Modbus RTU'],
     compatibleMachines: ['baseline', 'unit'],
+    /* web-enriched (speedgoat.com/communications) */
+    lifecycleStatus: 'active',
+    connector: '9-pin D-sub x 4',
+    maxDataRateMbps: 10,
+    webSourcePage: 'communications',
   },
   {
     moduleId: 'IO682',
@@ -1584,6 +2218,9 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     },
     protocolSupport: ['ARINC 429', 'ARINC 629', 'ARINC 825'],
     compatibleMachines: ['performance', 'baseline', 'mobile'],
+    /* web-enriched (speedgoat.com/communications) */
+    lifecycleStatus: 'active',
+    webSourcePage: 'communications',
   },
   {
     moduleId: 'IO781',
@@ -1598,6 +2235,10 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     },
     protocolSupport: ['AFDX (ARINC 664 P7)'],
     compatibleMachines: ['performance', 'baseline', 'mobile'],
+    /* web-enriched (speedgoat.com/communications) */
+    lifecycleStatus: 'active',
+    maxDataRateMbps: 1000,
+    webSourcePage: 'communications',
   },
   {
     moduleId: 'IO619',
@@ -1612,6 +2253,11 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     },
     protocolSupport: ['MVB / WTB'],
     compatibleMachines: ['performance', 'baseline', 'mobile'],
+    /* web-enriched (speedgoat.com/communications) */
+    lifecycleStatus: 'active',
+    connector: '9-pin D-sub',
+    maxDataRateMbps: 1.5,
+    webSourcePage: 'communications',
   },
   {
     moduleId: 'IO753',
@@ -1626,6 +2272,11 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     },
     protocolSupport: ['Modbus TCP'],
     compatibleMachines: ['performance', 'baseline', 'mobile', 'unit'],
+    /* web-enriched (speedgoat.com/communications) */
+    lifecycleStatus: 'active',
+    connector: 'RJ-45 x 2',
+    maxDataRateMbps: 100,
+    webSourcePage: 'communications',
   },
   {
     moduleId: 'IO710',
@@ -1649,6 +2300,11 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
       'IEC 61850',
     ],
     compatibleMachines: ['performance'],
+    /* web-enriched (speedgoat.com/communications) */
+    lifecycleStatus: 'active',
+    connector: 'RJ-45',
+    maxDataRateMbps: 1000,
+    webSourcePage: 'communications',
   },
   {
     moduleId: 'IO716',
@@ -1670,6 +2326,11 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
       'DNP3',
     ],
     compatibleMachines: ['performance'],
+    /* web-enriched (speedgoat.com/communications) */
+    lifecycleStatus: 'active',
+    connector: '2-pin 2mm Mi II connector',
+    maxDataRateMbps: 1000,
+    webSourcePage: 'communications',
   },
   {
     moduleId: 'IO752',
@@ -1684,6 +2345,11 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     },
     protocolSupport: ['PROFINET'],
     compatibleMachines: ['performance', 'baseline', 'mobile', 'unit'],
+    /* web-enriched (speedgoat.com/communications) */
+    lifecycleStatus: 'active',
+    connector: 'RJ-45 x 2',
+    maxDataRateMbps: 100,
+    webSourcePage: 'communications',
   },
   {
     moduleId: 'IO754',
@@ -1698,6 +2364,11 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     },
     protocolSupport: ['Modbus TCP'],
     compatibleMachines: ['performance', 'baseline', 'mobile', 'unit'],
+    /* web-enriched (speedgoat.com/communications) */
+    lifecycleStatus: 'active',
+    connector: 'RJ-45',
+    maxDataRateMbps: 100,
+    webSourcePage: 'communications',
   },
   {
     moduleId: 'IO756',
@@ -1712,6 +2383,11 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     },
     protocolSupport: ['EtherNet/IP'],
     compatibleMachines: ['performance', 'baseline', 'mobile', 'unit'],
+    /* web-enriched (speedgoat.com/communications) */
+    lifecycleStatus: 'active',
+    connector: 'RJ-45 x 2',
+    maxDataRateMbps: 100,
+    webSourcePage: 'communications',
   },
   // --- Motion & Position: Encoders -------------------------------------------
   {
@@ -1742,6 +2418,9 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
       resolution: ['12-bit', '14-bit', '16-bit'],
     },
     compatibleMachines: ['performance', 'pulse', 'baseline', 'mobile'],
+    /* web-enriched (speedgoat.com/synchro-resolver) */
+    lifecycleStatus: 'active',
+    webSourcePage: 'synchro-resolver',
   },
   {
     moduleId: 'IO425',
@@ -1756,6 +2435,9 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
       resolution: ['12-bit', '14-bit', '16-bit'],
     },
     compatibleMachines: ['performance'],
+    /* web-enriched (speedgoat.com/synchro-resolver) */
+    lifecycleStatus: 'active',
+    webSourcePage: 'synchro-resolver',
   },
   {
     moduleId: 'IO3xx-Res',
@@ -1784,6 +2466,9 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
       speed: ['10 Hz', '100 Hz', '1 kHz'],
     },
     compatibleMachines: ['performance', 'baseline', 'unit'],
+    /* web-enriched (speedgoat.com/temperature-strain) */
+    lifecycleStatus: 'active',
+    webSourcePage: 'temperature-strain',
   },
   {
     moduleId: 'IO172',
@@ -1797,6 +2482,9 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
       speed: ['10 Hz', '100 Hz'],
     },
     compatibleMachines: ['baseline', 'unit'],
+    /* web-enriched (speedgoat.com/temperature-strain) */
+    lifecycleStatus: 'active',
+    webSourcePage: 'temperature-strain',
   },
   {
     moduleId: 'IO975',
@@ -1810,6 +2498,9 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
       speed: ['10 Hz', '100 Hz', '1 kHz'],
     },
     compatibleMachines: ['performance'],
+    /* web-enriched (speedgoat.com/temperature-strain) */
+    lifecycleStatus: 'active',
+    webSourcePage: 'temperature-strain',
   },
   {
     moduleId: 'IO970',
@@ -1823,6 +2514,9 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
       speed: ['10 Hz', '100 Hz', '1 kHz'],
     },
     compatibleMachines: ['performance'],
+    /* web-enriched (speedgoat.com/temperature-strain) */
+    lifecycleStatus: 'active',
+    webSourcePage: 'temperature-strain',
   },
   {
     moduleId: 'IO925',
@@ -1836,6 +2530,10 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
       speed: ['10 Hz', '100 Hz'],
     },
     compatibleMachines: ['performance'],
+    /* web-enriched (speedgoat.com/resistors) */
+    lifecycleStatus: 'active',
+    resolutionBits: 18,
+    webSourcePage: 'resistors',
   },
   // --- Strain & Vibration ----------------------------------------------------
   {
@@ -1850,6 +2548,9 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
       speed: ['1 kHz', '10 kHz'],
     },
     compatibleMachines: ['performance'],
+    /* web-enriched (speedgoat.com/temperature-strain) */
+    lifecycleStatus: 'active',
+    webSourcePage: 'temperature-strain',
   },
   {
     moduleId: 'IO171-Strain',
@@ -1957,6 +2658,16 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
       speed: ['Standard', 'High-speed', 'Deterministic'],
     },
     compatibleMachines: ['performance', 'baseline', 'mobile'],
+    /* web-enriched (speedgoat.com/analog) */
+    lifecycleStatus: 'active',
+    resolutionBits: 16,
+    sampleRateHz: [1000000],
+    voltageRange: { min: -25, max: 25, unit: 'V' },
+    outputVoltageRange: { min: -10, max: 10, unit: 'V' },
+    samplingMode: 'SQ/SM',
+    inputChannelSpec: '32 SE / 16 DF',
+    outputChannelSpec: '8 SE',
+    webSourcePage: 'analog',
   },
   {
     moduleId: 'IO397-GP',
@@ -1984,6 +2695,10 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
       speed: ['8-bit', '12-bit', '16-bit', '24-bit'],
     },
     compatibleMachines: ['performance'],
+    /* web-enriched (speedgoat.com/resistors) */
+    lifecycleStatus: 'active',
+    resolutionBits: 24,
+    webSourcePage: 'resistors',
   },
   {
     moduleId: 'IO923',
@@ -1997,6 +2712,10 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
       speed: ['8-bit', '12-bit', '16-bit', '24-bit'],
     },
     compatibleMachines: ['performance'],
+    /* web-enriched (speedgoat.com/resistors) */
+    lifecycleStatus: 'active',
+    resolutionBits: 24,
+    webSourcePage: 'resistors',
   },
   {
     moduleId: 'IO925',
@@ -2010,6 +2729,10 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
       speed: ['3-bit', '9-bit', '18-bit'],
     },
     compatibleMachines: ['performance'],
+    /* web-enriched (speedgoat.com/resistors) */
+    lifecycleStatus: 'active',
+    resolutionBits: 18,
+    webSourcePage: 'resistors',
   },
   {
     moduleId: 'IO927',
@@ -2023,6 +2746,10 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
       speed: ['3-bit', '9-bit', '18-bit'],
     },
     compatibleMachines: ['performance'],
+    /* web-enriched (speedgoat.com/resistors) */
+    lifecycleStatus: 'active',
+    resolutionBits: 18,
+    webSourcePage: 'resistors',
   },
   // --- Battery Management System (BMS) Testing -------------------------------
   {

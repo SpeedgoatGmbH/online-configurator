@@ -33,3 +33,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# crawler outputs / browser profiles
+/crawl-output/
+/crawl-output-playwright/
+/playwright-profile/
+/playwright-report/
+/test-results/

@@ -423,7 +423,11 @@ function evaluateCandidate(
   const consolidationBonus = (row.categoryId === 'communication' || module.fpgaFamily) && hasPriorUsage ? 10 : 0
   // Prefer modules compatible with the selected machine
   const machineBonus = machineId && module.compatibleMachines?.includes(machineId) ? 5 : 0
-  const score = exactCount * 12 + compatibleCount * 6 - mismatchCount * 10 - missingCount * 8 - units * 2 + consolidationBonus + machineBonus
+  // Penalize discontinued / end-of-life modules so active alternatives rank higher
+  const lifecyclePenalty = module.lifecycleStatus === 'discontinued' ? -20
+    : module.lifecycleStatus === 'eol' ? -10
+    : 0
+  const score = exactCount * 12 + compatibleCount * 6 - mismatchCount * 10 - missingCount * 8 - units * 2 + consolidationBonus + machineBonus + lifecyclePenalty
 
   return {
     module,

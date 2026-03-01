@@ -6,12 +6,16 @@
     "dev": "next dev",
     "run": "next dev",
     "r": "next dev",
+    "crawl:speedgoat": "node scripts/crawl-speedgoat.js",
+    "crawl:speedgoat:pw": "node scripts/crawl-speedgoat-playwright.js",
     "build": "next build",
     "start": "next start",
     "start:fresh": "npm run clean && npm run build && next start",
     "lint": "next lint",
     "clean": "node -e \"const fs=require('fs');['.next','node_modules/.cache'].forEach(p=>{try{fs.rmSync(p,{recursive:true,force:true});console.log('removed',p)}catch(e){}})\"",
-    "dev:clean": "npm run clean && npm run dev"
+    "dev:clean": "npm run clean && npm run dev",
+    "extract-hrm": "npx tsx scripts/extract-hrm/index.ts",
+    "merge-hrm": "npx tsx scripts/extract-hrm/mergeIntoCatalog.ts"
   },
   "dependencies": {
     "@xyflow/react": "^12.10.1",
@@ -32,6 +36,10 @@
     "@types/react-dom": "^18.3.0",
     "eslint": "^8.57.0",
     "eslint-config-next": "^14.2.0",
+    "exceljs": "^4.4.0",
+    "mammoth": "^1.11.0",
+    "playwright": "^1.58.2",
+    "tsx": "^4.21.0",
     "typescript": "^5.4.0"
   }
 }
