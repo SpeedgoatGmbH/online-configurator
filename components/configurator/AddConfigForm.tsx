@@ -44,7 +44,8 @@ export default function AddConfigForm({
             className="w-20 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 shadow-sm transition outline-none hover:border-slate-400 focus:border-[rgb(var(--speedgoat-blue))] focus:ring-2 focus:ring-[rgb(var(--speedgoat-blue))]/20"
             aria-label={`Channels for ${sub.label}`}
           >
-            <option value={0}>0</option>
+            <option value={1}>1</option>
+            <option value={2}>2</option>
             <option value={4}>4</option>
             <option value={8}>8</option>
             <option value={16}>16</option>

@@ -17,6 +17,8 @@ export interface SubCategory {
   label: string
   fields: FieldDefinition[]
   defaults: SpecsRecord
+  /** Default channel count shown when adding a new card (falls back to 32) */
+  defaultQuantity?: number
 }
 
 export interface Category {

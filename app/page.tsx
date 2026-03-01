@@ -58,6 +58,10 @@ const MACHINE_OPTIONS = [
     image: `${BASE_PATH}/assets/machine-baseline.png`,
     maxSlots: 4,
     maxSlotsExpanded: 6,
+    variants: [
+      { suffix: 'S', maxSlots: 4 },
+      { suffix: 'M', maxSlots: 6 },
+    ],
   },
   {
     id: 'unit',
@@ -102,6 +106,7 @@ export default function Home() {
   const [proposalStatus, setProposalStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
   const [proposalResult, setProposalResult] = useState<ProposalGenerateResponse | null>(null)
   const [proposalError, setProposalError] = useState<string | null>(null)
+  const [proposalStale, setProposalStale] = useState(false)
   const [showDecisionFlow, setShowDecisionFlow] = useState(false)
   const loadTemplateRef = useRef<((rows: StarterRow[]) => void) | null>(null)
 
@@ -121,13 +126,6 @@ export default function Home() {
   const activeCategories = Object.entries(configuratorSummary.categoryTotals).filter(([, total]) => total > 0)
   const groupLabel = configuratorSummary.rowCount === 1 ? 'group' : 'groups'
 
-  const inferredSystemClass =
-    configuratorSummary.totalSignals >= 96
-      ? 'Performance class likely required'
-      : configuratorSummary.totalSignals >= 32
-      ? 'Mid-range class likely sufficient'
-      : 'Entry class likely sufficient'
-
   const coreSignalTotal =
     (configuratorSummary.categoryTotals['Analog'] || 0) +
     (configuratorSummary.categoryTotals['Digital'] || 0) +
@@ -142,8 +140,10 @@ export default function Home() {
   const isSuccess = proposalStatus === 'success'
   const generateButtonLabel = isGenerating
     ? 'Generating...'
-    : isSuccess
+    : isSuccess && !proposalStale
     ? '✓ Proposal Generated'
+    : proposalStale
+    ? '↻ Regenerate Proposal'
     : 'Generate System Proposal'
 
   const resetProposalState = () => {
@@ -151,6 +151,7 @@ export default function Home() {
     setProposalStatus('idle')
     setProposalResult(null)
     setProposalError(null)
+    setProposalStale(false)
   }
 
   const handleVersionChange = (nextVersion: 'v1' | 'v2' | 'v3' | 'v3_2' | 'v3_3' | 'v5') => {
@@ -164,16 +165,28 @@ export default function Home() {
   const handleMachineSelect = (machineId: string) => {
     if (machineId === selectedMachineId) return
     setSelectedMachineId(machineId)
-    setProposalStatus('idle')
-    setProposalResult(null)
+    if (proposalResult) {
+      setProposalStale(true)
+    } else {
+      setProposalStatus('idle')
+    }
     setProposalError(null)
   }
 
   const handleRequirementsChange = useCallback((payload: { rows: RequirementRow[] }) => {
     setRequirementsRows(payload.rows)
-    // Always reset — React bails out if value is already 'idle' / null
-    setProposalStatus('idle')
-    setProposalResult(null)
+    setProposalStale((prev) => {
+      // Mark stale only if there's an existing proposal
+      // We read proposalResult via a ref-like check: if status was 'success', mark stale
+      return prev || false
+    })
+    setProposalStatus((prev) => {
+      if (prev === 'success') {
+        setProposalStale(true)
+        return 'success' // keep showing the proposal
+      }
+      return 'idle'
+    })
     setProposalError(null)
   }, [])
 
@@ -196,7 +209,7 @@ export default function Home() {
     }
 
     setProposalStatus('loading')
-    setProposalResult(null)
+    setProposalStale(false)
     setProposalError(null)
 
     try {
@@ -224,7 +237,8 @@ export default function Home() {
         className,
         'transition-colors duration-500',
         (!canGenerateProposal || isGenerating) && 'text-slate-400',
-        isSuccess && '!bg-green-600 !border-green-600 !text-white hover:!bg-green-700',
+        isSuccess && !proposalStale && '!bg-green-600 !border-green-600 !text-white hover:!bg-green-700',
+        proposalStale && '!bg-amber-500 !border-amber-500 !text-white hover:!bg-amber-600',
       )}
     >
       {isGenerating && (
@@ -260,7 +274,6 @@ export default function Home() {
           <p className="mt-0.5 text-xs text-slate-600">
             {configuratorSummary.totalSignals} total signals · {configuratorSummary.rowCount} groups
           </p>
-          <p className="text-xs font-semibold text-slate-700">{inferredSystemClass}</p>
         </div>
 
         {renderGenerateButton('w-full sm:w-auto')}
@@ -294,7 +307,6 @@ export default function Home() {
           <p className="mt-0.5 text-xs text-slate-600">
             {configuratorSummary.totalSignals} total signals · {configuratorSummary.rowCount} groups
           </p>
-          <p className="text-xs font-semibold text-slate-700">{inferredSystemClass}</p>
         </div>
       </div>
 
@@ -401,7 +413,6 @@ export default function Home() {
               <p className="mt-0.5 text-xs text-slate-600">
                 {configuratorSummary.totalSignals} total signals · {configuratorSummary.rowCount} groups
               </p>
-              <p className="text-xs font-semibold text-slate-700">{inferredSystemClass}</p>
             </div>
 
             <div className="flex flex-wrap gap-[var(--ui-gap-1)]">
@@ -643,60 +654,9 @@ export default function Home() {
               </CompactCard>
 
               <div className="mx-auto w-full max-w-[1240px] space-y-3">
-                <CompactCard className="flex items-center gap-3 p-[var(--ui-pad-2)]">
-                  <div className="inline-flex items-center rounded-[var(--ui-radius-md)] border border-slate-200 bg-slate-100 p-1">
-                    <CompactButton
-                      type="button"
-                      variant={activeVersion === 'v1' ? 'primary' : 'ghost'}
-                      onClick={() => handleVersionChange('v1')}
-                      className={cn('h-8 px-3 text-xs', activeVersion !== 'v1' && 'text-slate-600')}
-                    >
-                      V1
-                    </CompactButton>
-                    <CompactButton
-                      type="button"
-                      variant={activeVersion === 'v2' ? 'primary' : 'ghost'}
-                      onClick={() => handleVersionChange('v2')}
-                      className={cn('h-8 px-3 text-xs', activeVersion !== 'v2' && 'text-slate-600')}
-                    >
-                      V2
-                    </CompactButton>
-                    <CompactButton
-                      type="button"
-                      variant={activeVersion === 'v3' ? 'primary' : 'ghost'}
-                      onClick={() => handleVersionChange('v3')}
-                      className={cn('h-8 px-3 text-xs', activeVersion !== 'v3' && 'text-slate-600')}
-                    >
-                      V3
-                    </CompactButton>
-                    <CompactButton
-                      type="button"
-                      variant={activeVersion === 'v3_2' ? 'primary' : 'ghost'}
-                      onClick={() => handleVersionChange('v3_2')}
-                      className={cn('h-8 px-3 text-xs', activeVersion !== 'v3_2' && 'text-slate-600')}
-                    >
-                      V3.2
-                    </CompactButton>
-                    <CompactButton
-                      type="button"
-                      variant={activeVersion === 'v3_3' ? 'primary' : 'ghost'}
-                      onClick={() => handleVersionChange('v3_3')}
-                      className={cn('h-8 px-3 text-xs', activeVersion !== 'v3_3' && 'text-slate-600')}
-                    >
-                      V3.3
-                    </CompactButton>
-                    <CompactButton
-                      type="button"
-                      variant={activeVersion === 'v5' ? 'primary' : 'ghost'}
-                      onClick={() => handleVersionChange('v5')}
-                      className={cn('h-8 px-3 text-xs', activeVersion !== 'v5' && 'text-slate-600')}
-                    >
-                      V5
-                    </CompactButton>
-                  </div>
-
-                  {renderDecisionFlowButton('ml-auto')}
-                </CompactCard>
+                <div className="flex justify-end">
+                  {renderDecisionFlowButton('')}
+                </div>
 
                 {activeVersion === 'v1' ? (
                   <div className="relative">
@@ -771,12 +731,23 @@ export default function Home() {
                 )}
 
                 {proposalStatus === 'success' && proposalResult && (
-                  <SolutionProposal
-                    proposal={proposalResult}
-                    machine={selectedMachine}
-                    summary={configuratorSummary}
-                    inferredSystemClass={inferredSystemClass}
-                  />
+                  <div className="relative">
+                    {proposalStale && (
+                      <div className="mb-2 flex items-center justify-between gap-3 rounded-lg border border-amber-300 bg-amber-50 px-3 py-2">
+                        <p className="text-xs font-medium text-amber-800">
+                          Configuration changed — proposal may be outdated.
+                        </p>
+                        {renderGenerateButton('shrink-0')}
+                      </div>
+                    )}
+                    <div className={proposalStale ? 'opacity-60' : undefined}>
+                      <SolutionProposal
+                        proposal={proposalResult}
+                        machine={selectedMachine}
+                        summary={configuratorSummary}
+                      />
+                    </div>
+                  </div>
                 )}
               </div>
             </div>
@@ -913,7 +884,26 @@ export default function Home() {
           </div>
 
           <div className="mt-6 flex flex-col items-center justify-between gap-2 border-t border-slate-200 pt-4 md:flex-row">
-            <p className="text-xs text-slate-500">© Speedgoat 2026 - All Rights Reserved.</p>
+            <div className="flex items-center gap-3">
+              <p className="text-xs text-slate-500">© Speedgoat 2026 - All Rights Reserved.</p>
+              <div className="inline-flex items-center rounded-md border border-slate-200 bg-slate-100 p-0.5">
+                {(['v1', 'v2', 'v3', 'v3_2', 'v3_3', 'v5'] as const).map((v) => (
+                  <button
+                    key={v}
+                    type="button"
+                    onClick={() => handleVersionChange(v)}
+                    className={cn(
+                      'rounded px-2 py-0.5 text-[10px] font-medium transition',
+                      activeVersion === v
+                        ? 'bg-[rgb(var(--speedgoat-blue))] text-white shadow-sm'
+                        : 'text-slate-400 hover:text-slate-600'
+                    )}
+                  >
+                    {v.replace('_', '.').toUpperCase()}
+                  </button>
+                ))}
+              </div>
+            </div>
             <div className="flex items-center gap-2">
               <a
                 href="#"
@@ -941,9 +931,6 @@ export default function Home() {
       <DecisionFlowModal
         open={showDecisionFlow}
         onClose={() => setShowDecisionFlow(false)}
-        onLoadExample={(rows) => {
-          if (loadTemplateRef.current) loadTemplateRef.current(rows)
-        }}
         liveExample={liveFlowExample}
       />
     </>

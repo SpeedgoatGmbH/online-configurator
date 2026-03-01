@@ -10,6 +10,11 @@ import { useCallback, useState } from 'react'
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
+export type MachineVariant = {
+  suffix: string
+  maxSlots: number
+}
+
 export type MachineOption = {
   id: string
   name: string
@@ -18,6 +23,7 @@ export type MachineOption = {
   image: string
   maxSlots: number
   maxSlotsExpanded: number
+  variants?: MachineVariant[]
 }
 
 export type ConfiguratorSummary = {
@@ -30,7 +36,6 @@ type SolutionProposalProps = {
   proposal: ProposalGenerateResponse
   machine: MachineOption
   summary: ConfiguratorSummary
-  inferredSystemClass: string
 }
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -83,7 +88,6 @@ export default function SolutionProposal({
   proposal,
   machine,
   summary,
-  inferredSystemClass,
 }: SolutionProposalProps) {
   const [toast, setToast] = useState<string | null>(null)
 
@@ -104,38 +108,27 @@ export default function SolutionProposal({
   return (
     <div className="solution-proposal space-y-0 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm print:shadow-none print:border-slate-300">
       {/* ───── A. Document header ───── */}
-      <div className="relative border-b border-slate-200 bg-gradient-to-r from-[rgb(var(--speedgoat-blue))] via-[rgb(var(--speedgoat-blue))] to-blue-700 px-5 py-4 text-white">
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <p className="text-[10px] font-semibold uppercase tracking-widest text-blue-200">Speedgoat</p>
-            <h2 className="mt-0.5 text-lg font-bold leading-tight tracking-tight">
-              Solution Proposal
-            </h2>
-            <p className="mt-1 text-[11px] leading-snug text-blue-100">
-              Automated I/O module configuration for{' '}
-              <span className="font-semibold text-white">{machine.name}</span> real-time target machine
-            </p>
+      <div className="relative border-b border-slate-200 bg-gradient-to-r from-[rgb(var(--speedgoat-blue))] via-[rgb(var(--speedgoat-blue))] to-blue-700 px-5 py-3 text-white">
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <h2 className="text-sm font-bold tracking-tight">Solution Proposal</h2>
+            <span className="text-[10px] text-blue-200">
+              {machine.name} · {proposal.proposalId}
+            </span>
+            <span
+              className={cn(
+                'inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold',
+                allOk
+                  ? 'bg-emerald-400/20 text-emerald-100'
+                  : 'bg-amber-400/20 text-amber-100',
+              )}
+            >
+              {allOk ? '✓ Ready' : '⚠ Action Required'}
+            </span>
           </div>
-          <div className="shrink-0 text-right">
-            <p className="text-[10px] font-medium text-blue-200">{proposal.proposalId}</p>
-            <p className="mt-0.5 text-[11px] font-semibold">{formatDate(proposal.generatedAt)}</p>
-            <p className="text-[10px] text-blue-200">{formatTime(proposal.generatedAt)}</p>
-          </div>
-        </div>
-
-        {/* Status badge */}
-        <div className="mt-3 flex items-center gap-2">
-          <span
-            className={cn(
-              'inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-bold',
-              allOk
-                ? 'bg-emerald-400/20 text-emerald-100'
-                : 'bg-amber-400/20 text-amber-100',
-            )}
-          >
-            {allOk ? '✓' : '⚠'} {allOk ? 'Ready for Review' : 'Action Required'}
-          </span>
-          <span className="text-[10px] text-blue-200">{inferredSystemClass}</span>
+          <p className="shrink-0 text-[10px] text-blue-200">
+            {formatDate(proposal.generatedAt)} · {formatTime(proposal.generatedAt)}
+          </p>
         </div>
       </div>
 
@@ -208,9 +201,11 @@ export default function SolutionProposal({
         </p>
         <MachineChassisStrip
           maxSlots={machine.maxSlots}
+          maxSlotsExpanded={machine.maxSlotsExpanded}
           machineName={machine.name}
           modules={proposal.recommendedModules}
           rowDiffs={proposal.rowDiffs}
+          variants={machine.variants}
         />
       </div>
 

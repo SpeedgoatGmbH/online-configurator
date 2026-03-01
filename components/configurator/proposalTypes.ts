@@ -49,8 +49,22 @@ export type ProposalRecommendedModule = {
   quantity: number
   coveredChannels: number
   coveredRows: string[]
-  confidence: number
   rationale: string
+  /* ── Enriched fields (optional, populated from catalog) ── */
+  formFactor?: 'PMC' | 'XMC' | 'mPCIe' | 'PCIe' | 'TPCE'
+  lifecycleStatus?: 'active' | 'recommended' | 'eol' | 'discontinued'
+  voltageRange?: { min: number; max: number; unit: string }
+  sampleRateHz?: number[]
+  resolutionBits?: number
+  fpgaLogicCells?: string
+  configPackages?: string[]
+  webSourcePage?: string
+  /* ── FPGA grouping & category ── */
+  fpgaCategory?: 'simulink-programmable' | 'configurable'
+  /** Parent module ID when this entry is an IO extension or IO33X-N interface board */
+  interfaceForModule?: string
+  /** I/O line utilization after FPGA consolidation */
+  ioLineUtilization?: { used: number; total: number }
 }
 
 export type ProposalUnresolvedRow = {
@@ -76,4 +90,15 @@ export type ProposalGenerateResponse = {
   unresolved: ProposalUnresolvedRow[]
   /** Warnings about machine type / slot incompatibility */
   machineWarnings?: string[]
+  /** FPGA families swapped to dedicated modules because satellite overhead exceeded savings */
+  fpgaOverheadSwaps?: FpgaOverheadSwap[]
+}
+
+/** One FPGA-to-dedicated swap performed by the module-count guard */
+export type FpgaOverheadSwap = {
+  family: string
+  fpgaCount: number
+  dedicatedCount: number
+  /** The dedicated modules that replaced the FPGA family */
+  replacements: { moduleId: string; friendlyName: string; units: number }[]
 }

@@ -85,7 +85,7 @@ for (const fam of Object.keys(familyMap).sort()) {
   console.log(`  ${fam} (doc: ${info})`);
   for (const e of entries) {
     const catStr = `${e.categoryCoverage}/${e.subCoverage.join(',')}`;
-    console.log(`    ${e.moduleId.padEnd(25)} ${catStr.padEnd(35)} lines=${String(e.fpgaTotalLines || '?').padStart(3)}  intBoard=${e.interfaceBoard || 'NONE'}`);
+    console.log(`    ${e.moduleId.padEnd(25)} ${catStr.padEnd(35)} lines=${String(e.fpgaTotalLines || '?').padStart(3)}  ext=${e.supportsIOExtensions ?? 'N/A'}  intf=${e.supportsIOInterfaces ?? 'N/A'}`);
   }
 }
 
@@ -106,18 +106,15 @@ for (const dm of DOC_MODULES.filter(d => !d.simProg)) {
   console.log(`    ${dm.id.padEnd(14)} ${status}`);
 }
 
-// --- 4. Interface Board ---
-console.log('\n--- 4. Interface Board Coverage ---');
-const withIB = fpgaEntries.filter(m => m.interfaceBoard);
-const noIB = fpgaEntries.filter(m => !m.interfaceBoard);
-console.log(`  With interfaceBoard: ${withIB.length}/${fpgaEntries.length}`);
-if (noIB.length) {
-  console.log('  MISSING:');
-  noIB.forEach(m => console.log(`    ${m.moduleId} (${m.technicalName})`));
-}
-const suffixes = [...new Set(withIB.map(m => String(m.interfaceBoard || '').replace(/^IO\d+[a-z]?/, '')))].sort();
-console.log(`  Suffixes used in catalog: ${suffixes.join(', ')}`);
-console.log(`  Doc extensions:           ${DOC_IO_EXTENSIONS.join(', ')}`);
+// --- 4. Extension / Interface Support ---
+console.log('\n--- 4. Extension & Interface Board Coverage ---');
+const withExt = fpgaEntries.filter(m => m.supportsIOExtensions === true);
+const withIntf = fpgaEntries.filter(m => m.supportsIOInterfaces === true);
+const compact = fpgaEntries.filter(m => m.supportsIOExtensions === false);
+console.log(`  With IO extensions:    ${withExt.length}/${fpgaEntries.length}`);
+console.log(`  With IO33X-N boards:   ${withIntf.length}/${fpgaEntries.length} (IO332/IO333 blank-slate)`);
+console.log(`  Compact (no ext):      ${compact.length}/${fpgaEntries.length} (IO391/392/393/397)`);
+console.log(`  Doc extensions:        ${DOC_IO_EXTENSIONS.join(', ')}`);
 
 // --- 5. Cross-category ---
 console.log('\n--- 5. Cross-Category Modules ---');
@@ -155,8 +152,8 @@ if (io3xxNoFam.length) {
   issues.push(`${io3xxNoFam.length} configurable I/O module(s) missing fpgaFamily: ${io3xxNoFam.map(m => m.moduleId).join(', ')}`);
 }
 
-if (noIB.length) {
-  issues.push(`${noIB.length} fpgaFamily entry(ies) without interfaceBoard: ${noIB.map(m => m.moduleId).join(', ')}`);
+if (compact.length === 0 && fpgaEntries.length > 0) {
+  issues.push(`No compact modules identified — expected IO391/392/393/397 to have supportsIOExtensions: false`);
 }
 
 for (const tech of Object.keys(techGroups)) {
@@ -190,6 +187,6 @@ if (warnings.length) {
 
 console.log('\n  Logic checks:');
 console.log(`  [${issues.length === 0 ? 'PASS' : 'FAIL'}] consolidateFpgaModules(): fpgaFamily groupings consistent`);
-console.log(`  [${noIB.length === 0 ? 'PASS' : 'FAIL'}] addFpgaInterfaceBoards(): all FPGA entries have interfaceBoard`);
-console.log(`  [PASS] Interface board suffixes (${suffixes.join(',')}) are valid doc extensions`);
+console.log(`  [${withExt.length > 0 ? 'PASS' : 'FAIL'}] addFpgaInterfaceBoards(): extension-capable modules identified`);
+console.log(`  [${withIntf.length > 0 ? 'PASS' : 'FAIL'}] IO33X-N board selection: IO332/IO333 have supportsIOInterfaces`);
 console.log('  [PASS] Cross-category entries share same fpgaFamily');

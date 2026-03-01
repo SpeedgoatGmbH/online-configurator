@@ -531,7 +531,7 @@ export function useConfigurator(options: UseConfiguratorOptions): UseConfigurato
 
     const row: SignalRow = {
       id: `${categoryId}-${subId}-${Date.now()}-${Math.random().toString(36).slice(2)}`,
-      quantity: 1,
+      quantity: sub.defaultQuantity ?? 32,
       specs: normalizeSpecsForSub(sub, {
         ...sub.defaults,
         ...(presetSpecs || {}),

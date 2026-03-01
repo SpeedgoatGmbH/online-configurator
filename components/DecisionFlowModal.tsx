@@ -12,8 +12,7 @@ import {
 } from '@xyflow/react'
 import '@xyflow/react/dist/style.css'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { FLOW_EXAMPLES, type FlowExample } from './configurator/decisionFlowExamples'
-import type { StarterRow } from './configurator/industries'
+import { type FlowExample } from './configurator/decisionFlowExamples'
 
 /* ================================================================== */
 /*  OVERVIEW MODE — 5 manager-friendly stages                          */
@@ -63,7 +62,7 @@ const OVERVIEW_STAGES: OverviewStage[] = [
     id: 4,
     icon: '🏆',
     heading: 'Pick Winning Modules',
-    description: 'The highest-scoring module wins for each requirement. Ties are broken by fewest units needed.',
+    description: 'The highest-scoring module wins for each requirement. Ties are broken by fewest units needed, then fewest channels (tightest fit). If still tied, one is picked at random — no priority or stock preference is applied.',
     color: 'bg-orange-50',
     borderColor: 'border-orange-200',
     accentColor: 'text-orange-600',
@@ -79,6 +78,15 @@ const OVERVIEW_STAGES: OverviewStage[] = [
   },
   {
     id: 6,
+    icon: '⚖️',
+    heading: 'Module-Count Guard',
+    description: 'Compare total FPGA modules (boards + extensions + interfaces) against dedicated alternatives. Swap to dedicated when it uses fewer modules.',
+    color: 'bg-teal-50',
+    borderColor: 'border-teal-200',
+    accentColor: 'text-teal-600',
+  },
+  {
+    id: 7,
     icon: '✅',
     heading: 'Validate Machine Fit',
     description: 'Verify machine slot limits and module compatibility before finalizing.',
@@ -87,10 +95,10 @@ const OVERVIEW_STAGES: OverviewStage[] = [
     accentColor: 'text-red-600',
   },
   {
-    id: 7,
+    id: 8,
     icon: '📦',
     heading: 'System Proposal',
-    description: 'Get a complete bill-of-materials with a confidence score and rationale.',
+    description: 'Get a complete bill-of-materials with rationale.',
     color: 'bg-violet-50',
     borderColor: 'border-violet-200',
     accentColor: 'text-violet-600',
@@ -197,7 +205,7 @@ const BASE_NODES: Node<FlowNodeData>[] = [
   },
   {
     id: 'score', type: 'step', position: { x: 60, y: 370 },
-    data: { label: 'Score Candidates', description: 'Each candidate is scored against the requirement specs. Multi-criteria weighted scoring with consolidation and machine bonuses.', technicalDetail: 'exact×12 + compat×6 − mismatch×10 − missing×8\n− units×2 + consolidation(10) + machine(5)', icon: '⚡', color: '#FDF2F8', border: '#EC4899' },
+    data: { label: 'Score Candidates', description: 'Each candidate is scored against the requirement specs. Multi-criteria weighted scoring with consolidation, FPGA look-ahead, lifecycle, config-package, and FPGA category bonuses.', technicalDetail: 'exact×12 + compat×6 − mismatch×10 − missing×8\n− units×2 + consolidation(10) + fpgaLookAhead(8/row)\n+ machine(5) + lifecycle(−10/−20) + configPkg(4)\n+ fpgaCategory(+3 simulink / +1 configurable)', icon: '⚡', color: '#FDF2F8', border: '#EC4899' },
   },
   {
     id: 'pick_best', type: 'decision', position: { x: 60, y: 510 },
@@ -213,15 +221,15 @@ const BASE_NODES: Node<FlowNodeData>[] = [
   },
   {
     id: 'fpga_consolidate', type: 'step', position: { x: 420, y: 510 },
-    data: { label: 'Consolidate FPGA Boards', description: 'Functions sharing the same fpgaFamily merge onto fewer physical boards based on fractional I/O line usage.', technicalDetail: 'usage = Σ(qty / channelCapacity) per family\nnew qty = ⌈usage⌉', icon: '🧩', color: '#ECFDF5', border: '#10B981' },
+    data: { label: 'Consolidate FPGA Boards', description: 'Functions sharing the same fpgaFamily merge onto fewer physical boards. Dual budget: channel capacity AND physical I/O line limits (fpgaTotalLines).', technicalDetail: 'boardsByCapacity = ⌈Σ(qty/capacity)⌉\nboardsByLines = ⌈Σ(qty×linesPerCh) / fpgaTotalLines⌉\nactual = max(boardsByCapacity, boardsByLines)', icon: '🧩', color: '#ECFDF5', border: '#10B981' },
   },
   {
     id: 'fpga_interface', type: 'result', position: { x: 420, y: 640 },
-    data: { label: 'Add Interface Board', description: 'Companion interface board auto-added for FPGA modules. Reads interfaceBoard from catalog, fallback: {technicalName}-21.', technicalDetail: 'board = entry.interfaceBoard ?? {name}-21\nqty = main board count', icon: '🔗', color: '#ECFDF5', border: '#10B981' },
+    data: { label: 'Add Interface Boards', description: 'IO extensions (-21/-22/-24/-120/-40) auto-added per signal type. IO332/IO333 also get IO33X-N interface daughter boards. Multiple extensions per board supported.', technicalDetail: 'extensions = determineRequiredExtensions(rows)\nIO33X = selectIO33XBoard(rows) for IO332/IO333\ncompact mPCIe (IO39x) → no extensions', icon: '🔗', color: '#ECFDF5', border: '#10B981' },
   },
   {
     id: 'slot_check', type: 'decision', position: { x: 60, y: 770 },
-    data: { label: 'Machine Slot Check', description: "Total module count compared against the machine's base and expanded slot limits.", technicalDetail: 'performance: 7/42 · pulse: 3/3 · mobile: 5/14\nbaseline: 4/6 · unit: 1/1', icon: '🖥️', color: '#FEF2F2', border: '#EF4444' },
+    data: { label: 'Machine Slot Check', description: "Total module count compared against the machine's base and expanded slot limits.", technicalDetail: 'performance: 7/42 · pulse: 3/3 · mobile: 5/14\nbaseline-S: 4 · baseline-M: 6 · unit: 1', icon: '🖥️', color: '#FEF2F2', border: '#EF4444' },
   },
   {
     id: 'compat_check', type: 'decision', position: { x: 60, y: 900 },
@@ -229,7 +237,7 @@ const BASE_NODES: Node<FlowNodeData>[] = [
   },
   {
     id: 'output', type: 'result', position: { x: 60, y: 1030 },
-    data: { label: 'Proposal Output', description: 'Final proposal: recommended modules with quantity, confidence, and rationale. Per-row diffs, unresolved items, and machine warnings.', technicalDetail: 'confidence = 62 + exact×8 + compat×4 − mismatch×11\n− missing×8 − (units−1)×3  · clamped [15, 98]', icon: '📋', color: '#DBEAFE', border: '#2563EB' },
+    data: { label: 'Proposal Output', description: 'Final proposal: recommended modules with quantity and rationale. Per-row diffs, unresolved items, and machine warnings.', technicalDetail: 'Aggregate per-module rationale from spec alignment\n+ consolidation notes + machine fit', icon: '📋', color: '#DBEAFE', border: '#2563EB' },
   },
 ]
 
@@ -258,19 +266,12 @@ const EDGES: Edge[] = [
 type DecisionFlowModalProps = {
   open: boolean
   onClose: () => void
-  onLoadExample?: (rows: StarterRow[]) => void
   /** Live example built from the user's current configurator rows */
   liveExample?: FlowExample
 }
 
-export default function DecisionFlowModal({ open, onClose, onLoadExample, liveExample }: DecisionFlowModalProps) {
+export default function DecisionFlowModal({ open, onClose, liveExample }: DecisionFlowModalProps) {
   const memoNodeTypes = useMemo(() => nodeTypes, [])
-
-  // ─── Merge live example with pre-built examples ────────────────────
-  const allExamples = useMemo(
-    () => (liveExample ? [liveExample, ...FLOW_EXAMPLES] : FLOW_EXAMPLES),
-    [liveExample],
-  )
 
   // ─── View mode ────────────────────────────────────────────────────────
   const [viewMode, setViewMode] = useState<'overview' | 'technical'>('overview')
@@ -292,15 +293,6 @@ export default function DecisionFlowModal({ open, onClose, onLoadExample, liveEx
     if (overviewIntervalRef.current) clearInterval(overviewIntervalRef.current)
     overviewIntervalRef.current = null
   }, [])
-
-  const stopExample = useCallback(() => {
-    clearAnimation()
-    setActiveExample(null)
-    setAnimStep(-1)
-    setAnimDone(false)
-    setOverviewStage(-1)
-    setOverviewDone(false)
-  }, [clearAnimation])
 
   const startExample = useCallback(
     (example: FlowExample) => {
@@ -392,13 +384,6 @@ export default function DecisionFlowModal({ open, onClose, onLoadExample, liveEx
     [onClose],
   )
 
-  const handleLoadExample = useCallback(() => {
-    if (activeExample && onLoadExample) {
-      onLoadExample(activeExample.requirements)
-      onClose()
-    }
-  }, [activeExample, onLoadExample, onClose])
-
   if (!open) return null
 
   const isAnimDone = viewMode === 'overview' ? overviewDone : animDone
@@ -467,33 +452,13 @@ export default function DecisionFlowModal({ open, onClose, onLoadExample, liveEx
           </button>
         </div>
 
-        {/* ── Example selector bar ────────────────────────────────── */}
-        <div className="flex flex-wrap items-center gap-2 border-b border-slate-100 bg-white px-5 py-2">
-          <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">Examples</span>
-          {allExamples.map((ex) => {
-            const isSelected = activeExample?.id === ex.id
-            return (
-              <button
-                key={ex.id}
-                type="button"
-                onClick={() => (isSelected ? stopExample() : startExample(ex))}
-                className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-semibold transition-all ${
-                  isSelected
-                    ? 'bg-violet-600 text-white shadow-md ring-2 ring-violet-300'
-                    : 'bg-slate-100 text-slate-600 hover:bg-violet-50 hover:text-violet-700'
-                }`}
-              >
-                <span>{ex.icon}</span>
-                {ex.label}
-              </button>
-            )
-          })}
-
-          {activeExample && isAnimDone && (
+        {/* ── Replay bar ─────────────────────────────────────────── */}
+        {activeExample && isAnimDone && (
+          <div className="flex items-center gap-2 border-b border-slate-100 bg-white px-5 py-2">
             <button
               type="button"
               onClick={replayExample}
-              className="ml-1 inline-flex items-center gap-1 rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-semibold text-slate-500 transition hover:bg-slate-200"
+              className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-semibold text-slate-500 transition hover:bg-slate-200"
             >
               <svg className="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <polyline points="23 4 23 10 17 10" />
@@ -501,20 +466,8 @@ export default function DecisionFlowModal({ open, onClose, onLoadExample, liveEx
               </svg>
               Replay
             </button>
-          )}
-          {activeExample && isAnimDone && onLoadExample && (
-            <button
-              type="button"
-              onClick={handleLoadExample}
-              className="ml-auto inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-violet-600 to-fuchsia-600 px-3 py-1.5 text-[11px] font-bold text-white shadow-md transition-all hover:shadow-lg hover:from-violet-700 hover:to-fuchsia-700"
-            >
-              <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 5v14M5 12l7 7 7-7" />
-              </svg>
-              Load into Configurator
-            </button>
-          )}
-        </div>
+          </div>
+        )}
 
         {/* ── Active example description ──────────────────────────── */}
         {activeExample && (
@@ -543,9 +496,10 @@ export default function DecisionFlowModal({ open, onClose, onLoadExample, liveEx
                 const isActive = activeExample != null && overviewStage === stageIdx
                 const isVisited = activeExample != null && overviewStage >= stageIdx
                 const isFpgaStage = stage.id === 5
+                const isOverheadGuardStage = stage.id === 6
                 const isScoreStage = stage.id === 3
                 const isPickStage = stage.id === 4
-                const fpgaSkipped = isFpgaStage && activeExample != null && !activeExample.hasFpgaBranch
+                const fpgaSkipped = (isFpgaStage || isOverheadGuardStage) && activeExample != null && !activeExample.hasFpgaBranch
                 const shouldDim = fpgaSkipped && !isActive
 
                 const overviewFact =
@@ -717,30 +671,66 @@ export default function DecisionFlowModal({ open, onClose, onLoadExample, liveEx
                             </div>
                           ))}
 
-                          {/* FPGA before/after savings callout */}
-                          {isFpgaStage && activeExample?.hasFpgaBranch && isVisited && (
-                            <div className="mt-3 flex items-stretch gap-3">
-                              <div className="flex-1 rounded-lg border border-red-200 bg-red-50 p-3 text-center">
-                                <p className="text-[10px] font-bold uppercase tracking-wider text-red-500">
-                                  Without optimization
-                                </p>
-                                <p className="mt-1 text-2xl font-black text-red-600">3</p>
-                                <p className="text-xs text-red-600">boards · 3 slots</p>
-                              </div>
-                              <div className="flex items-center">
-                                <span className="text-xl text-emerald-500">→</span>
-                              </div>
-                              <div className="flex-1 rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-center">
-                                <p className="text-[10px] font-bold uppercase tracking-wider text-emerald-500">
-                                  With FPGA consolidation
-                                </p>
-                                <p className="mt-1 text-2xl font-black text-emerald-600">1+1</p>
-                                <p className="text-xs text-emerald-600">board + interface · 2 slots</p>
-                              </div>
-                              <div className="flex items-center">
-                                <div className="rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-bold text-emerald-700 ring-1 ring-emerald-300">
-                                  1 slot saved
+                          {/* FPGA before/after savings callout — only when real consolidation occurred */}
+                          {isFpgaStage && activeExample?.fpgaConsolidation && isVisited && (() => {
+                            const { before, after } = activeExample.fpgaConsolidation!
+                            const ifcCount = activeExample.fpgaInterfaceBoardCount ?? after
+                            const totalAfter = after + ifcCount
+                            const saved = before - after
+                            return (
+                              <div className="mt-3 flex items-stretch gap-3">
+                                <div className="flex-1 rounded-lg border border-red-200 bg-red-50 p-3 text-center">
+                                  <p className="text-[10px] font-bold uppercase tracking-wider text-red-500">
+                                    Without optimization
+                                  </p>
+                                  <p className="mt-1 text-2xl font-black text-red-600">{before}</p>
+                                  <p className="text-xs text-red-600">board{before !== 1 ? 's' : ''} · {before} slot{before !== 1 ? 's' : ''}</p>
                                 </div>
+                                <div className="flex items-center">
+                                  <span className="text-xl text-emerald-500">→</span>
+                                </div>
+                                <div className="flex-1 rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-center">
+                                  <p className="text-[10px] font-bold uppercase tracking-wider text-emerald-500">
+                                    With FPGA consolidation
+                                  </p>
+                                  <p className="mt-1 text-2xl font-black text-emerald-600">{after}+{ifcCount}</p>
+                                  <p className="text-xs text-emerald-600">{after} board{after !== 1 ? 's' : ''} + {ifcCount} interface{ifcCount !== 1 ? 's' : ''} · {totalAfter} slot{totalAfter !== 1 ? 's' : ''}</p>
+                                </div>
+                                <div className="flex items-center">
+                                  <div className="rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-bold text-emerald-700 ring-1 ring-emerald-300">
+                                    {saved} slot{saved !== 1 ? 's' : ''} saved
+                                  </div>
+                                </div>
+                              </div>
+                            )
+                          })()}
+
+                          {/* FPGA active but no consolidation — just interface boards added */}
+                          {isFpgaStage && activeExample?.hasFpgaBranch && !activeExample?.fpgaConsolidation && isVisited && (
+                            <div className="mt-3 rounded-lg border border-emerald-200 bg-emerald-50 p-3">
+                              <p className="text-xs text-emerald-700">
+                                FPGA boards detected — interface boards auto-added for signal conditioning. No board consolidation needed.
+                              </p>
+                            </div>
+                          )}
+
+                          {/* Selected interface boards detail */}
+                          {isFpgaStage && activeExample?.fpgaInterfaceBoards && activeExample.fpgaInterfaceBoards.length > 0 && isVisited && (
+                            <div className="mt-3 rounded-lg border border-emerald-200 bg-emerald-50/60 p-3">
+                              <p className="text-[10px] font-bold uppercase tracking-wider text-emerald-500 mb-1.5">
+                                Selected Interface Boards
+                              </p>
+                              <div className="space-y-1">
+                                {activeExample.fpgaInterfaceBoards.map((b) => (
+                                  <div key={b.boardId} className="flex items-center gap-2 text-xs text-emerald-700">
+                                    <span className="inline-flex h-4 min-w-[1.25rem] items-center justify-center rounded bg-emerald-200 px-1 text-[10px] font-bold text-emerald-800">
+                                      {b.quantity}×
+                                    </span>
+                                    <span className="font-semibold">{b.boardId}</span>
+                                    <span className="text-emerald-600">— {b.friendlyName}</span>
+                                    <span className="ml-auto text-[10px] text-emerald-500">for {b.parentModuleId}</span>
+                                  </div>
+                                ))}
                               </div>
                             </div>
                           )}
@@ -752,11 +742,15 @@ export default function DecisionFlowModal({ open, onClose, onLoadExample, liveEx
               })}
             </div>
 
-            {/* Empty state */}
+            {/* Empty state — no requirements selected */}
             {!activeExample && (
-              <div className="mt-8 text-center">
-                <p className="text-sm text-slate-500">
-                  Select an example above to see how the pipeline processes real requirements.
+              <div className="mt-12 flex flex-col items-center gap-3 text-center">
+                <div className="flex h-14 w-14 items-center justify-center rounded-full bg-violet-100 text-2xl">
+                  📋
+                </div>
+                <h3 className="text-base font-bold text-slate-700">No requirements selected</h3>
+                <p className="max-w-sm text-sm text-slate-500">
+                  Add I/O requirements in the configurator first, then reopen this view to see how the pipeline resolves them.
                 </p>
               </div>
             )}

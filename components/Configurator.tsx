@@ -202,7 +202,7 @@ export default function Configurator({}: ConfiguratorProps = {}) {
         [categoryId]: {
           ...prev[categoryId],
           [subId]: {
-            quantity: 8,
+            quantity: sub.defaultQuantity ?? 32,
             specs: { ...sub.defaults },
           },
         },

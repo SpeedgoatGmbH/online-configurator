@@ -21,6 +21,8 @@ export default function RowCard({ row, sub, onEdit, onRemove, onChangeQuantity }
               className="w-16 rounded border border-slate-300 px-2 py-1 text-xs text-slate-700 outline-none ring-[rgb(var(--speedgoat-blue))] focus:ring-1"
               aria-label="Channels"
             >
+              <option value={1}>1</option>
+              <option value={2}>2</option>
               <option value={4}>4</option>
               <option value={8}>8</option>
               <option value={16}>16</option>

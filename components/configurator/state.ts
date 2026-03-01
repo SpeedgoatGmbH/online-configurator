@@ -19,7 +19,7 @@ export function createInitialTempSpecs(categories: Category[]) {
     initial[category.id] = {}
     category.subCategories.forEach((sub) => {
       initial[category.id][sub.id] = {
-        quantity: 32,
+        quantity: sub.defaultQuantity ?? 32,
         specs: { ...sub.defaults },
       }
     })

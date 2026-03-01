@@ -1,6 +1,7 @@
 'use client'
 
 import type { ProposalRecommendedModule, ProposalRowDiff } from '@/components/configurator/proposalTypes'
+import type { MachineVariant } from '@/components/SolutionProposal'
 
 // ─── Category → color map ────────────────────────────────────────────────────
 
@@ -19,15 +20,16 @@ const FALLBACK_COLOR = { bg: 'bg-slate-50', border: 'border-slate-300', text: 't
 type SlotEntry = {
   moduleId: string
   friendlyName: string
-  confidence: number
   categoryId: string
 }
 
 type MachineChassisStripProps = {
   maxSlots: number
+  maxSlotsExpanded: number
   machineName: string
   modules: ProposalRecommendedModule[] | null
   rowDiffs: ProposalRowDiff[] | null
+  variants?: MachineVariant[]
 }
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -49,35 +51,76 @@ function expandModules(
   modules: ProposalRecommendedModule[],
   categoryMap: Map<string, string>,
 ): SlotEntry[] {
-  const slots: SlotEntry[] = []
+  // Separate parents from children (interface boards/extensions)
+  const children = new Map<string, ProposalRecommendedModule[]>()
+  const parents: ProposalRecommendedModule[] = []
   for (const mod of modules) {
-    const categoryId = categoryMap.get(mod.moduleId) ?? 'interface'
-    for (let i = 0; i < mod.quantity; i++) {
-      slots.push({
-        moduleId: mod.moduleId,
-        friendlyName: mod.friendlyName,
-        confidence: mod.confidence,
-        categoryId,
-      })
+    if (mod.interfaceForModule) {
+      const arr = children.get(mod.interfaceForModule) ?? []
+      arr.push(mod)
+      children.set(mod.interfaceForModule, arr)
+    } else {
+      parents.push(mod)
     }
   }
-  // Sort: analog → communication → digital → motion → interface
+
+  // Sort parents by category, then attach children immediately after
   const order = ['analog', 'digital', 'communication', 'motion', 'interface']
-  slots.sort((a, b) => {
-    const ai = order.indexOf(a.categoryId)
-    const bi = order.indexOf(b.categoryId)
+  const sortedParents = [...parents].sort((a, b) => {
+    const aCat = categoryMap.get(a.moduleId) ?? 'interface'
+    const bCat = categoryMap.get(b.moduleId) ?? 'interface'
+    const ai = order.indexOf(aCat)
+    const bi = order.indexOf(bCat)
     return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi)
   })
+
+  const slots: SlotEntry[] = []
+  for (const mod of sortedParents) {
+    const categoryId = categoryMap.get(mod.moduleId) ?? 'interface'
+    for (let i = 0; i < mod.quantity; i++) {
+      slots.push({ moduleId: mod.moduleId, friendlyName: mod.friendlyName, categoryId })
+    }
+    // Immediately place children after parent
+    const kids = children.get(mod.moduleId) ?? []
+    for (const kid of kids) {
+      for (let i = 0; i < kid.quantity; i++) {
+        slots.push({ moduleId: kid.moduleId, friendlyName: kid.friendlyName, categoryId: 'interface' })
+      }
+    }
+  }
+
+  // Add orphan children (no parent found in list — shouldn't happen normally)
+  for (const mod of modules) {
+    if (mod.interfaceForModule && !parents.some(p => p.moduleId === mod.interfaceForModule)) {
+      for (let i = 0; i < mod.quantity; i++) {
+        slots.push({ moduleId: mod.moduleId, friendlyName: mod.friendlyName, categoryId: 'interface' })
+      }
+    }
+  }
+
   return slots
 }
 
 // ─── Component ───────────────────────────────────────────────────────────────
 
-export default function MachineChassisStrip({ maxSlots, machineName, modules, rowDiffs }: MachineChassisStripProps) {
+/** Pick the smallest variant that fits, or the largest if nothing fits. */
+function pickVariant(variants: MachineVariant[], needed: number): MachineVariant {
+  const sorted = [...variants].sort((a, b) => a.maxSlots - b.maxSlots)
+  return sorted.find((v) => v.maxSlots >= needed) ?? sorted[sorted.length - 1]
+}
+
+export default function MachineChassisStrip({ maxSlots, maxSlotsExpanded, machineName, modules, rowDiffs, variants }: MachineChassisStripProps) {
   const categoryMap = rowDiffs ? buildCategoryMap(rowDiffs) : new Map<string, string>()
   const filledSlots = modules ? expandModules(modules, categoryMap) : []
-  const visibleSlots = filledSlots.slice(0, maxSlots)
-  const overflowCount = Math.max(0, filledSlots.length - maxSlots)
+
+  // For machines with variants (e.g. Baseline-S / Baseline-M), auto-pick the variant
+  const chosenVariant = variants?.length ? pickVariant(variants, filledSlots.length) : null
+  const activeSlots = chosenVariant ? chosenVariant.maxSlots : maxSlots
+  const activeName = chosenVariant ? `${machineName}-${chosenVariant.suffix}` : machineName
+  const hasExpansion = maxSlotsExpanded > activeSlots
+
+  const visibleSlots = filledSlots.slice(0, activeSlots)
+  const overflowCount = Math.max(0, filledSlots.length - activeSlots)
 
   return (
     <div className="rounded-xl border border-slate-200 bg-white px-4 py-3">
@@ -87,9 +130,9 @@ export default function MachineChassisStrip({ maxSlots, machineName, modules, ro
           <div className="flex h-5 w-5 items-center justify-center rounded bg-slate-800 text-[10px] font-bold text-white">
             ⊞
           </div>
-          <span className="text-xs font-semibold text-slate-700">{machineName}</span>
+          <span className="text-xs font-semibold text-slate-700">{activeName}</span>
           <span className="text-[10px] text-slate-400">·</span>
-          <span className="text-[10px] text-slate-400">{maxSlots} base slots</span>
+          <span className="text-[10px] text-slate-400">{activeSlots} module slots</span>
         </div>
         {filledSlots.length > 0 && (
           <span className="text-[10px] font-medium text-slate-500">
@@ -100,7 +143,7 @@ export default function MachineChassisStrip({ maxSlots, machineName, modules, ro
 
       {/* Slot row */}
       <div className="flex items-end gap-1.5">
-        {Array.from({ length: maxSlots }).map((_, idx) => {
+        {Array.from({ length: activeSlots }).map((_, idx) => {
           const slot = visibleSlots[idx]
           if (slot) {
             const colors = CATEGORY_COLORS[slot.categoryId] ?? FALLBACK_COLOR
@@ -108,7 +151,7 @@ export default function MachineChassisStrip({ maxSlots, machineName, modules, ro
               <div
                 key={idx}
                 className={`group relative flex h-[100px] w-[72px] flex-shrink-0 flex-col justify-between rounded-lg border-2 ${colors.border} ${colors.bg} p-1.5 transition-shadow hover:shadow-md`}
-                title={`${slot.moduleId} — ${slot.friendlyName} (${slot.confidence}% confidence)`}
+                title={`${slot.moduleId} — ${slot.friendlyName}`}
               >
                 {/* Module ID */}
                 <div className={`text-[11px] font-bold leading-tight ${colors.text}`}>
@@ -122,13 +165,10 @@ export default function MachineChassisStrip({ maxSlots, machineName, modules, ro
                   </p>
                 </div>
 
-                {/* Category + confidence */}
+                {/* Category */}
                 <div className="flex items-center justify-between">
                   <span className={`text-[8px] font-semibold uppercase tracking-wider ${colors.text}`}>
                     {colors.label}
-                  </span>
-                  <span className="text-[8px] font-medium text-slate-400">
-                    {slot.confidence}%
                   </span>
                 </div>
 
@@ -155,9 +195,15 @@ export default function MachineChassisStrip({ maxSlots, machineName, modules, ro
         {/* Overflow label */}
         {overflowCount > 0 && (
           <div className="flex h-[100px] items-center pl-2">
-            <div className="rounded-full bg-amber-50 px-3 py-1.5 text-[11px] font-semibold text-amber-700 ring-1 ring-amber-200">
-              +{overflowCount} in expansion
-            </div>
+            {hasExpansion ? (
+              <div className="rounded-full bg-amber-50 px-3 py-1.5 text-[11px] font-semibold text-amber-700 ring-1 ring-amber-200">
+                +{overflowCount} in expansion
+              </div>
+            ) : (
+              <div className="rounded-full bg-red-50 px-3 py-1.5 text-[11px] font-semibold text-red-600 ring-1 ring-red-200">
+                +{overflowCount} over capacity ⚠
+              </div>
+            )}
           </div>
         )}
       </div>

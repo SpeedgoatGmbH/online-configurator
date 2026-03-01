@@ -12,8 +12,6 @@ export type MockModuleCatalogEntry = {
   fpgaFamily?: string
   /** Total physical I/O lines on the FPGA board (used for cross-category consolidation). */
   fpgaTotalLines?: number
-  /** The interface / connector board that must accompany this module (e.g. 'IO323-21'). When set, the simulator auto-adds it. */
-  interfaceBoard?: { moduleId: string; friendlyName: string }
 
   /* ── Enriched fields (from speedgoat.com product pages + HRM docs) ── */
   /** Physical form factor: PMC, XMC, mPCIe, PCIe, or TPCE */
@@ -508,34 +506,7 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     webSourcePage: 'analog',
     docDescription: '16-bit analog module with 32 galvanically isolated input channels',
   },
-  {
-    moduleId: 'IO116',
-    friendlyName: 'Analog I/O 16+4ch 0-10 V / 0-20 mA Process',
-    technicalName: 'IO116',
-    categoryCoverage: 'analog',
-    subCoverage: ['inputs'],
-    channelCapacity: 16,
-    supportedSpecs: {
-      inputMode: ['Single-ended', 'Differential'],
-      signalType: ['Voltage', 'Current'],
-      signalRange: ['0-10 V', '0-20 mA'],
-      resolution: ['16-bit'],
-      speed: ['20 kHz'],
-    },
-    compatibleMachines: ['performance', 'baseline', 'mobile'],
-    /* web-enriched (speedgoat.com/analog) */
-    lifecycleStatus: 'active',
-    resolutionBits: 16,
-    sampleRateHz: [37500],
-    voltageRange: { min: 0, max: 10, unit: 'V' },
-    outputVoltageRange: { min: 0, max: 10, unit: 'V' },
-    currentRange: { min: 0, max: 20, unit: 'mA' },
-    samplingMode: 'SQ/SM',
-    inputChannelSpec: '16 SE / 8 DF',
-    outputChannelSpec: '4 SE',
-    webSourcePage: 'analog',
-    docDescription: '16-bit analog module with 8 current loop inputs, 4 current loop outputs',
-  },
+  // IO116 removed — Proffix status: 4) Deprecated, replaced by IO145
   {
     moduleId: 'IO325',
     friendlyName: 'Configurable FPGA Analog I/O 8+4ch',
@@ -552,8 +523,8 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     },
     compatibleMachines: ['performance', 'baseline', 'mobile'],
     fpgaFamily: 'IO325',
+    supportsIOExtensions: true,
     fpgaTotalLines: 32,
-    interfaceBoard: { moduleId: 'IO325-21', friendlyName: 'Interface Board IO325-21' },
     /* web-enriched (speedgoat.com/analog) */
     lifecycleStatus: 'active',
     resolutionBits: 16,
@@ -587,8 +558,8 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     },
     compatibleMachines: ['performance', 'baseline', 'mobile'],
     fpgaFamily: 'IO336',
+    supportsIOExtensions: true,
     fpgaTotalLines: 32,
-    interfaceBoard: { moduleId: 'IO336-21', friendlyName: 'Interface Board IO336-21' },
     /* web-enriched (speedgoat.com/analog) */
     lifecycleStatus: 'active',
     resolutionBits: 16,
@@ -623,8 +594,8 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     },
     compatibleMachines: ['baseline', 'unit'],
     fpgaFamily: 'IO397',
+    supportsIOExtensions: false,
     fpgaTotalLines: 14,
-    interfaceBoard: { moduleId: 'IO397-21', friendlyName: 'Interface Board IO397-21' },
     /* web-enriched (speedgoat.com/analog) */
     lifecycleStatus: 'active',
     resolutionBits: 16,
@@ -660,8 +631,8 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     },
     compatibleMachines: ['performance', 'baseline', 'mobile'],
     fpgaFamily: 'IO335',
+    supportsIOExtensions: true,
     fpgaTotalLines: 56,
-    interfaceBoard: { moduleId: 'IO335-21', friendlyName: 'Interface Board IO335-21' },
     /* web-enriched (speedgoat.com/analog) */
     lifecycleStatus: 'active',
     resolutionBits: 16,
@@ -692,8 +663,8 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     },
     compatibleMachines: ['performance'],
     fpgaFamily: 'IO337',
+    supportsIOExtensions: true,
     fpgaTotalLines: 56,
-    interfaceBoard: { moduleId: 'IO337-21', friendlyName: 'Interface Board IO337-21' },
     docDescription: 'configurable I/O module containing 650k logic cells, 8 x 16-bit differential analog inputs, 32 x 16-bit analog outputs, and 4 x LVDS digital I/O channels',
     fpgaLogicCells: '650k',
     fpgaCategory: 'simulink-programmable',
@@ -719,8 +690,8 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     },
     compatibleMachines: ['performance'],
     fpgaFamily: 'IO344',
+    supportsIOExtensions: true,
     fpgaTotalLines: 16,
-    interfaceBoard: { moduleId: 'IO344-21', friendlyName: 'Interface Board IO344-21' },
     /* web-enriched (speedgoat.com/analog) */
     lifecycleStatus: 'active',
     resolutionBits: 14,
@@ -747,8 +718,8 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     },
     compatibleMachines: ['performance', 'baseline', 'mobile'],
     fpgaFamily: 'IO332',
+    supportsIOExtensions: true,
     fpgaTotalLines: 64,
-    interfaceBoard: { moduleId: 'IO332-21', friendlyName: 'Interface Board IO332-21' },
     /* web-enriched (speedgoat.com/analog) */
     lifecycleStatus: 'active',
     resolutionBits: 16,
@@ -763,7 +734,6 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     fpgaLogicCells: '200k',
     fpgaCategory: 'simulink-programmable',
     supportsIOInterfaces: true,
-    supportsIOExtensions: true,
   },
   // --- Analog Outputs --------------------------------------------------------
   {
@@ -919,8 +889,8 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     },
     compatibleMachines: ['performance', 'baseline'],
     fpgaFamily: 'IO334',
+    supportsIOExtensions: true,
     fpgaTotalLines: 56,
-    interfaceBoard: { moduleId: 'IO334-21', friendlyName: 'Interface Board IO334-21' },
     /* web-enriched (speedgoat.com/analog) */
     lifecycleStatus: 'active',
     resolutionBits: 16,
@@ -954,8 +924,8 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     },
     compatibleMachines: ['performance'],
     fpgaFamily: 'IO337',
+    supportsIOExtensions: true,
     fpgaTotalLines: 56,
-    interfaceBoard: { moduleId: 'IO337-21', friendlyName: 'Interface Board IO337-21' },
   },
   {
     moduleId: 'IO207',
@@ -1008,8 +978,8 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     },
     compatibleMachines: ['performance', 'baseline', 'mobile'],
     fpgaFamily: 'IO306',
+    supportsIOExtensions: true,
     fpgaTotalLines: 64,
-    interfaceBoard: { moduleId: 'IO306-21', friendlyName: 'Interface Board IO306-21' },
     /* web-enriched (speedgoat.com/digital) */
     lifecycleStatus: 'active',
     webSourcePage: 'digital',
@@ -1033,8 +1003,8 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     },
     compatibleMachines: ['performance', 'baseline', 'mobile'],
     fpgaFamily: 'IO307',
+    supportsIOExtensions: true,
     fpgaTotalLines: 48,
-    interfaceBoard: { moduleId: 'IO307-21', friendlyName: 'Interface Board IO307-21' },
     /* web-enriched (speedgoat.com/digital) */
     lifecycleStatus: 'active',
     webSourcePage: 'digital',
@@ -1058,8 +1028,8 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     },
     compatibleMachines: ['performance', 'baseline', 'mobile'],
     fpgaFamily: 'IO308',
+    supportsIOExtensions: true,
     fpgaTotalLines: 32,
-    interfaceBoard: { moduleId: 'IO308-21', friendlyName: 'Interface Board IO308-21' },
     /* web-enriched (speedgoat.com/digital) */
     lifecycleStatus: 'active',
     webSourcePage: 'digital',
@@ -1082,8 +1052,8 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     },
     compatibleMachines: ['performance', 'baseline', 'mobile'],
     fpgaFamily: 'IO317',
+    supportsIOExtensions: true,
     fpgaTotalLines: 56,
-    interfaceBoard: { moduleId: 'IO317-21', friendlyName: 'Interface Board IO317-21' },
     /* web-enriched (speedgoat.com/digital) */
     lifecycleStatus: 'active',
     webSourcePage: 'digital',
@@ -1106,8 +1076,8 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     },
     compatibleMachines: ['performance', 'baseline', 'mobile'],
     fpgaFamily: 'IO318',
+    supportsIOExtensions: true,
     fpgaTotalLines: 56,
-    interfaceBoard: { moduleId: 'IO318-21', friendlyName: 'Interface Board IO318-21' },
     /* web-enriched (speedgoat.com/digital) */
     lifecycleStatus: 'active',
     webSourcePage: 'digital',
@@ -1148,8 +1118,8 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     },
     compatibleMachines: ['baseline', 'unit'],
     fpgaFamily: 'IO391',
+    supportsIOExtensions: false,
     fpgaTotalLines: 26,
-    interfaceBoard: { moduleId: 'IO391-21', friendlyName: 'Interface Board IO391-21' },
     /* web-enriched (speedgoat.com/digital) */
     lifecycleStatus: 'active',
     webSourcePage: 'digital',
@@ -1172,8 +1142,8 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     },
     compatibleMachines: ['baseline', 'unit'],
     fpgaFamily: 'IO393',
+    supportsIOExtensions: false,
     fpgaTotalLines: 20,
-    interfaceBoard: { moduleId: 'IO393-21', friendlyName: 'Interface Board IO393-21' },
     /* web-enriched (speedgoat.com/digital) */
     lifecycleStatus: 'active',
     webSourcePage: 'digital',
@@ -1289,8 +1259,8 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     },
     compatibleMachines: ['baseline', 'unit'],
     fpgaFamily: 'IO392',
+    supportsIOExtensions: false,
     fpgaTotalLines: 13,
-    interfaceBoard: { moduleId: 'IO392-21', friendlyName: 'Interface Board IO392-21' },
     /* web-enriched (speedgoat.com/digital) */
     lifecycleStatus: 'active',
     webSourcePage: 'digital',
@@ -1298,31 +1268,7 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     fpgaLogicCells: '50k',
     fpgaCategory: 'configurable',
   },
-  {
-    moduleId: 'IO394',
-    friendlyName: 'Configurable 13ch M-LVDS Compact',
-    technicalName: 'IO394',
-    categoryCoverage: 'digital',
-    subCoverage: ['inputs', 'outputs'],
-    channelCapacity: 13,
-    supportedSpecs: {
-      signalType: ['Differential Serial'],
-      range: ['M-LVDS'],
-      resolution: ['None'],
-      speed: ['Driver enabled'],
-    },
-    compatibleMachines: ['baseline', 'unit'],
-    fpgaFamily: 'IO394',
-    fpgaTotalLines: 13,
-    interfaceBoard: { moduleId: 'IO394-21', friendlyName: 'Interface Board IO394-21' },
-    /* web-enriched (speedgoat.com/digital) */
-    lifecycleStatus: 'active',
-    webSourcePage: 'digital',
-    docDescription: 'configurable I/O module containing an FPGA with 50k of logic cells and 13 x LVDS differential I/O lines',
-    fpgaLogicCells: '50k',
-    fpgaCategory: 'configurable',
-    fpgaDigitalIOLines: 13,
-  },
+  // IO394 removed — Proffix: 0 recent quotes since 2022, no longer sold
   // --- Configurable FPGA I/O boards ------------------------------------------
   // Each FPGA board appears once per functional category it can serve.
   // The simulator consolidates entries sharing the same fpgaFamily onto fewer
@@ -1331,46 +1277,7 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
   // Digital > PWM / Capture  (1 I/O line per channel)
   // Motion  > Encoder        (QAD=3 lines, QAE=2 lines, SSI/BiSS/EnDat=3 lines → channelCapacity = totalLines/3)
   // ---
-  // IO323  — 96-line TTL (XMC) — most popular large FPGA board
-  {
-    moduleId: 'IO323',
-    friendlyName: 'Configurable FPGA 96-line TTL (XMC)',
-    technicalName: 'IO323',
-    categoryCoverage: 'digital',
-    subCoverage: ['pwm', 'capture'],
-    channelCapacity: 96,
-    supportedSpecs: {
-      range: ['TTL 5 V'],
-      speed: ['1 MHz', '5 MHz', '10 MHz', '25 MHz'],
-    },
-    compatibleMachines: ['performance', 'baseline', 'mobile'],
-    fpgaFamily: 'IO323',
-    fpgaTotalLines: 96,
-    interfaceBoard: { moduleId: 'IO323-21', friendlyName: 'Interface Board IO323-21' },
-    docDescription: 'configurable I/O module containing an FPGA with 100k of logic cells, 42 TTL I/O lines, 32/16 x 16-bit single-ended/differential analog inputs and 8 x 16-bit analog outputs',
-    fpgaLogicCells: '100k',
-    fpgaCategory: 'configurable',
-    fpgaAnalogInputChannels: '32/16',
-    fpgaAnalogOutputChannels: 8,
-    fpgaDigitalIOLines: 42,
-  },
-  {
-    moduleId: 'IO323',
-    friendlyName: 'Configurable FPGA 96-line TTL (XMC)',
-    technicalName: 'IO323',
-    categoryCoverage: 'motion',
-    subCoverage: ['encoder'],
-    channelCapacity: 32,
-    supportedSpecs: {
-      range: ['Incremental', 'QAD (A/B/Z)', 'QAE (A/B)', 'SSI'],
-      speed: ['10 kHz', '100 kHz', '1 MHz'],
-      resolution: ['16-bit', '24-bit', '32-bit'],
-    },
-    compatibleMachines: ['performance', 'baseline', 'mobile'],
-    fpgaFamily: 'IO323',
-    fpgaTotalLines: 96,
-    interfaceBoard: { moduleId: 'IO323-21', friendlyName: 'Interface Board IO323-21' },
-  },
+  // IO323 removed — Proffix status: 5) Discontinued, replaced by IO3xx-21 generic interface
   // IO324  — 96-line TTL + RS422 (XMC) — adds differential for BiSS/EnDat
   {
     moduleId: 'IO324',
@@ -1385,8 +1292,8 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     },
     compatibleMachines: ['performance', 'baseline', 'mobile'],
     fpgaFamily: 'IO324',
+    supportsIOExtensions: true,
     fpgaTotalLines: 96,
-    interfaceBoard: { moduleId: 'IO324-21', friendlyName: 'Interface Board IO324-21' },
     /* web-enriched (speedgoat.com/analog) */
     lifecycleStatus: 'active',
     resolutionBits: 16,
@@ -1419,8 +1326,8 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     },
     compatibleMachines: ['performance', 'baseline', 'mobile'],
     fpgaFamily: 'IO324',
+    supportsIOExtensions: true,
     fpgaTotalLines: 96,
-    interfaceBoard: { moduleId: 'IO324-21', friendlyName: 'Interface Board IO324-21' },
     /* web-enriched (speedgoat.com/analog) */
     lifecycleStatus: 'active',
     resolutionBits: 16,
@@ -1446,8 +1353,8 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     },
     compatibleMachines: ['performance', 'baseline', 'mobile'],
     fpgaFamily: 'IO316',
+    supportsIOExtensions: true,
     fpgaTotalLines: 48,
-    interfaceBoard: { moduleId: 'IO316-21', friendlyName: 'Interface Board IO316-21' },
     /* web-enriched (speedgoat.com/digital) */
     lifecycleStatus: 'active',
     webSourcePage: 'digital',
@@ -1470,51 +1377,13 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     },
     compatibleMachines: ['performance', 'baseline', 'mobile'],
     fpgaFamily: 'IO316',
+    supportsIOExtensions: true,
     fpgaTotalLines: 48,
-    interfaceBoard: { moduleId: 'IO316-21', friendlyName: 'Interface Board IO316-21' },
     /* web-enriched (speedgoat.com/digital) */
     lifecycleStatus: 'active',
     webSourcePage: 'digital',
   },
-  // IO331  — 48-line TTL (PMC)
-  {
-    moduleId: 'IO331',
-    friendlyName: 'Configurable FPGA 48-line TTL (PMC)',
-    technicalName: 'IO331',
-    categoryCoverage: 'digital',
-    subCoverage: ['pwm', 'capture'],
-    channelCapacity: 48,
-    supportedSpecs: {
-      range: ['TTL 5 V'],
-      speed: ['1 MHz', '5 MHz', '10 MHz', '25 MHz'],
-    },
-    compatibleMachines: ['performance', 'pulse', 'baseline'],
-    fpgaFamily: 'IO331',
-    fpgaTotalLines: 48,
-    interfaceBoard: { moduleId: 'IO331-21', friendlyName: 'Interface Board IO331-21' },
-    docDescription: 'configurable I/O module containing an FPGA with 150k of logic cells. Optional I/O interfaces allow a variety of digital (TTL, LVDS, CMOS), RS485/RS422, and analog functionality to be added. Optional I/O interface extensions allow to extend the number of digital lines from the front of the enclosure',
-    fpgaLogicCells: '150k',
-    fpgaCategory: 'configurable',
-    supportsIOInterfaces: true,
-    supportsIOExtensions: true,
-  },
-  {
-    moduleId: 'IO331',
-    friendlyName: 'Configurable FPGA 48-line TTL (PMC)',
-    technicalName: 'IO331',
-    categoryCoverage: 'motion',
-    subCoverage: ['encoder'],
-    channelCapacity: 16,
-    supportedSpecs: {
-      range: ['Incremental', 'QAD (A/B/Z)', 'QAE (A/B)', 'SSI'],
-      speed: ['10 kHz', '100 kHz', '1 MHz'],
-      resolution: ['16-bit', '24-bit', '32-bit'],
-    },
-    compatibleMachines: ['performance', 'pulse', 'baseline'],
-    fpgaFamily: 'IO331',
-    fpgaTotalLines: 48,
-    interfaceBoard: { moduleId: 'IO331-21', friendlyName: 'Interface Board IO331-21' },
-  },
+  // IO331 removed — Proffix status: 4) Deprecated, replaced by IO332. Last quote 2021.
   // IO333  — 96-line TTL (PMC)
   {
     moduleId: 'IO333',
@@ -1529,8 +1398,8 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     },
     compatibleMachines: ['performance', 'pulse', 'baseline'],
     fpgaFamily: 'IO333',
+    supportsIOExtensions: true,
     fpgaTotalLines: 96,
-    interfaceBoard: { moduleId: 'IO333-21', friendlyName: 'Interface Board IO333-21' },
     /* web-enriched (speedgoat.com/analog) */
     lifecycleStatus: 'active',
     resolutionBits: 16,
@@ -1545,7 +1414,6 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     fpgaLogicCells: '325k',
     fpgaCategory: 'simulink-programmable',
     supportsIOInterfaces: true,
-    supportsIOExtensions: true,
   },
   {
     moduleId: 'IO333',
@@ -1561,8 +1429,8 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     },
     compatibleMachines: ['performance', 'pulse', 'baseline'],
     fpgaFamily: 'IO333',
+    supportsIOExtensions: true,
     fpgaTotalLines: 96,
-    interfaceBoard: { moduleId: 'IO333-21', friendlyName: 'Interface Board IO333-21' },
     /* web-enriched (speedgoat.com/analog) */
     lifecycleStatus: 'active',
     resolutionBits: 16,
@@ -1588,8 +1456,8 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     },
     compatibleMachines: ['performance', 'baseline', 'mobile'],
     fpgaFamily: 'IO332',
+    supportsIOExtensions: true,
     fpgaTotalLines: 64,
-    interfaceBoard: { moduleId: 'IO332-21', friendlyName: 'Interface Board IO332-21' },
     /* web-enriched (speedgoat.com/analog) */
     lifecycleStatus: 'active',
     resolutionBits: 16,
@@ -1615,8 +1483,8 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     },
     compatibleMachines: ['performance', 'baseline', 'mobile'],
     fpgaFamily: 'IO332',
+    supportsIOExtensions: true,
     fpgaTotalLines: 64,
-    interfaceBoard: { moduleId: 'IO332-21', friendlyName: 'Interface Board IO332-21' },
     /* web-enriched (speedgoat.com/analog) */
     lifecycleStatus: 'active',
     resolutionBits: 16,
@@ -1642,8 +1510,8 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     },
     compatibleMachines: ['performance', 'baseline'],
     fpgaFamily: 'IO334',
+    supportsIOExtensions: true,
     fpgaTotalLines: 56,
-    interfaceBoard: { moduleId: 'IO334-21', friendlyName: 'Interface Board IO334-21' },
     /* web-enriched (speedgoat.com/analog) */
     lifecycleStatus: 'active',
     resolutionBits: 16,
@@ -1669,8 +1537,8 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     },
     compatibleMachines: ['performance', 'baseline'],
     fpgaFamily: 'IO334',
+    supportsIOExtensions: true,
     fpgaTotalLines: 56,
-    interfaceBoard: { moduleId: 'IO334-21', friendlyName: 'Interface Board IO334-21' },
     /* web-enriched (speedgoat.com/analog) */
     lifecycleStatus: 'active',
     resolutionBits: 16,
@@ -1696,8 +1564,8 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     },
     compatibleMachines: ['performance', 'baseline', 'mobile'],
     fpgaFamily: 'IO335',
+    supportsIOExtensions: true,
     fpgaTotalLines: 56,
-    interfaceBoard: { moduleId: 'IO335-21', friendlyName: 'Interface Board IO335-21' },
     /* web-enriched (speedgoat.com/analog) */
     lifecycleStatus: 'active',
     resolutionBits: 16,
@@ -1721,8 +1589,8 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     },
     compatibleMachines: ['performance', 'baseline', 'mobile'],
     fpgaFamily: 'IO317',
+    supportsIOExtensions: true,
     fpgaTotalLines: 56,
-    interfaceBoard: { moduleId: 'IO317-21', friendlyName: 'Interface Board IO317-21' },
     /* web-enriched (speedgoat.com/digital) */
     lifecycleStatus: 'active',
     webSourcePage: 'digital',
@@ -1741,8 +1609,8 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     },
     compatibleMachines: ['performance', 'baseline', 'mobile'],
     fpgaFamily: 'IO317',
+    supportsIOExtensions: true,
     fpgaTotalLines: 56,
-    interfaceBoard: { moduleId: 'IO317-21', friendlyName: 'Interface Board IO317-21' },
     /* web-enriched (speedgoat.com/digital) */
     lifecycleStatus: 'active',
     webSourcePage: 'digital',
@@ -1761,8 +1629,8 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     },
     compatibleMachines: ['baseline', 'unit'],
     fpgaFamily: 'IO391',
+    supportsIOExtensions: false,
     fpgaTotalLines: 26,
-    interfaceBoard: { moduleId: 'IO391-21', friendlyName: 'Interface Board IO391-21' },
     /* web-enriched (speedgoat.com/digital) */
     lifecycleStatus: 'active',
     webSourcePage: 'digital',
@@ -1781,8 +1649,8 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     },
     compatibleMachines: ['baseline', 'unit'],
     fpgaFamily: 'IO391',
+    supportsIOExtensions: false,
     fpgaTotalLines: 26,
-    interfaceBoard: { moduleId: 'IO391-21', friendlyName: 'Interface Board IO391-21' },
     /* web-enriched (speedgoat.com/digital) */
     lifecycleStatus: 'active',
     webSourcePage: 'digital',
@@ -2014,20 +1882,7 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     maxDataRateMbps: 0.18,
     webSourcePage: 'communications',
   },
-  {
-    moduleId: 'IO625',
-    friendlyName: 'SENT (SAE J2716) 8-port',
-    technicalName: 'IO625',
-    categoryCoverage: 'communication',
-    subCoverage: ['protocols'],
-    channelCapacity: 8,
-    supportedSpecs: {
-      resolution: ['SENT'],
-      speed: ['3 kbit/s', '30 kbit/s'],
-    },
-    protocolSupport: ['SENT'],
-    compatibleMachines: ['performance', 'pulse', 'baseline', 'mobile'],
-  },
+  // IO625 removed — never quoted in Proffix, no sales activity
   {
     moduleId: 'IO821',
     friendlyName: 'IRIG / GPS Timing & Synchronization',
@@ -2582,8 +2437,8 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     },
     compatibleMachines: ['performance', 'baseline', 'mobile'],
     fpgaFamily: 'IO324',
+    supportsIOExtensions: true,
     fpgaTotalLines: 96,
-    interfaceBoard: { moduleId: 'IO324-21', friendlyName: 'Interface Board IO324-21' },
   },
   // --- Motion & Position: Resolvers ------------------------------------------
   {
@@ -2636,8 +2491,8 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     },
     compatibleMachines: ['performance', 'baseline', 'mobile'],
     fpgaFamily: 'IO324',
+    supportsIOExtensions: true,
     fpgaTotalLines: 96,
-    interfaceBoard: { moduleId: 'IO324-24', friendlyName: 'Resolver Extension IO324-24' },
   },
   // --- Temperature -----------------------------------------------------------
   {
@@ -2846,8 +2701,8 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     },
     compatibleMachines: ['performance', 'baseline', 'mobile'],
     fpgaFamily: 'IO324',
+    supportsIOExtensions: true,
     fpgaTotalLines: 96,
-    interfaceBoard: { moduleId: 'IO324-21', friendlyName: 'Interface Board IO324-21' },
     /* web-enriched (speedgoat.com/analog) */
     lifecycleStatus: 'active',
     resolutionBits: 16,
@@ -2872,8 +2727,8 @@ export const MOCK_MODULE_CATALOG: MockModuleCatalogEntry[] = [
     },
     compatibleMachines: ['baseline', 'unit'],
     fpgaFamily: 'IO397',
+    supportsIOExtensions: false,
     fpgaTotalLines: 14,
-    interfaceBoard: { moduleId: 'IO397-21', friendlyName: 'Interface Board IO397-21' },
   },
   // --- Resistor Simulation ---------------------------------------------------
   {
@@ -3100,6 +2955,73 @@ export const IO_INTERFACE_EXTENSIONS = [
 ] as const;
 
 /**
+ * FPGA code-module compatibility matrix.
+ *
+ * Maps FPGA module families → Set of code-module names they support.
+ * Derived from the Speedgoat IO Blockset v9.11.1.1 documentation
+ * (see doc/speedgoat-fpga-io-architecture-analysis.md §9.3).
+ *
+ * Used by the simulator to gate out incompatible FPGA candidates.
+ */
+export const FPGA_CODE_MODULE_COMPAT: Record<string, Set<string>> = {
+  IO306: new Set(['PWM', 'SPI', 'I2C', 'Digital', 'Pulse Counter', 'Quadrature', 'Interrupt', 'DMA Controller']),
+  IO307: new Set(['PWM', 'SPI', 'I2C', 'Serial', 'Digital', 'Pulse Counter', 'Quadrature', 'SSI', 'BiSS', 'EnDat', 'Interrupt', 'DMA Controller']),
+  IO324: new Set(['Analog', 'PWM', 'SPI', 'I2C', 'Serial', 'Digital', 'Pulse Counter', 'Quadrature', 'SSI', 'BiSS', 'EnDat', 'Resolver', 'TPI6020', 'SENT', 'Dshot', 'Cam and Crank', 'CMU Emulation', 'Interrupt', 'DMA Controller']),
+  IO334: new Set(['Analog', 'PWM', 'SPI', 'I2C', 'Serial', 'Digital', 'Pulse Counter', 'Quadrature', 'SSI', 'BiSS', 'EnDat', 'Resolver', 'SENT', 'Dshot', 'Cam and Crank', 'Interrupt', 'DMA Controller']),
+  IO336: new Set(['Analog', 'PWM', 'SPI', 'I2C', 'Serial', 'Digital', 'Pulse Counter', 'Quadrature', 'SSI', 'BiSS', 'EnDat', 'Resolver', 'TPI6020', 'SENT', 'Dshot', 'Cam and Crank', 'CMU Emulation', 'Interrupt', 'DMA Controller']),
+  IO337: new Set(['Analog', 'PWM', 'SPI', 'I2C', 'Serial', 'Digital', 'Interrupt', 'DMA Controller']),
+  IO397: new Set(['Analog', 'PWM', 'SPI', 'I2C', 'Serial', 'Digital', 'Pulse Counter', 'Quadrature', 'TPI6020', 'Interrupt', 'DMA Controller']),
+  // Configurable-only modules — support same protocols via config files
+  IO316: new Set(['PWM', 'SPI', 'I2C', 'Digital', 'Pulse Counter', 'Quadrature', 'Interrupt', 'DMA Controller']),
+  IO317: new Set(['PWM', 'SPI', 'I2C', 'Serial', 'Digital', 'Pulse Counter', 'Quadrature', 'SSI', 'BiSS', 'EnDat', 'Interrupt', 'DMA Controller']),
+  IO318: new Set(['PWM', 'SPI', 'I2C', 'Serial', 'Digital', 'Pulse Counter', 'Quadrature', 'SSI', 'BiSS', 'EnDat', 'Interrupt', 'DMA Controller']),
+  IO322: new Set(['Analog', 'PWM', 'SPI', 'I2C', 'Serial', 'Digital', 'Pulse Counter', 'Quadrature', 'Interrupt', 'DMA Controller']),
+  // IO323 removed (Discontinued)
+  IO391: new Set(['PWM', 'SPI', 'I2C', 'Digital', 'Pulse Counter', 'Quadrature', 'Interrupt', 'DMA Controller']),
+  IO392: new Set(['PWM', 'SPI', 'I2C', 'Serial', 'Digital', 'Pulse Counter', 'Quadrature', 'SSI', 'BiSS', 'EnDat', 'Interrupt', 'DMA Controller']),
+  IO393: new Set(['PWM', 'SPI', 'I2C', 'Serial', 'Digital', 'Pulse Counter', 'Quadrature', 'SSI', 'BiSS', 'EnDat', 'Interrupt', 'DMA Controller']),
+  // IO394 removed (no recent sales)
+  IO325: new Set(['Analog', 'PWM', 'SPI', 'I2C', 'Serial', 'Digital', 'Pulse Counter', 'Quadrature', 'SSI', 'BiSS', 'EnDat', 'Resolver', 'SENT', 'Interrupt', 'DMA Controller']),
+}
+
+/**
+ * Maps configurator sub-IDs to FPGA code-module names used in the compat matrix.
+ * A sub-ID may map to multiple code modules (any match = compatible).
+ */
+export const SUB_ID_TO_CODE_MODULES: Record<string, string[]> = {
+  // Digital sub-categories
+  'pwm':       ['PWM'],
+  'capture':   ['PWM', 'Pulse Counter'],
+  'gpio':      ['Digital'],
+  // Motion & Position
+  'encoder':   ['Quadrature', 'BiSS', 'EnDat', 'SSI'],
+  'resolver':  ['Resolver'],
+  // Communication protocols (mapped through protocol support, not code modules)
+  'spi':       ['SPI'],
+  'i2c':       ['I2C'],
+  'serial':    ['Serial'],
+  'sent':      ['SENT'],
+  'dshot':     ['Dshot'],
+  // Analog (for FPGA modules with on-board ADC/DAC)
+  'inputs':    ['Analog'],
+  'outputs':   ['Analog'],
+  // Custom / general purpose FPGA
+  'gen_purpose': [],  // No specific code module required
+}
+
+/**
+ * Maps configurator sub-IDs to the preferred I/O interface extension type.
+ * Used by `addFpgaInterfaceBoards()` to choose the right extension
+ * instead of always defaulting to -21 (TTL).
+ *
+ * Priority (most specific wins): resolver (-24) > analog (-120) > RS422 (-22) > TTL (-21)
+ */
+export const SUB_ID_EXTENSION_PREFERENCE: Record<string, string> = {
+  'resolver': '-24',
+  'a2b':      '-40',
+}
+
+/**
  * Summary of all FPGA/Configurable modules with specs from authenticated docs.
  */
 export const FPGA_MODULE_SPECS = [
@@ -3272,19 +3194,7 @@ export const FPGA_MODULE_SPECS = [
     "hasOptionalInterfaces": false,
     "hasInterfaceExtensions": false
   },
-  {
-    "moduleId": "IO323",
-    "fullName": "IO323-100k",
-    "fpgaSize": "100k",
-    "category": "configurable",
-    "description": "configurable I/O module containing an FPGA with 100k of logic cells, 42 TTL I/O lines, 32/16 x 16-bit single-ended/differential analog inputs and 8 x 16-bit analog outputs",
-    "logicCells": "100k",
-    "analogInputChannels": "32/16",
-    "analogOutputChannels": 8,
-    "digitalIOLines": 42,
-    "hasOptionalInterfaces": false,
-    "hasInterfaceExtensions": false
-  },
+  // IO323 removed (Discontinued)
   {
     "moduleId": "IO324",
     "fullName": "IO324-200k",
@@ -3311,19 +3221,7 @@ export const FPGA_MODULE_SPECS = [
     "hasOptionalInterfaces": false,
     "hasInterfaceExtensions": false
   },
-  {
-    "moduleId": "IO331",
-    "fullName": "IO331-150k",
-    "fpgaSize": "150k",
-    "category": "configurable",
-    "description": "configurable I/O module containing an FPGA with 150k of logic cells. Optional I/O interfaces allow a variety of digital (TTL, LVDS, CMOS), RS485/RS422, and analog functionality to be added. Optional I/O interface extensions allow to extend the number of digital lines from the front of the enclosure",
-    "logicCells": "150k",
-    "analogInputChannels": null,
-    "analogOutputChannels": null,
-    "digitalIOLines": null,
-    "hasOptionalInterfaces": true,
-    "hasInterfaceExtensions": true
-  },
+  // IO331 removed (Deprecated → IO332)
   {
     "moduleId": "IO332",
     "fullName": "IO332-200k",
@@ -3558,19 +3456,7 @@ export const FPGA_MODULE_SPECS = [
     "hasOptionalInterfaces": false,
     "hasInterfaceExtensions": false
   },
-  {
-    "moduleId": "IO394",
-    "fullName": "IO394-50k",
-    "fpgaSize": "50k",
-    "category": "configurable",
-    "description": "configurable I/O module containing an FPGA with 50k of logic cells and 13 x LVDS differential I/O lines",
-    "logicCells": "50k",
-    "analogInputChannels": null,
-    "analogOutputChannels": null,
-    "digitalIOLines": 13,
-    "hasOptionalInterfaces": false,
-    "hasInterfaceExtensions": false
-  },
+  // IO394 removed (no recent sales)
   {
     "moduleId": "IO397",
     "fullName": "IO397-50k",

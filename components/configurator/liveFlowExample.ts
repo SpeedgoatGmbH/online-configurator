@@ -4,13 +4,14 @@
  */
 
 import type { RequirementRow, ProposalGenerateRequest } from './proposalTypes'
-import type { FlowExample, ModuleShowcase, ModuleCandidate, ScoreBreakdownLine, NodeSnapshot } from './decisionFlowExamples'
+import type { FlowExample, ModuleShowcase, ModuleCandidate, ScoreBreakdownLine, NodeSnapshot, FpgaInterfaceBoardInfo } from './decisionFlowExamples'
 import type { StarterRow } from './industries'
 import {
   simulateProposalWithCandidates,
   type CandidateScore,
   type SimulationWithCandidates,
 } from '@/lib/proposal/simulator'
+import { MOCK_MODULE_CATALOG } from '@/lib/proposal/mockCatalog'
 
 // ─── Helpers ────────────────────────────────────────────────────────────────────
 
@@ -70,7 +71,34 @@ function buildScoreBreakdown(c: CandidateScore): ScoreBreakdownLine[] {
       detail: `${c.units} board${c.units > 1 ? 's' : ''} needed (×−2)`,
     })
   }
-
+  if (c.fpgaLookAheadBonus > 0) {
+    lines.push({
+      label: 'FPGA look-ahead',
+      points: c.fpgaLookAheadBonus,
+      detail: 'FPGA family covers multiple requirement rows proactively',
+    })
+  }
+  if (c.lifecyclePenalty < 0) {
+    lines.push({
+      label: 'Lifecycle penalty',
+      points: c.lifecyclePenalty,
+      detail: c.lifecyclePenalty <= -20 ? 'Module is discontinued' : 'Module is end-of-life',
+    })
+  }
+  if (c.configPackageBonus > 0) {
+    lines.push({
+      label: 'Config package',
+      points: c.configPackageBonus,
+      detail: 'Module configuration package matches the signal context',
+    })
+  }
+  if (c.fpgaCategoryBonus > 0) {
+    lines.push({
+      label: 'FPGA category',
+      points: c.fpgaCategoryBonus,
+      detail: c.fpgaCategoryBonus >= 3 ? 'Simulink-programmable (most flexible)' : 'Configurable I/O',
+    })
+  }
   return lines
 }
 
@@ -100,11 +128,11 @@ function buildNodeSnapshots(sim: SimulationWithCandidates, machineName: string):
   const categorySet = new Set(perRow.map((r) => r.categoryLabel))
   const categories = Array.from(categorySet).join(', ')
   const uniqueModules = new Set(response.recommendedModules.map((m) => m.moduleId)).size
-  const hasFpga = fpgaConsolidation !== null || response.recommendedModules.some((m) => m.moduleId.includes('-21'))
-
-  const avgConfidence = response.recommendedModules.length > 0
-    ? Math.round(response.recommendedModules.reduce((s, m) => s + m.confidence, 0) / response.recommendedModules.length)
-    : 0
+  // Detect FPGA: any winning module backed by an FPGA catalog entry
+  const hasFpga = response.recommendedModules.some((m) => {
+    const cat = MOCK_MODULE_CATALOG.find((c) => c.moduleId === m.moduleId)
+    return cat?.fpgaFamily != null
+  }) || fpgaConsolidation !== null
 
   // Typical candidate count range
   const candidateCounts = perRow.map((r) => r.allCandidates.length).filter((n) => n > 0)
@@ -123,17 +151,22 @@ function buildNodeSnapshots(sim: SimulationWithCandidates, machineName: string):
     { nodeId: 'pick_best', fact: `${uniqueModules} unique modules selected` },
     { nodeId: 'accumulate', fact: `${response.summary.moduleCount} total boards accumulated` },
     { nodeId: 'fpga_detect', fact: hasFpga ? `FPGA modules detected → branch active` : 'No FPGA modules → branch skipped' },
-    { nodeId: 'fpga_consolidate', fact: fpgaConsolidation ? `Before: ${fpgaConsolidation.before} boards → After: ${fpgaConsolidation.after} boards` : '—' },
-    { nodeId: 'fpga_interface', fact: hasFpga ? `Auto-added interface boards` : '—' },
+    { nodeId: 'fpga_consolidate', fact: fpgaConsolidation ? `Before: ${fpgaConsolidation.before} boards → After: ${fpgaConsolidation.after} boards` : hasFpga ? 'No consolidation needed (boards already minimal)' : '—' },
+    { nodeId: 'fpga_interface', fact: hasFpga ? (() => {
+      const ifcMods = response.recommendedModules.filter((m) => m.interfaceForModule)
+      if (ifcMods.length === 0) return 'No interface boards needed'
+      const names = ifcMods.map(m => `${m.quantity}× ${m.moduleId}`).join(', ')
+      return `Selected: ${names}`
+    })() : '—' },
     { nodeId: 'slot_check', fact: `${response.summary.moduleCount} modules · ${machineName}: ${response.machineWarnings ? 'WARNING' : 'OK'}` },
     { nodeId: 'compat_check', fact: response.machineWarnings?.length ? 'Compatibility warnings found' : `All modules compatible with ${machineName}` },
-    { nodeId: 'output', fact: `${response.summary.coveredChannels} channels resolved, ${response.summary.unresolvedCount} unresolved · avg confidence ${avgConfidence}%` },
+    { nodeId: 'output', fact: `${response.summary.coveredChannels} channels resolved, ${response.summary.unresolvedCount} unresolved` },
   ]
 }
 
 // ─── Overview facts (7 stages) ──────────────────────────────────────────────────
 
-function buildOverviewFacts(sim: SimulationWithCandidates, machineName: string): [string, string, string, string, string, string, string] {
+function buildOverviewFacts(sim: SimulationWithCandidates, machineName: string): [string, string, string, string, string, string, string, string] {
   const { response, perRow, fpgaConsolidation, catalogSize } = sim
   const rowCount = perRow.length
   const categorySet = new Set(perRow.map((r) => r.categoryLabel))
@@ -143,9 +176,6 @@ function buildOverviewFacts(sim: SimulationWithCandidates, machineName: string):
   const maxCandidates = candidateCounts.length > 0 ? Math.max(...candidateCounts) : 0
 
   const uniqueModules = new Set(response.recommendedModules.map((m) => m.moduleId)).size
-  const avgConfidence = response.recommendedModules.length > 0
-    ? Math.round(response.recommendedModules.reduce((s, m) => s + m.confidence, 0) / response.recommendedModules.length)
-    : 0
 
   // Top 3 winner facts
   const winnerFacts = perRow
@@ -154,13 +184,34 @@ function buildOverviewFacts(sim: SimulationWithCandidates, machineName: string):
     .map((r) => `${r.winner!.module.moduleId} wins ${r.subLabel} (score ${r.winner!.score})`)
     .join(' · ')
 
+  // Detect FPGA involvement for the overview
+  const overviewHasFpga = response.recommendedModules.some((m) => {
+    const cat = MOCK_MODULE_CATALOG.find((c) => c.moduleId === m.moduleId)
+    return cat?.fpgaFamily != null
+  }) || fpgaConsolidation !== null
+
   const fpgaFact = fpgaConsolidation
     ? `FPGA consolidation: ${fpgaConsolidation.before} boards → ${fpgaConsolidation.after} (${fpgaConsolidation.before - fpgaConsolidation.after} saved)`
-    : 'No FPGA modules → optimization step skipped'
+    : overviewHasFpga
+      ? 'FPGA modules detected · no consolidation needed'
+      : 'No FPGA modules → optimization step skipped'
+
+  // FPGA overhead guard fact
+  const overheadSwaps = sim.fpgaOverheadSwaps
+  const overheadFact = overheadSwaps.length > 0
+    ? overheadSwaps.map(s => {
+        const replacedWith = s.replacements.map(r => `${r.units}× ${r.moduleId}`).join(' + ')
+        return `${s.family} swapped → ${replacedWith} (${s.fpgaCount} modules → ${s.dedicatedCount})`
+      }).join('; ')
+    : overviewHasFpga
+      ? 'FPGA overhead acceptable — kept all FPGA families'
+      : 'No FPGA modules → step skipped'
 
   const slotFact = response.machineWarnings?.length
-    ? `${response.summary.moduleCount} modules · ${machineName}: expansion needed`
+    ? `${response.summary.moduleCount} modules · ${machineName}: ${response.machineWarnings.some(w => w.includes('expansion')) ? 'expansion needed' : 'over capacity ⚠'}`
     : `Fits in ${machineName} (${response.summary.moduleCount} modules)`
+
+  const resolvedRows = perRow.filter((r) => r.winner !== null).length
 
   return [
     `${rowCount} requirements: ${Array.from(categorySet).join(', ')}`,
@@ -168,8 +219,9 @@ function buildOverviewFacts(sim: SimulationWithCandidates, machineName: string):
     `Scored every candidate by spec match, channel count, consolidation, and machine fit`,
     winnerFacts || 'No module winners (all rows unresolved)',
     fpgaFact,
+    overheadFact,
     slotFact,
-    `${avgConfidence}% avg confidence · ${response.summary.coveredChannels - response.summary.unresolvedCount} of ${rowCount} rows resolved`,
+    `${resolvedRows} of ${rowCount} rows resolved`,
   ]
 }
 
@@ -224,13 +276,29 @@ export function buildLiveFlowExample(
   }
 
   const sim = simulateProposalWithCandidates(request)
-  const hasFpga = sim.fpgaConsolidation !== null || sim.response.recommendedModules.some((m) => m.moduleId.includes('-21'))
+  // Detect FPGA involvement: any recommended module that comes from an FPGA-backed catalog entry
+  const hasFpga = sim.response.recommendedModules.some((m) => {
+    const cat = MOCK_MODULE_CATALOG.find((c) => c.moduleId === m.moduleId)
+    return cat?.fpgaFamily != null
+  }) || sim.fpgaConsolidation !== null
 
   const starterRows: StarterRow[] = requirementsRows.map((r) => ({
     categoryId: r.categoryId,
     subId: r.subId,
     quantity: r.quantity,
     specs: r.specs,
+  }))
+
+  // Count interface boards (extensions + IO33X) added for FPGA modules
+  const interfaceMods = sim.response.recommendedModules.filter((m) => m.interfaceForModule)
+  const fpgaInterfaceBoardCount = interfaceMods.reduce((sum, m) => sum + m.quantity, 0)
+
+  // Build detailed interface board info for the decision flow
+  const fpgaInterfaceBoards: FpgaInterfaceBoardInfo[] = interfaceMods.map((m) => ({
+    boardId: m.moduleId,
+    friendlyName: m.friendlyName,
+    parentModuleId: m.interfaceForModule!,
+    quantity: m.quantity,
   }))
 
   return {
@@ -240,6 +308,9 @@ export function buildLiveFlowExample(
     description: `${requirementsRows.length} requirement rows from your current setup`,
     requirements: starterRows,
     hasFpgaBranch: hasFpga,
+    fpgaConsolidation: sim.fpgaConsolidation,
+    fpgaInterfaceBoardCount,
+    fpgaInterfaceBoards,
     nodeSnapshots: buildNodeSnapshots(sim, machineName),
     overviewFacts: buildOverviewFacts(sim, machineName),
     moduleShowcase: buildModuleShowcase(sim.perRow),
