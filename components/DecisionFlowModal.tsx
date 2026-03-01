@@ -490,6 +490,11 @@ export default function DecisionFlowModal({ open, onClose, liveExample }: Decisi
         {viewMode === 'overview' ? (
           /* ============= OVERVIEW MODE ============= */
           <div className="flex-1 overflow-y-auto px-6 py-6">
+            {!activeExample && (
+              <div className="mx-auto mb-4 max-w-2xl rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-center text-sm text-amber-700">
+                📋 Add I/O requirements in the configurator first, then reopen this view to see how the pipeline resolves them.
+              </div>
+            )}
             <div className="mx-auto max-w-2xl space-y-0">
               {OVERVIEW_STAGES.map((stage, idx) => {
                 const stageIdx = idx
