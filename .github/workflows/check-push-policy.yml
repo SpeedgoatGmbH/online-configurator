@@ -1,0 +1,44 @@
+name: Check Push Policy
+
+# Guards the PUBLIC remote (speedgoatgmbh).
+#
+# This repository exists on two remotes:
+#   speedgoatgmbh  – PUBLIC: website source code only (this policy enforced here)
+#   private/origin – INTERNAL: full history including research, docs, scripts
+#
+# This workflow is a no-op when the repo is hosted anywhere other than the
+# speedgoatgmbh organisation (e.g. forks, the private remote).
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: ["**"]
+
+jobs:
+  check-policy:
+    name: Public repo – website-essential files only
+    # Only enforce on the public speedgoatgmbh organisation repo.
+    if: github.repository_owner == 'speedgoatgmbh'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout (full history)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Check all tracked files against allowlist
+        run: |
+          # Check every file currently tracked in the repo, not just the diff.
+          # This is safer: it catches anything regardless of force-pushes,
+          # orphan branches, or missing base SHAs (which cause exit 128).
+          echo "--- All tracked files ---"
+          git ls-tree -r HEAD --name-only | tee /tmp/tracked-files.txt
+          echo "-------------------------"
+          cat /tmp/tracked-files.txt | node scripts/check-website-essential.mjs

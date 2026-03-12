@@ -1,0 +1,3171 @@
+[
+  {
+    "moduleId": "IO130",
+    "friendlyName": "Analog I/O 8+4ch +/-10 V Simultaneous",
+    "technicalName": "IO130",
+    "categoryCoverage": "analog",
+    "subCoverage": [
+      "inputs"
+    ],
+    "channelCapacity": 8,
+    "supportedSpecs": {
+      "inputMode": [
+        "Differential"
+      ],
+      "signalType": [
+        "Voltage"
+      ],
+      "signalRange": [
+        "±10 V"
+      ],
+      "resolution": [
+        "16-bit"
+      ],
+      "speed": [
+        "100 kHz"
+      ]
+    },
+    "compatibleMachines": [
+      "performance",
+      "pulse",
+      "baseline",
+      "mobile"
+    ],
+    "formFactor": "PMC",
+    "voltageRange": {
+      "min": -5,
+      "max": 5,
+      "unit": "V"
+    },
+    "resolutionBits": 16,
+    "operatingTempC": {
+      "min": -40,
+      "max": 85
+    },
+    "hrmDocPath": "IO130_TPMC530-20R/Documentation/IO130 - Hardware Reference Manual.docx",
+    "lifecycleStatus": "active",
+    "sampleRateHz": [
+      200000
+    ],
+    "outputVoltageRange": {
+      "min": -10,
+      "max": 10,
+      "unit": "V"
+    },
+    "samplingMode": "SM/SM",
+    "inputChannelSpec": "8 DF",
+    "outputChannelSpec": "4 SE",
+    "webSourcePage": "analog",
+    "docDescription": "Fast simultaneous sampling 16-bit isolated analog input and output module"
+  },
+  {
+    "moduleId": "IO131",
+    "friendlyName": "Analog Input 16ch +/-10 V Simultaneous",
+    "technicalName": "IO131",
+    "categoryCoverage": "analog",
+    "subCoverage": [
+      "inputs"
+    ],
+    "channelCapacity": 16,
+    "supportedSpecs": {
+      "inputMode": [
+        "Differential"
+      ],
+      "signalType": [
+        "Voltage"
+      ],
+      "signalRange": [
+        "±10 V"
+      ],
+      "resolution": [
+        "16-bit"
+      ],
+      "speed": [
+        "100 kHz"
+      ]
+    },
+    "compatibleMachines": [
+      "performance",
+      "pulse",
+      "baseline",
+      "mobile"
+    ],
+    "formFactor": "PMC",
+    "voltageRange": {
+      "min": -5,
+      "max": 5,
+      "unit": "V"
+    },
+    "resolutionBits": 16,
+    "operatingTempC": {
+      "min": -40,
+      "max": 85
+    },
+    "hrmDocPath": "IO131_TPMC530-10R/Documentation/IO131 - Hardware Reference Manual.docx",
+    "lifecycleStatus": "active",
+    "sampleRateHz": [
+      200000
+    ],
+    "outputVoltageRange": {
+      "min": -10,
+      "max": 10,
+      "unit": "V"
+    },
+    "samplingMode": "SM/SM",
+    "inputChannelSpec": "16 DF",
+    "outputChannelSpec": "8 SE",
+    "webSourcePage": "analog",
+    "docDescription": "Fast simultaneous sampling 16-bit isolated analog input and output module"
+  },
+  {
+    "moduleId": "IO134",
+    "friendlyName": "Analog Input 32ch +/-10 V Simultaneous",
+    "technicalName": "IO134",
+    "categoryCoverage": "analog",
+    "subCoverage": [
+      "inputs"
+    ],
+    "channelCapacity": 32,
+    "supportedSpecs": {
+      "inputMode": [
+        "Differential"
+      ],
+      "signalType": [
+        "Voltage"
+      ],
+      "signalRange": [
+        "±10 V"
+      ],
+      "resolution": [
+        "16-bit"
+      ],
+      "speed": [
+        "100 kHz"
+      ]
+    },
+    "compatibleMachines": [
+      "performance",
+      "pulse",
+      "baseline",
+      "mobile"
+    ],
+    "lifecycleStatus": "active",
+    "resolutionBits": 16,
+    "sampleRateHz": [
+      200000
+    ],
+    "voltageRange": {
+      "min": -10,
+      "max": 10,
+      "unit": "V"
+    },
+    "samplingMode": "SM/-",
+    "inputChannelSpec": "32 DF",
+    "webSourcePage": "analog",
+    "docDescription": "Fast, simultaneous-sampling, 16-bit analog input module"
+  },
+  {
+    "moduleId": "IO141",
+    "friendlyName": "Analog I/O 16+4ch Wide-Range +/-25 V",
+    "technicalName": "IO141",
+    "categoryCoverage": "analog",
+    "subCoverage": [
+      "inputs"
+    ],
+    "channelCapacity": 16,
+    "supportedSpecs": {
+      "inputMode": [
+        "Single-ended",
+        "Differential"
+      ],
+      "signalType": [
+        "Voltage"
+      ],
+      "signalRange": [
+        "±10 V",
+        "±5 V"
+      ],
+      "resolution": [
+        "16-bit"
+      ],
+      "speed": [
+        "500 kHz"
+      ]
+    },
+    "compatibleMachines": [
+      "performance",
+      "pulse",
+      "baseline",
+      "mobile"
+    ],
+    "formFactor": "PMC",
+    "operatingTempC": {
+      "min": -40,
+      "max": 85
+    },
+    "hrmDocPath": "IO141 & IO142_TPMC541/Documentation/IO141 - Hardware Reference Manual.docx",
+    "lifecycleStatus": "active",
+    "resolutionBits": 16,
+    "sampleRateHz": [
+      800000
+    ],
+    "voltageRange": {
+      "min": -25,
+      "max": 25,
+      "unit": "V"
+    },
+    "outputVoltageRange": {
+      "min": -12,
+      "max": 12,
+      "unit": "V"
+    },
+    "currentRange": {
+      "min": 0,
+      "max": 24,
+      "unit": "mA"
+    },
+    "samplingMode": "SQ/SM",
+    "inputChannelSpec": "16 SE / 8 DF",
+    "outputChannelSpec": "4 SE",
+    "webSourcePage": "analog",
+    "docDescription": "Fast sampling 16-bit analog input and output module"
+  },
+  {
+    "moduleId": "IO142",
+    "friendlyName": "Analog I/O 32+8ch Wide-Range +/-25 V",
+    "technicalName": "IO142",
+    "categoryCoverage": "analog",
+    "subCoverage": [
+      "inputs"
+    ],
+    "channelCapacity": 32,
+    "supportedSpecs": {
+      "inputMode": [
+        "Single-ended",
+        "Differential"
+      ],
+      "signalType": [
+        "Voltage"
+      ],
+      "signalRange": [
+        "±10 V",
+        "±5 V"
+      ],
+      "resolution": [
+        "16-bit"
+      ],
+      "speed": [
+        "500 kHz"
+      ]
+    },
+    "compatibleMachines": [
+      "performance",
+      "pulse",
+      "baseline",
+      "mobile"
+    ],
+    "lifecycleStatus": "active",
+    "resolutionBits": 16,
+    "sampleRateHz": [
+      800000
+    ],
+    "voltageRange": {
+      "min": -25,
+      "max": 25,
+      "unit": "V"
+    },
+    "outputVoltageRange": {
+      "min": -12,
+      "max": 12,
+      "unit": "V"
+    },
+    "currentRange": {
+      "min": 0,
+      "max": 24,
+      "unit": "mA"
+    },
+    "samplingMode": "SQ/SM",
+    "inputChannelSpec": "32 SE / 16 DF",
+    "outputChannelSpec": "8 SE",
+    "webSourcePage": "analog",
+    "docDescription": "Fast sampling 16-bit analog input and output module"
+  },
+  {
+    "moduleId": "IO145",
+    "friendlyName": "Analog I/O 16+8ch +/-48 V / Current",
+    "technicalName": "IO145",
+    "categoryCoverage": "analog",
+    "subCoverage": [
+      "inputs"
+    ],
+    "channelCapacity": 16,
+    "supportedSpecs": {
+      "inputMode": [
+        "Single-ended",
+        "Differential"
+      ],
+      "signalType": [
+        "Voltage",
+        "Current"
+      ],
+      "signalRange": [
+        "±10 V",
+        "±5 V",
+        "0-20 mA",
+        "4-20 mA"
+      ],
+      "resolution": [
+        "16-bit"
+      ],
+      "speed": [
+        "500 kHz"
+      ]
+    },
+    "compatibleMachines": [
+      "performance",
+      "pulse",
+      "baseline",
+      "mobile"
+    ],
+    "formFactor": "XMC",
+    "voltageRange": {
+      "min": -10,
+      "max": 10,
+      "unit": "V"
+    },
+    "operatingTempC": {
+      "min": -40,
+      "max": 85
+    },
+    "hrmDocPath": "IO145_TXMC543/Documentation/IO145 - Hardware Reference Manual.docx",
+    "lifecycleStatus": "active",
+    "resolutionBits": 16,
+    "sampleRateHz": [
+      800000
+    ],
+    "outputVoltageRange": {
+      "min": -12,
+      "max": 12,
+      "unit": "V"
+    },
+    "currentRange": {
+      "min": -25,
+      "max": 25,
+      "unit": "mA"
+    },
+    "samplingMode": "SQ/SM",
+    "inputChannelSpec": "16 SE / 8 DF",
+    "outputChannelSpec": "8 SE",
+    "webSourcePage": "analog",
+    "docDescription": "Fast sampling 16-bit analog input and output module IO17x Thermocouple, resistive sensors and strain gauge measurement modules"
+  },
+  {
+    "moduleId": "IO109",
+    "friendlyName": "Analog Input 12ch 24-bit Precision",
+    "technicalName": "IO109",
+    "categoryCoverage": "analog",
+    "subCoverage": [
+      "inputs"
+    ],
+    "channelCapacity": 12,
+    "supportedSpecs": {
+      "inputMode": [
+        "Differential"
+      ],
+      "signalType": [
+        "Voltage"
+      ],
+      "signalRange": [
+        "±10 V"
+      ],
+      "resolution": [
+        "24-bit"
+      ],
+      "speed": [
+        "100 kHz"
+      ]
+    },
+    "compatibleMachines": [
+      "performance",
+      "baseline",
+      "mobile"
+    ],
+    "lifecycleStatus": "active",
+    "resolutionBits": 24,
+    "sampleRateHz": [
+      200000
+    ],
+    "voltageRange": {
+      "min": -10,
+      "max": 10,
+      "unit": "V"
+    },
+    "samplingMode": "SM/-",
+    "inputChannelSpec": "12 DF",
+    "webSourcePage": "analog",
+    "docDescription": "High-resolution 24-bit sigma-delta analog module with 12 differential analog input channels"
+  },
+  {
+    "moduleId": "IO191",
+    "friendlyName": "Analog I/O 8+4ch Compact +/-25 V",
+    "technicalName": "IO191",
+    "categoryCoverage": "analog",
+    "subCoverage": [
+      "inputs"
+    ],
+    "channelCapacity": 8,
+    "supportedSpecs": {
+      "inputMode": [
+        "Single-ended",
+        "Differential"
+      ],
+      "signalType": [
+        "Voltage"
+      ],
+      "signalRange": [
+        "±10 V",
+        "±5 V"
+      ],
+      "resolution": [
+        "16-bit"
+      ],
+      "speed": [
+        "100 kHz"
+      ]
+    },
+    "compatibleMachines": [
+      "baseline",
+      "unit"
+    ],
+    "lifecycleStatus": "active",
+    "resolutionBits": 16,
+    "sampleRateHz": [
+      250000
+    ],
+    "voltageRange": {
+      "min": -25,
+      "max": 25,
+      "unit": "V"
+    },
+    "outputVoltageRange": {
+      "min": -10,
+      "max": 10,
+      "unit": "V"
+    },
+    "currentRange": {
+      "min": -10,
+      "max": 10,
+      "unit": "mA"
+    },
+    "samplingMode": "SQ/SQ",
+    "inputChannelSpec": "8 SE / 4 DF",
+    "outputChannelSpec": "4 SE",
+    "webSourcePage": "analog",
+    "docDescription": "Fast 16-bit analog input and output module"
+  },
+  {
+    "moduleId": "IO104",
+    "friendlyName": "Analog I/O 8+4ch High-Speed 2 MHz",
+    "technicalName": "IO104",
+    "categoryCoverage": "analog",
+    "subCoverage": [
+      "inputs"
+    ],
+    "channelCapacity": 8,
+    "supportedSpecs": {
+      "inputMode": [
+        "Single-ended",
+        "Differential"
+      ],
+      "signalType": [
+        "Voltage"
+      ],
+      "signalRange": [
+        "±10 V"
+      ],
+      "resolution": [
+        "16-bit"
+      ],
+      "speed": [
+        "500 kHz"
+      ]
+    },
+    "compatibleMachines": [
+      "performance",
+      "baseline",
+      "mobile"
+    ],
+    "operatingTempC": {
+      "min": -40,
+      "max": 85
+    },
+    "hrmDocPath": "IO104/Documentation/IO104 - Hardware Reference Manual.docx",
+    "lifecycleStatus": "active",
+    "resolutionBits": 16,
+    "sampleRateHz": [
+      2000000
+    ],
+    "voltageRange": {
+      "min": -10,
+      "max": 10,
+      "unit": "V"
+    },
+    "outputVoltageRange": {
+      "min": -10,
+      "max": 10,
+      "unit": "V"
+    },
+    "samplingMode": "SM/SM",
+    "inputChannelSpec": "8 SE / 8 DF",
+    "outputChannelSpec": "4 SE",
+    "webSourcePage": "analog",
+    "docDescription": "Very fast 16-bit analog module with 8 simultaneous sampling analog input channels, 4 analog output channels, 16 digital TTL channels"
+  },
+  {
+    "moduleId": "IO112",
+    "friendlyName": "Analog Input 4-32ch Up to 18-bit 1 MHz",
+    "technicalName": "IO112",
+    "categoryCoverage": "analog",
+    "subCoverage": [
+      "inputs"
+    ],
+    "channelCapacity": 32,
+    "supportedSpecs": {
+      "inputMode": [
+        "Differential"
+      ],
+      "signalType": [
+        "Voltage"
+      ],
+      "signalRange": [
+        "±10 V"
+      ],
+      "resolution": [
+        "16-bit",
+        "18-bit"
+      ],
+      "speed": [
+        "500 kHz"
+      ]
+    },
+    "compatibleMachines": [
+      "performance",
+      "baseline",
+      "mobile"
+    ],
+    "lifecycleStatus": "active",
+    "resolutionBits": 18,
+    "sampleRateHz": [
+      1000000
+    ],
+    "voltageRange": {
+      "min": -10,
+      "max": 10,
+      "unit": "V"
+    },
+    "samplingMode": "SM/-",
+    "inputChannelSpec": "4, 8, 16, 32 DF",
+    "webSourcePage": "analog",
+    "docDescription": "High-resolution 16 or 18-bit simultaneous sampling analog input I/O module with 4, 8, 16, or 32 differential channels"
+  },
+  {
+    "moduleId": "IO108",
+    "friendlyName": "Analog Output 8ch +/-20 V Simultaneous",
+    "technicalName": "IO108",
+    "categoryCoverage": "analog",
+    "subCoverage": [
+      "outputs"
+    ],
+    "channelCapacity": 8,
+    "supportedSpecs": {
+      "outputMode": [
+        "Single-ended",
+        "Differential"
+      ],
+      "signalType": [
+        "Voltage"
+      ],
+      "signalRange": [
+        "±10 V",
+        "±5 V"
+      ],
+      "resolution": [
+        "16-bit"
+      ],
+      "speed": [
+        "100 kHz"
+      ]
+    },
+    "compatibleMachines": [
+      "performance",
+      "baseline",
+      "mobile"
+    ],
+    "lifecycleStatus": "active",
+    "resolutionBits": 16,
+    "sampleRateHz": [
+      450000
+    ],
+    "outputVoltageRange": {
+      "min": -20,
+      "max": 20,
+      "unit": "V"
+    },
+    "samplingMode": "-/SM",
+    "outputChannelSpec": "8 SE / 8 DF",
+    "webSourcePage": "analog",
+    "docDescription": "Fast 16-bit analog module with 8 differential analog output channels"
+  },
+  {
+    "moduleId": "IO111",
+    "friendlyName": "Analog Output 16ch +/-10.8 V",
+    "technicalName": "IO111",
+    "categoryCoverage": "analog",
+    "subCoverage": [
+      "outputs"
+    ],
+    "channelCapacity": 16,
+    "supportedSpecs": {
+      "outputMode": [
+        "Single-ended"
+      ],
+      "signalType": [
+        "Voltage"
+      ],
+      "signalRange": [
+        "±10 V"
+      ],
+      "resolution": [
+        "16-bit"
+      ],
+      "speed": [
+        "20 kHz"
+      ]
+    },
+    "compatibleMachines": [
+      "performance",
+      "baseline",
+      "mobile"
+    ],
+    "formFactor": "PMC",
+    "voltageRange": {
+      "min": 0,
+      "max": 10.8,
+      "unit": "V"
+    },
+    "resolutionBits": 16,
+    "operatingTempC": {
+      "min": -40,
+      "max": 85
+    },
+    "hrmDocPath": "IO111_TPMC553-11R/Documentation/IO111 - Hardware Reference Manual (Please update chapters 4 and 5 only).docx",
+    "lifecycleStatus": "active",
+    "outputVoltageRange": {
+      "min": -10.8,
+      "max": 10.8,
+      "unit": "V"
+    },
+    "samplingMode": "-/SM",
+    "outputChannelSpec": "16 SE",
+    "webSourcePage": "analog",
+    "docDescription": "Fast 16-bit analog module with 16 single-ended analog output channels"
+  },
+  {
+    "moduleId": "IO113",
+    "friendlyName": "Analog Output 8ch +/-10 V 18/20-bit",
+    "technicalName": "IO113",
+    "categoryCoverage": "analog",
+    "subCoverage": [
+      "outputs"
+    ],
+    "channelCapacity": 8,
+    "supportedSpecs": {
+      "outputMode": [
+        "Single-ended"
+      ],
+      "signalType": [
+        "Voltage"
+      ],
+      "signalRange": [
+        "±10 V"
+      ],
+      "resolution": [
+        "18-bit"
+      ],
+      "speed": [
+        "20 kHz"
+      ]
+    },
+    "compatibleMachines": [
+      "performance",
+      "baseline",
+      "mobile"
+    ],
+    "hrmDocPath": "IO113-20/Documentation/IO113-20 - Hardware Reference Manual.docx",
+    "lifecycleStatus": "active",
+    "resolutionBits": 20,
+    "outputVoltageRange": {
+      "min": -10,
+      "max": 10,
+      "unit": "V"
+    },
+    "samplingMode": "-/SM",
+    "outputChannelSpec": "8 SE",
+    "webSourcePage": "analog",
+    "docDescription": "18-bit analog module with 8 single-ended or 3-wire differential output channels"
+  },
+  {
+    "moduleId": "IO117",
+    "friendlyName": "Analog Input 32ch +/-10 V Sequential",
+    "technicalName": "IO117",
+    "categoryCoverage": "analog",
+    "subCoverage": [
+      "inputs"
+    ],
+    "channelCapacity": 32,
+    "supportedSpecs": {
+      "inputMode": [
+        "Single-ended",
+        "Differential"
+      ],
+      "signalType": [
+        "Voltage"
+      ],
+      "signalRange": [
+        "±10 V"
+      ],
+      "resolution": [
+        "16-bit"
+      ],
+      "speed": [
+        "20 kHz"
+      ]
+    },
+    "compatibleMachines": [
+      "performance",
+      "baseline",
+      "mobile"
+    ],
+    "lifecycleStatus": "active",
+    "resolutionBits": 16,
+    "voltageRange": {
+      "min": -10,
+      "max": 10,
+      "unit": "V"
+    },
+    "samplingMode": "SQ/-",
+    "inputChannelSpec": "32 SE / 16 DF",
+    "webSourcePage": "analog",
+    "docDescription": "16-bit analog module with 32 galvanically isolated input channels"
+  },
+  {
+    "moduleId": "IO135",
+    "friendlyName": "Analog I/O 32in + 16out Simultaneous",
+    "technicalName": "IO135",
+    "categoryCoverage": "analog",
+    "subCoverage": [
+      "outputs"
+    ],
+    "channelCapacity": 16,
+    "supportedSpecs": {
+      "outputMode": [
+        "Single-ended"
+      ],
+      "signalType": [
+        "Voltage"
+      ],
+      "signalRange": [
+        "±10 V"
+      ],
+      "resolution": [
+        "16-bit"
+      ],
+      "speed": [
+        "100 kHz"
+      ]
+    },
+    "compatibleMachines": [
+      "performance",
+      "pulse",
+      "baseline",
+      "mobile"
+    ],
+    "lifecycleStatus": "active",
+    "resolutionBits": 16,
+    "sampleRateHz": [
+      200000
+    ],
+    "voltageRange": {
+      "min": -10,
+      "max": 10,
+      "unit": "V"
+    },
+    "outputVoltageRange": {
+      "min": -10.8,
+      "max": 10.8,
+      "unit": "V"
+    },
+    "samplingMode": "SM/SM",
+    "inputChannelSpec": "32 DF",
+    "outputChannelSpec": "16 SE",
+    "webSourcePage": "analog",
+    "docDescription": "Fast simultaneous sampling 16-bit analog input and output module"
+  },
+  {
+    "moduleId": "IO110",
+    "friendlyName": "Analog Output 32ch +/-10.8 V",
+    "technicalName": "IO110",
+    "categoryCoverage": "analog",
+    "subCoverage": [
+      "outputs"
+    ],
+    "channelCapacity": 32,
+    "supportedSpecs": {
+      "outputMode": [
+        "Single-ended"
+      ],
+      "signalType": [
+        "Voltage"
+      ],
+      "signalRange": [
+        "±10 V"
+      ],
+      "resolution": [
+        "16-bit"
+      ],
+      "speed": [
+        "20 kHz"
+      ]
+    },
+    "compatibleMachines": [
+      "performance",
+      "pulse",
+      "baseline",
+      "mobile"
+    ],
+    "formFactor": "PMC",
+    "voltageRange": {
+      "min": 0,
+      "max": 10.8,
+      "unit": "V"
+    },
+    "resolutionBits": 16,
+    "operatingTempC": {
+      "min": -40,
+      "max": 85
+    },
+    "hrmDocPath": "IO110_TPMC553-10R/Documentation/IO110 - Hardware Reference Manual.docx",
+    "lifecycleStatus": "active",
+    "outputVoltageRange": {
+      "min": -10.8,
+      "max": 10.8,
+      "unit": "V"
+    },
+    "samplingMode": "-/SM",
+    "outputChannelSpec": "32 SE",
+    "webSourcePage": "analog",
+    "docDescription": "Fast 16-bit analog module with 32 single-ended analog output channels"
+  },
+  {
+    "moduleId": "IO107",
+    "friendlyName": "Analog Output 16ch +/-20 V Simultaneous",
+    "technicalName": "IO107",
+    "categoryCoverage": "analog",
+    "subCoverage": [
+      "outputs"
+    ],
+    "channelCapacity": 16,
+    "supportedSpecs": {
+      "outputMode": [
+        "Single-ended",
+        "Differential"
+      ],
+      "signalType": [
+        "Voltage"
+      ],
+      "signalRange": [
+        "±10 V",
+        "±5 V"
+      ],
+      "resolution": [
+        "16-bit"
+      ],
+      "speed": [
+        "100 kHz"
+      ]
+    },
+    "compatibleMachines": [
+      "performance",
+      "baseline",
+      "mobile"
+    ],
+    "lifecycleStatus": "active",
+    "resolutionBits": 16,
+    "sampleRateHz": [
+      450000
+    ],
+    "outputVoltageRange": {
+      "min": -20,
+      "max": 20,
+      "unit": "V"
+    },
+    "samplingMode": "-/SM",
+    "outputChannelSpec": "16 SE / 16 DF",
+    "webSourcePage": "analog",
+    "docDescription": "Fast 16-bit analog module with 16 differential analog output channels"
+  },
+  {
+    "moduleId": "IO143",
+    "friendlyName": "Analog Output 8ch +/-12 V / 0-24 mA",
+    "technicalName": "IO143",
+    "categoryCoverage": "analog",
+    "subCoverage": [
+      "outputs"
+    ],
+    "channelCapacity": 8,
+    "supportedSpecs": {
+      "outputMode": [
+        "Single-ended"
+      ],
+      "signalType": [
+        "Voltage",
+        "Current"
+      ],
+      "signalRange": [
+        "±10 V",
+        "0-20 mA"
+      ],
+      "resolution": [
+        "16-bit"
+      ],
+      "speed": [
+        "20 kHz"
+      ]
+    },
+    "compatibleMachines": [
+      "performance",
+      "pulse",
+      "baseline",
+      "mobile"
+    ],
+    "formFactor": "PMC",
+    "resolutionBits": 16,
+    "operatingTempC": {
+      "min": -40,
+      "max": 85
+    },
+    "hrmDocPath": "IO143 & IO144_TPMC542/Documentation/IO143 - Hardware Reference Manual (Bug in document. Do not remove or accept track changes).docx",
+    "lifecycleStatus": "active",
+    "outputVoltageRange": {
+      "min": -12,
+      "max": 12,
+      "unit": "V"
+    },
+    "currentRange": {
+      "min": 0,
+      "max": 24,
+      "unit": "mA"
+    },
+    "samplingMode": "-/SM",
+    "outputChannelSpec": "8 SE",
+    "webSourcePage": "analog",
+    "docDescription": "Fast simultaneous sampling 16-bit analog voltage/current output module"
+  },
+  {
+    "moduleId": "IO144",
+    "friendlyName": "Analog Output 16ch +/-12 V / 0-24 mA",
+    "technicalName": "IO144",
+    "categoryCoverage": "analog",
+    "subCoverage": [
+      "outputs"
+    ],
+    "channelCapacity": 16,
+    "supportedSpecs": {
+      "outputMode": [
+        "Single-ended"
+      ],
+      "signalType": [
+        "Voltage",
+        "Current"
+      ],
+      "signalRange": [
+        "±10 V",
+        "0-20 mA",
+        "4-20 mA"
+      ],
+      "resolution": [
+        "16-bit"
+      ],
+      "speed": [
+        "20 kHz"
+      ]
+    },
+    "compatibleMachines": [
+      "performance",
+      "pulse",
+      "baseline",
+      "mobile"
+    ],
+    "lifecycleStatus": "active",
+    "resolutionBits": 16,
+    "outputVoltageRange": {
+      "min": -12,
+      "max": 12,
+      "unit": "V"
+    },
+    "currentRange": {
+      "min": 0,
+      "max": 24,
+      "unit": "mA"
+    },
+    "samplingMode": "-/SM",
+    "outputChannelSpec": "16 SE",
+    "webSourcePage": "analog",
+    "docDescription": "Fast simultaneous sampling 16-bit analog voltage/current output module"
+  },
+  {
+    "moduleId": "IO207",
+    "friendlyName": "Digital I/O 128ch TTL",
+    "technicalName": "IO207",
+    "categoryCoverage": "digital",
+    "subCoverage": [
+      "inputs",
+      "outputs"
+    ],
+    "channelCapacity": 128,
+    "supportedSpecs": {
+      "signalType": [
+        "TTL / Discrete"
+      ],
+      "range": [
+        "5 V TTL",
+        "3.3 V TTL"
+      ],
+      "resolution": [
+        "None"
+      ]
+    },
+    "compatibleMachines": [
+      "performance"
+    ],
+    "lifecycleStatus": "active",
+    "webSourcePage": "digital",
+    "docDescription": "I/O module provides a total of 128 digital TTL lines."
+  },
+  {
+    "moduleId": "IO203",
+    "friendlyName": "Digital I/O 64ch TTL",
+    "technicalName": "IO203",
+    "categoryCoverage": "digital",
+    "subCoverage": [
+      "inputs",
+      "outputs"
+    ],
+    "channelCapacity": 64,
+    "supportedSpecs": {
+      "signalType": [
+        "TTL / Discrete"
+      ],
+      "range": [
+        "5 V TTL",
+        "3.3 V TTL"
+      ],
+      "resolution": [
+        "None"
+      ]
+    },
+    "compatibleMachines": [
+      "performance",
+      "pulse",
+      "baseline",
+      "mobile"
+    ],
+    "lifecycleStatus": "active",
+    "webSourcePage": "digital",
+    "docDescription": "digital I/O module providing a total of 64 TTL channels."
+  },
+  {
+    "moduleId": "IO292",
+    "friendlyName": "Digital I/O 24ch TTL Compact",
+    "technicalName": "IO292",
+    "categoryCoverage": "digital",
+    "subCoverage": [
+      "inputs",
+      "outputs"
+    ],
+    "channelCapacity": 24,
+    "supportedSpecs": {
+      "signalType": [
+        "TTL / Discrete"
+      ],
+      "range": [
+        "5 V TTL",
+        "3.3 V TTL"
+      ],
+      "resolution": [
+        "None"
+      ]
+    },
+    "compatibleMachines": [
+      "baseline",
+      "unit"
+    ],
+    "lifecycleStatus": "active",
+    "webSourcePage": "digital",
+    "docDescription": "Digital I/O module with 24 I/O lines."
+  },
+  {
+    "moduleId": "IO206",
+    "friendlyName": "Isolated Digital Input 32ch 0-24 V",
+    "technicalName": "IO206",
+    "categoryCoverage": "digital",
+    "subCoverage": [
+      "inputs"
+    ],
+    "channelCapacity": 32,
+    "supportedSpecs": {
+      "signalType": [
+        "Isolated Power Input"
+      ],
+      "range": [
+        "0-24 V"
+      ],
+      "resolution": [
+        "Isolated Inputs"
+      ]
+    },
+    "compatibleMachines": [
+      "performance",
+      "pulse",
+      "baseline",
+      "mobile"
+    ],
+    "lifecycleStatus": "active",
+    "webSourcePage": "digital",
+    "docDescription": "digital I/O module providing 32 digital inputs"
+  },
+  {
+    "moduleId": "IO290",
+    "friendlyName": "Isolated Digital I/O 8in+8out+8TTL",
+    "technicalName": "IO290",
+    "categoryCoverage": "digital",
+    "subCoverage": [
+      "inputs",
+      "outputs"
+    ],
+    "channelCapacity": 24,
+    "supportedSpecs": {
+      "signalType": [
+        "TTL / Discrete",
+        "Isolated Power Input",
+        "Isolated Power Output"
+      ],
+      "range": [
+        "5 V TTL",
+        "0-31 V",
+        "+5-34 V"
+      ],
+      "resolution": [
+        "None",
+        "Isolated Inputs",
+        "Isolated Outputs"
+      ]
+    },
+    "compatibleMachines": [
+      "performance"
+    ],
+    "lifecycleStatus": "active",
+    "webSourcePage": "digital",
+    "docDescription": "Digital I/O module with isolated inputs, solid state FET outputs and LVTTL I/O lines."
+  },
+  {
+    "moduleId": "IO291",
+    "friendlyName": "Isolated Digital I/O 8in+8out+8TTL Compact",
+    "technicalName": "IO291",
+    "categoryCoverage": "digital",
+    "subCoverage": [
+      "inputs",
+      "outputs"
+    ],
+    "channelCapacity": 24,
+    "supportedSpecs": {
+      "signalType": [
+        "TTL / Discrete",
+        "Isolated Power Input",
+        "Isolated Power Output"
+      ],
+      "range": [
+        "5 V TTL",
+        "0-48 V",
+        "+5-48 V"
+      ],
+      "resolution": [
+        "None",
+        "Isolated Inputs",
+        "Isolated Outputs"
+      ]
+    },
+    "compatibleMachines": [
+      "baseline",
+      "unit"
+    ],
+    "lifecycleStatus": "active",
+    "webSourcePage": "digital",
+    "docDescription": "Digital I/O module with isolated inputs, solid state FET outputs and LVTTL I/O lines."
+  },
+  {
+    "moduleId": "IO205",
+    "friendlyName": "Isolated Digital Output 32ch High-Side 6-48 V",
+    "technicalName": "IO205",
+    "categoryCoverage": "digital",
+    "subCoverage": [
+      "outputs"
+    ],
+    "channelCapacity": 32,
+    "supportedSpecs": {
+      "signalType": [
+        "Isolated Power Output"
+      ],
+      "range": [
+        "+6-48 V"
+      ],
+      "resolution": [
+        "Isolated Outputs"
+      ],
+      "speed": [
+        "High-side (0.5 A/ch)"
+      ]
+    },
+    "compatibleMachines": [
+      "performance",
+      "pulse",
+      "baseline",
+      "mobile"
+    ],
+    "lifecycleStatus": "active",
+    "webSourcePage": "digital",
+    "docDescription": "digital I/O module providing 32 digital 24V/0.5A outputs; high side switches."
+  },
+  {
+    "moduleId": "IO204",
+    "friendlyName": "Isolated Digital I/O 16in+16out 0-24 V / 6-48 V",
+    "technicalName": "IO204",
+    "categoryCoverage": "digital",
+    "subCoverage": [
+      "inputs",
+      "outputs"
+    ],
+    "channelCapacity": 32,
+    "supportedSpecs": {
+      "signalType": [
+        "Isolated Power Input",
+        "Isolated Power Output"
+      ],
+      "range": [
+        "0-24 V",
+        "+6-48 V"
+      ],
+      "resolution": [
+        "Isolated Inputs",
+        "Isolated Outputs",
+        "Isolated Inputs + Outputs"
+      ],
+      "speed": [
+        "High-side (0.5 A/ch)",
+        "Low-side (0.5 A/ch)"
+      ]
+    },
+    "compatibleMachines": [
+      "performance",
+      "baseline",
+      "mobile"
+    ],
+    "lifecycleStatus": "active",
+    "webSourcePage": "digital",
+    "docDescription": "digital I/O module providing 16x 24V inputs and 16x 24V/0.5A outputs."
+  },
+  {
+    "moduleId": "IO603",
+    "friendlyName": "CAN FD / LIN / XCP 4-port",
+    "technicalName": "IO603",
+    "categoryCoverage": "communication",
+    "subCoverage": [
+      "protocols"
+    ],
+    "channelCapacity": 4,
+    "supportedSpecs": {
+      "resolution": [
+        "HS CAN",
+        "HS CAN FD",
+        "LIN"
+      ],
+      "speed": [
+        "500 kbit/s",
+        "1 Mbit/s",
+        "2 Mbit/s",
+        "5 Mbit/s",
+        "8 Mbit/s",
+        "19.2 kbit/s"
+      ]
+    },
+    "protocolSupport": [
+      "CAN",
+      "CAN FD",
+      "LIN",
+      "XCP over CAN"
+    ],
+    "compatibleMachines": [
+      "performance",
+      "pulse",
+      "baseline",
+      "mobile"
+    ],
+    "lifecycleStatus": "active",
+    "connector": "25-Pin D-Sub to 5x 9-Pin D-Sub cable",
+    "maxDataRateMbps": 8,
+    "webSourcePage": "communications"
+  },
+  {
+    "moduleId": "IO691",
+    "friendlyName": "CAN / XCP 2-port Compact",
+    "technicalName": "IO691",
+    "categoryCoverage": "communication",
+    "subCoverage": [
+      "protocols"
+    ],
+    "channelCapacity": 2,
+    "supportedSpecs": {
+      "resolution": [
+        "HS CAN"
+      ],
+      "speed": [
+        "500 kbit/s",
+        "1 Mbit/s"
+      ]
+    },
+    "protocolSupport": [
+      "CAN",
+      "XCP over CAN"
+    ],
+    "compatibleMachines": [
+      "baseline",
+      "unit"
+    ],
+    "lifecycleStatus": "active",
+    "connector": "9-pin D-sub x 2",
+    "maxDataRateMbps": 8,
+    "webSourcePage": "communications"
+  },
+  {
+    "moduleId": "IO623",
+    "friendlyName": "FlexRay 4-port",
+    "technicalName": "IO623",
+    "categoryCoverage": "communication",
+    "subCoverage": [
+      "protocols"
+    ],
+    "channelCapacity": 4,
+    "supportedSpecs": {
+      "resolution": [
+        "FlexRay"
+      ],
+      "speed": [
+        "10 Mbit/s"
+      ]
+    },
+    "protocolSupport": [
+      "FlexRay"
+    ],
+    "compatibleMachines": [
+      "performance",
+      "baseline",
+      "mobile"
+    ],
+    "lifecycleStatus": "active",
+    "connector": "4x Binder 712 8-pol",
+    "maxDataRateMbps": 10,
+    "webSourcePage": "communications"
+  },
+  {
+    "moduleId": "IO610",
+    "friendlyName": "CAN / XCP 2-port High-Performance",
+    "technicalName": "IO610",
+    "categoryCoverage": "communication",
+    "subCoverage": [
+      "protocols"
+    ],
+    "channelCapacity": 2,
+    "supportedSpecs": {
+      "resolution": [
+        "HS CAN"
+      ],
+      "speed": [
+        "500 kbit/s",
+        "1 Mbit/s"
+      ]
+    },
+    "protocolSupport": [
+      "CAN",
+      "XCP over CAN"
+    ],
+    "compatibleMachines": [
+      "performance",
+      "mobile"
+    ],
+    "lifecycleStatus": "active",
+    "connector": "9-pin D-sub x 2",
+    "maxDataRateMbps": 5,
+    "webSourcePage": "communications"
+  },
+  {
+    "moduleId": "IO611",
+    "friendlyName": "CAN / LIN / XCP 4-port High-Performance",
+    "technicalName": "IO611",
+    "categoryCoverage": "communication",
+    "subCoverage": [
+      "protocols"
+    ],
+    "channelCapacity": 4,
+    "supportedSpecs": {
+      "resolution": [
+        "HS CAN",
+        "LIN"
+      ],
+      "speed": [
+        "500 kbit/s",
+        "1 Mbit/s",
+        "19.2 kbit/s"
+      ]
+    },
+    "protocolSupport": [
+      "CAN",
+      "LIN",
+      "XCP over CAN"
+    ],
+    "compatibleMachines": [
+      "performance",
+      "mobile"
+    ],
+    "lifecycleStatus": "active",
+    "connector": "9-pin D-sub x 2",
+    "maxDataRateMbps": 5,
+    "webSourcePage": "communications"
+  },
+  {
+    "moduleId": "IO613",
+    "friendlyName": "CAN / XCP 2-port Baseline",
+    "technicalName": "IO613",
+    "categoryCoverage": "communication",
+    "subCoverage": [
+      "protocols"
+    ],
+    "channelCapacity": 2,
+    "supportedSpecs": {
+      "resolution": [
+        "HS CAN"
+      ],
+      "speed": [
+        "500 kbit/s",
+        "1 Mbit/s"
+      ]
+    },
+    "protocolSupport": [
+      "CAN",
+      "XCP over CAN"
+    ],
+    "compatibleMachines": [
+      "baseline"
+    ],
+    "lifecycleStatus": "active",
+    "connector": "9-pin D-sub x 2",
+    "maxDataRateMbps": 5,
+    "webSourcePage": "communications"
+  },
+  {
+    "moduleId": "IO614",
+    "friendlyName": "CAN / LIN / XCP 4-port Baseline",
+    "technicalName": "IO614",
+    "categoryCoverage": "communication",
+    "subCoverage": [
+      "protocols"
+    ],
+    "channelCapacity": 4,
+    "supportedSpecs": {
+      "resolution": [
+        "HS CAN",
+        "LIN"
+      ],
+      "speed": [
+        "500 kbit/s",
+        "1 Mbit/s",
+        "19.2 kbit/s"
+      ]
+    },
+    "protocolSupport": [
+      "CAN",
+      "LIN",
+      "XCP over CAN"
+    ],
+    "compatibleMachines": [
+      "baseline"
+    ],
+    "lifecycleStatus": "active",
+    "connector": "9-pin D-sub x 4",
+    "maxDataRateMbps": 1,
+    "webSourcePage": "communications"
+  },
+  {
+    "moduleId": "IO624",
+    "friendlyName": "PSI5 8-port",
+    "technicalName": "IO624",
+    "categoryCoverage": "communication",
+    "subCoverage": [
+      "protocols"
+    ],
+    "channelCapacity": 8,
+    "supportedSpecs": {
+      "resolution": [
+        "PSI5"
+      ],
+      "speed": [
+        "125 kbit/s",
+        "189 kbit/s"
+      ]
+    },
+    "protocolSupport": [
+      "PSI5"
+    ],
+    "compatibleMachines": [
+      "performance",
+      "pulse",
+      "baseline",
+      "mobile"
+    ],
+    "lifecycleStatus": "active",
+    "connector": "50-pin Mini D (MDR50)",
+    "maxDataRateMbps": 0.18,
+    "webSourcePage": "communications"
+  },
+  {
+    "moduleId": "IO821",
+    "friendlyName": "IRIG / GPS Timing & Synchronization",
+    "technicalName": "IO821",
+    "categoryCoverage": "communication",
+    "subCoverage": [
+      "protocols"
+    ],
+    "channelCapacity": 1,
+    "supportedSpecs": {
+      "resolution": [
+        "IRIG",
+        "GPS"
+      ],
+      "speed": [
+        "Microsecond sync"
+      ]
+    },
+    "protocolSupport": [
+      "IRIG + GPS"
+    ],
+    "compatibleMachines": [
+      "performance",
+      "baseline",
+      "mobile"
+    ],
+    "docDescription": "I/O modules installed."
+  },
+  {
+    "moduleId": "IO750",
+    "friendlyName": "EtherCAT Master",
+    "technicalName": "IO750",
+    "categoryCoverage": "communication",
+    "subCoverage": [
+      "protocols"
+    ],
+    "channelCapacity": 1,
+    "supportedSpecs": {
+      "resolution": [
+        "100BASE-TX"
+      ],
+      "speed": [
+        "100 Mbit/s"
+      ]
+    },
+    "protocolSupport": [
+      "EtherCAT"
+    ],
+    "compatibleMachines": [
+      "performance",
+      "baseline",
+      "mobile"
+    ],
+    "lifecycleStatus": "active",
+    "connector": "RJ-45 x 2",
+    "maxDataRateMbps": 100,
+    "webSourcePage": "communications"
+  },
+  {
+    "moduleId": "IO751",
+    "friendlyName": "PROFINET Controller",
+    "technicalName": "IO751",
+    "categoryCoverage": "communication",
+    "subCoverage": [
+      "protocols"
+    ],
+    "channelCapacity": 1,
+    "supportedSpecs": {
+      "resolution": [
+        "100BASE-TX"
+      ],
+      "speed": [
+        "100 Mbit/s"
+      ]
+    },
+    "protocolSupport": [
+      "PROFINET"
+    ],
+    "compatibleMachines": [
+      "performance",
+      "baseline",
+      "mobile",
+      "unit"
+    ],
+    "lifecycleStatus": "active",
+    "connector": "RJ-45 x 2",
+    "maxDataRateMbps": 100,
+    "webSourcePage": "communications"
+  },
+  {
+    "moduleId": "IO755",
+    "friendlyName": "EtherNet/IP Adapter",
+    "technicalName": "IO755",
+    "categoryCoverage": "communication",
+    "subCoverage": [
+      "protocols"
+    ],
+    "channelCapacity": 1,
+    "supportedSpecs": {
+      "resolution": [
+        "100BASE-TX"
+      ],
+      "speed": [
+        "100 Mbit/s"
+      ]
+    },
+    "protocolSupport": [
+      "EtherNet/IP"
+    ],
+    "compatibleMachines": [
+      "performance",
+      "baseline",
+      "mobile",
+      "unit"
+    ],
+    "lifecycleStatus": "active",
+    "connector": "RJ-45 x 2",
+    "maxDataRateMbps": 100,
+    "webSourcePage": "communications"
+  },
+  {
+    "moduleId": "IO758",
+    "friendlyName": "POWERLINK Controller",
+    "technicalName": "IO758",
+    "categoryCoverage": "communication",
+    "subCoverage": [
+      "protocols"
+    ],
+    "channelCapacity": 1,
+    "supportedSpecs": {
+      "resolution": [
+        "100BASE-TX"
+      ],
+      "speed": [
+        "100 Mbit/s"
+      ]
+    },
+    "protocolSupport": [
+      "POWERLINK"
+    ],
+    "compatibleMachines": [
+      "performance",
+      "baseline",
+      "mobile",
+      "unit"
+    ],
+    "lifecycleStatus": "active",
+    "connector": "RJ-45 x 2",
+    "maxDataRateMbps": 100,
+    "webSourcePage": "communications"
+  },
+  {
+    "moduleId": "IO715",
+    "friendlyName": "Multi-Protocol Ethernet 4-port GbE",
+    "technicalName": "IO715",
+    "categoryCoverage": "communication",
+    "subCoverage": [
+      "protocols"
+    ],
+    "channelCapacity": 4,
+    "supportedSpecs": {
+      "resolution": [
+        "100BASE-TX",
+        "1000BASE-T",
+        "Ethernet"
+      ],
+      "speed": [
+        "100 Mbit/s",
+        "1 Gbit/s"
+      ]
+    },
+    "protocolSupport": [
+      "EtherCAT",
+      "Real-Time UDP",
+      "XCP over Ethernet",
+      "Modbus TCP",
+      "OPC UA",
+      "MQTT",
+      "DNP3",
+      "IEC 61850"
+    ],
+    "compatibleMachines": [
+      "performance",
+      "pulse",
+      "baseline",
+      "mobile"
+    ],
+    "lifecycleStatus": "active",
+    "connector": "RJ-45 x 4",
+    "maxDataRateMbps": 1000,
+    "webSourcePage": "communications",
+    "docDescription": "Gigabit Ethernet I/O module with 4 ports Support for EtherCAT Master protocol is provided by MathWorks. Refer to the EtherCAT web documentation, or for the local help, enter the following code in the "
+  },
+  {
+    "moduleId": "IO717",
+    "friendlyName": "Multi-Protocol Ethernet 2-port 10 GbE",
+    "technicalName": "IO717",
+    "categoryCoverage": "communication",
+    "subCoverage": [
+      "protocols"
+    ],
+    "channelCapacity": 2,
+    "supportedSpecs": {
+      "resolution": [
+        "1000BASE-T",
+        "Ethernet"
+      ],
+      "speed": [
+        "1 Gbit/s",
+        "10 Gbit/s"
+      ]
+    },
+    "protocolSupport": [
+      "EtherCAT",
+      "Real-Time UDP",
+      "XCP over Ethernet",
+      "Modbus TCP",
+      "OPC UA",
+      "Raw Ethernet"
+    ],
+    "compatibleMachines": [
+      "performance"
+    ],
+    "lifecycleStatus": "active",
+    "connector": "2x RJ-45",
+    "maxDataRateMbps": 10000,
+    "webSourcePage": "communications"
+  },
+  {
+    "moduleId": "IO791",
+    "friendlyName": "Multi-Protocol Ethernet 2-port Compact",
+    "technicalName": "IO791",
+    "categoryCoverage": "communication",
+    "subCoverage": [
+      "protocols"
+    ],
+    "channelCapacity": 2,
+    "supportedSpecs": {
+      "resolution": [
+        "100BASE-TX",
+        "1000BASE-T",
+        "Ethernet"
+      ],
+      "speed": [
+        "100 Mbit/s",
+        "1 Gbit/s"
+      ]
+    },
+    "protocolSupport": [
+      "EtherNet/IP",
+      "Modbus TCP",
+      "OPC UA",
+      "DNP3",
+      "IEC 61850",
+      "MQTT"
+    ],
+    "compatibleMachines": [
+      "baseline",
+      "unit"
+    ],
+    "lifecycleStatus": "active",
+    "connector": "RJ-45 x 2",
+    "maxDataRateMbps": 1000,
+    "webSourcePage": "communications"
+  },
+  {
+    "moduleId": "IO641",
+    "friendlyName": "PROFIBUS DP Master",
+    "technicalName": "IO641",
+    "categoryCoverage": "communication",
+    "subCoverage": [
+      "protocols"
+    ],
+    "channelCapacity": 1,
+    "supportedSpecs": {
+      "resolution": [
+        "RS-485"
+      ],
+      "speed": [
+        "12 Mbit/s"
+      ]
+    },
+    "protocolSupport": [
+      "PROFIBUS"
+    ],
+    "compatibleMachines": [
+      "performance",
+      "baseline",
+      "mobile",
+      "unit"
+    ],
+    "lifecycleStatus": "active",
+    "connector": "9-pin D-sub",
+    "maxDataRateMbps": 12,
+    "webSourcePage": "communications"
+  },
+  {
+    "moduleId": "IO642",
+    "friendlyName": "PROFIBUS DP Slave",
+    "technicalName": "IO642",
+    "categoryCoverage": "communication",
+    "subCoverage": [
+      "protocols"
+    ],
+    "channelCapacity": 1,
+    "supportedSpecs": {
+      "resolution": [
+        "RS-485"
+      ],
+      "speed": [
+        "1 Mbit/s"
+      ]
+    },
+    "protocolSupport": [
+      "PROFIBUS"
+    ],
+    "compatibleMachines": [
+      "performance",
+      "baseline",
+      "mobile",
+      "unit"
+    ],
+    "lifecycleStatus": "active",
+    "connector": "9-pin D-sub",
+    "maxDataRateMbps": 1,
+    "webSourcePage": "communications"
+  },
+  {
+    "moduleId": "IO643",
+    "friendlyName": "CANopen Master",
+    "technicalName": "IO643",
+    "categoryCoverage": "communication",
+    "subCoverage": [
+      "protocols"
+    ],
+    "channelCapacity": 1,
+    "supportedSpecs": {
+      "resolution": [
+        "CAN"
+      ],
+      "speed": [
+        "500 kbit/s",
+        "1 Mbit/s"
+      ]
+    },
+    "protocolSupport": [
+      "CANopen"
+    ],
+    "compatibleMachines": [
+      "performance",
+      "baseline",
+      "mobile",
+      "unit"
+    ],
+    "lifecycleStatus": "active",
+    "connector": "9-pin D-sub",
+    "maxDataRateMbps": 1,
+    "webSourcePage": "communications"
+  },
+  {
+    "moduleId": "IO644",
+    "friendlyName": "CANopen Slave",
+    "technicalName": "IO644",
+    "categoryCoverage": "communication",
+    "subCoverage": [
+      "protocols"
+    ],
+    "channelCapacity": 1,
+    "supportedSpecs": {
+      "resolution": [
+        "CAN"
+      ],
+      "speed": [
+        "500 kbit/s",
+        "1 Mbit/s"
+      ]
+    },
+    "protocolSupport": [
+      "CANopen"
+    ],
+    "compatibleMachines": [
+      "performance",
+      "baseline",
+      "mobile",
+      "unit"
+    ],
+    "lifecycleStatus": "active",
+    "connector": "9-pin D-sub",
+    "maxDataRateMbps": 1,
+    "webSourcePage": "communications"
+  },
+  {
+    "moduleId": "IO503",
+    "friendlyName": "Serial RS-422/485/232 4-port",
+    "technicalName": "IO503",
+    "categoryCoverage": "communication",
+    "subCoverage": [
+      "protocols"
+    ],
+    "channelCapacity": 4,
+    "supportedSpecs": {
+      "resolution": [
+        "RS-422",
+        "RS-485",
+        "RS-232"
+      ],
+      "speed": [
+        "115.2 kbit/s",
+        "1 Mbit/s"
+      ]
+    },
+    "protocolSupport": [
+      "RS-422",
+      "RS-485",
+      "RS-232",
+      "Modbus RTU"
+    ],
+    "compatibleMachines": [
+      "performance",
+      "pulse",
+      "baseline",
+      "mobile"
+    ],
+    "lifecycleStatus": "active",
+    "connector": "50-pin male SCSI2",
+    "maxDataRateMbps": 5.5296,
+    "webSourcePage": "communications"
+  },
+  {
+    "moduleId": "IO504",
+    "friendlyName": "Serial RS-422/485/232 8-port",
+    "technicalName": "IO504",
+    "categoryCoverage": "communication",
+    "subCoverage": [
+      "protocols"
+    ],
+    "channelCapacity": 8,
+    "supportedSpecs": {
+      "resolution": [
+        "RS-422",
+        "RS-485",
+        "RS-232"
+      ],
+      "speed": [
+        "115.2 kbit/s",
+        "1 Mbit/s"
+      ]
+    },
+    "protocolSupport": [
+      "RS-422",
+      "RS-485",
+      "RS-232",
+      "Modbus RTU"
+    ],
+    "compatibleMachines": [
+      "performance",
+      "pulse",
+      "baseline",
+      "mobile"
+    ],
+    "lifecycleStatus": "active",
+    "connector": "50-pin male SCSI2",
+    "maxDataRateMbps": 5.5296,
+    "webSourcePage": "communications"
+  },
+  {
+    "moduleId": "IO505",
+    "friendlyName": "Serial RS-422/485/232 4-port SDLC/HDLC",
+    "technicalName": "IO505",
+    "categoryCoverage": "communication",
+    "subCoverage": [
+      "protocols"
+    ],
+    "channelCapacity": 4,
+    "supportedSpecs": {
+      "resolution": [
+        "RS-422",
+        "RS-485",
+        "RS-232"
+      ],
+      "speed": [
+        "115.2 kbit/s",
+        "1 Mbit/s"
+      ]
+    },
+    "protocolSupport": [
+      "RS-422",
+      "RS-485",
+      "RS-232",
+      "Modbus RTU"
+    ],
+    "compatibleMachines": [
+      "performance",
+      "pulse",
+      "baseline",
+      "mobile"
+    ],
+    "lifecycleStatus": "active",
+    "connector": "50-pin male SCSI2",
+    "maxDataRateMbps": 5.5296,
+    "webSourcePage": "communications"
+  },
+  {
+    "moduleId": "IO512",
+    "friendlyName": "Serial 4-port 10 Mbit/s",
+    "technicalName": "IO512",
+    "categoryCoverage": "communication",
+    "subCoverage": [
+      "protocols"
+    ],
+    "channelCapacity": 4,
+    "supportedSpecs": {
+      "resolution": [
+        "RS-422",
+        "RS-485"
+      ],
+      "speed": [
+        "1 Mbit/s",
+        "10 Mbit/s"
+      ]
+    },
+    "protocolSupport": [
+      "RS-422",
+      "RS-485"
+    ],
+    "compatibleMachines": [
+      "performance",
+      "baseline",
+      "mobile"
+    ],
+    "lifecycleStatus": "active",
+    "connector": "68-pin male SCSI3",
+    "maxDataRateMbps": 10,
+    "webSourcePage": "communications"
+  },
+  {
+    "moduleId": "IO581",
+    "friendlyName": "Serial RS-422/485/232 4-port Compact",
+    "technicalName": "IO581",
+    "categoryCoverage": "communication",
+    "subCoverage": [
+      "protocols"
+    ],
+    "channelCapacity": 4,
+    "supportedSpecs": {
+      "resolution": [
+        "RS-422",
+        "RS-485",
+        "RS-232"
+      ],
+      "speed": [
+        "115.2 kbit/s",
+        "1 Mbit/s",
+        "10 Mbit/s"
+      ]
+    },
+    "protocolSupport": [
+      "RS-422",
+      "RS-485",
+      "RS-232",
+      "Modbus RTU"
+    ],
+    "compatibleMachines": [
+      "baseline",
+      "unit"
+    ],
+    "lifecycleStatus": "active",
+    "connector": "9-pin D-sub x 4",
+    "maxDataRateMbps": 10,
+    "webSourcePage": "communications"
+  },
+  {
+    "moduleId": "IO682",
+    "friendlyName": "ARINC 429 / 629 Multi-Channel",
+    "technicalName": "IO682",
+    "categoryCoverage": "communication",
+    "subCoverage": [
+      "protocols"
+    ],
+    "channelCapacity": 16,
+    "supportedSpecs": {
+      "resolution": [
+        "ARINC 429",
+        "ARINC 629"
+      ],
+      "speed": [
+        "100 kbit/s",
+        "2 Mbit/s"
+      ]
+    },
+    "protocolSupport": [
+      "ARINC 429",
+      "ARINC 629",
+      "ARINC 825"
+    ],
+    "compatibleMachines": [
+      "performance",
+      "baseline",
+      "mobile"
+    ],
+    "lifecycleStatus": "active",
+    "webSourcePage": "communications"
+  },
+  {
+    "moduleId": "IO781",
+    "friendlyName": "AFDX / ARINC 664 Part 7 GbE",
+    "technicalName": "IO781",
+    "categoryCoverage": "communication",
+    "subCoverage": [
+      "protocols"
+    ],
+    "channelCapacity": 2,
+    "supportedSpecs": {
+      "resolution": [
+        "Ethernet"
+      ],
+      "speed": [
+        "100 Mbit/s",
+        "1 Gbit/s"
+      ]
+    },
+    "protocolSupport": [
+      "AFDX (ARINC 664 P7)"
+    ],
+    "compatibleMachines": [
+      "performance",
+      "baseline",
+      "mobile"
+    ],
+    "lifecycleStatus": "active",
+    "maxDataRateMbps": 1000,
+    "webSourcePage": "communications"
+  },
+  {
+    "moduleId": "IO619",
+    "friendlyName": "MVB / WTB Gateway",
+    "technicalName": "IO619",
+    "categoryCoverage": "communication",
+    "subCoverage": [
+      "protocols"
+    ],
+    "channelCapacity": 32,
+    "supportedSpecs": {
+      "resolution": [
+        "MVB / WTB"
+      ],
+      "speed": [
+        "1.5 Mbit/s"
+      ]
+    },
+    "protocolSupport": [
+      "MVB / WTB"
+    ],
+    "compatibleMachines": [
+      "performance",
+      "baseline",
+      "mobile"
+    ],
+    "lifecycleStatus": "active",
+    "connector": "9-pin D-sub",
+    "maxDataRateMbps": 1.5,
+    "webSourcePage": "communications"
+  },
+  {
+    "moduleId": "IO753",
+    "friendlyName": "Modbus TCP Gateway",
+    "technicalName": "IO753",
+    "categoryCoverage": "communication",
+    "subCoverage": [
+      "protocols"
+    ],
+    "channelCapacity": 1,
+    "supportedSpecs": {
+      "resolution": [
+        "Ethernet"
+      ],
+      "speed": [
+        "100 Mbit/s"
+      ]
+    },
+    "protocolSupport": [
+      "Modbus TCP"
+    ],
+    "compatibleMachines": [
+      "performance",
+      "baseline",
+      "mobile",
+      "unit"
+    ],
+    "lifecycleStatus": "active",
+    "connector": "RJ-45 x 2",
+    "maxDataRateMbps": 100,
+    "webSourcePage": "communications"
+  },
+  {
+    "moduleId": "IO716",
+    "friendlyName": "Multi-Protocol Ethernet 1-port GbE Mi-II",
+    "technicalName": "IO716",
+    "categoryCoverage": "communication",
+    "subCoverage": [
+      "protocols"
+    ],
+    "channelCapacity": 1,
+    "supportedSpecs": {
+      "resolution": [
+        "1000BASE-T",
+        "Ethernet"
+      ],
+      "speed": [
+        "1 Gbit/s"
+      ]
+    },
+    "protocolSupport": [
+      "EtherCAT",
+      "Real-Time UDP",
+      "XCP over Ethernet",
+      "Modbus TCP",
+      "OPC UA",
+      "DNP3"
+    ],
+    "compatibleMachines": [
+      "performance"
+    ],
+    "lifecycleStatus": "active",
+    "connector": "2-pin 2mm Mi II connector",
+    "maxDataRateMbps": 1000,
+    "webSourcePage": "communications"
+  },
+  {
+    "moduleId": "IO752",
+    "friendlyName": "PROFINET Device",
+    "technicalName": "IO752",
+    "categoryCoverage": "communication",
+    "subCoverage": [
+      "protocols"
+    ],
+    "channelCapacity": 1,
+    "supportedSpecs": {
+      "resolution": [
+        "100BASE-TX"
+      ],
+      "speed": [
+        "100 Mbit/s"
+      ]
+    },
+    "protocolSupport": [
+      "PROFINET"
+    ],
+    "compatibleMachines": [
+      "performance",
+      "baseline",
+      "mobile",
+      "unit"
+    ],
+    "lifecycleStatus": "active",
+    "connector": "RJ-45 x 2",
+    "maxDataRateMbps": 100,
+    "webSourcePage": "communications"
+  },
+  {
+    "moduleId": "IO754",
+    "friendlyName": "Modbus TCP Device",
+    "technicalName": "IO754",
+    "categoryCoverage": "communication",
+    "subCoverage": [
+      "protocols"
+    ],
+    "channelCapacity": 1,
+    "supportedSpecs": {
+      "resolution": [
+        "Ethernet"
+      ],
+      "speed": [
+        "100 Mbit/s"
+      ]
+    },
+    "protocolSupport": [
+      "Modbus TCP"
+    ],
+    "compatibleMachines": [
+      "performance",
+      "baseline",
+      "mobile",
+      "unit"
+    ],
+    "lifecycleStatus": "active",
+    "connector": "RJ-45",
+    "maxDataRateMbps": 100,
+    "webSourcePage": "communications"
+  },
+  {
+    "moduleId": "IO756",
+    "friendlyName": "EtherNet/IP Scanner",
+    "technicalName": "IO756",
+    "categoryCoverage": "communication",
+    "subCoverage": [
+      "protocols"
+    ],
+    "channelCapacity": 1,
+    "supportedSpecs": {
+      "resolution": [
+        "100BASE-TX"
+      ],
+      "speed": [
+        "100 Mbit/s"
+      ]
+    },
+    "protocolSupport": [
+      "EtherNet/IP"
+    ],
+    "compatibleMachines": [
+      "performance",
+      "baseline",
+      "mobile",
+      "unit"
+    ],
+    "lifecycleStatus": "active",
+    "connector": "RJ-45 x 2",
+    "maxDataRateMbps": 100,
+    "webSourcePage": "communications"
+  },
+  {
+    "moduleId": "IO424",
+    "friendlyName": "LVDT / RVDT / Synchro / Resolver Measurement",
+    "technicalName": "IO424",
+    "categoryCoverage": "motion",
+    "subCoverage": [
+      "resolver"
+    ],
+    "channelCapacity": 8,
+    "supportedSpecs": {
+      "range": [
+        "Single-speed",
+        "Multi-speed"
+      ],
+      "speed": [
+        "2.5 kHz",
+        "5 kHz",
+        "10 kHz"
+      ],
+      "resolution": [
+        "12-bit",
+        "14-bit",
+        "16-bit"
+      ]
+    },
+    "compatibleMachines": [
+      "performance",
+      "pulse",
+      "baseline",
+      "mobile"
+    ],
+    "lifecycleStatus": "active",
+    "webSourcePage": "synchro-resolver",
+    "docDescription": "an LVDT/RVDT/Resolver/(Synchro) to digital converter I/O module"
+  },
+  {
+    "moduleId": "IO425",
+    "friendlyName": "LVDT / RVDT / Resolver Emulation",
+    "technicalName": "IO425",
+    "categoryCoverage": "motion",
+    "subCoverage": [
+      "resolver"
+    ],
+    "channelCapacity": 8,
+    "supportedSpecs": {
+      "range": [
+        "Single-speed",
+        "Multi-speed"
+      ],
+      "speed": [
+        "2.5 kHz",
+        "5 kHz",
+        "10 kHz"
+      ],
+      "resolution": [
+        "12-bit",
+        "14-bit",
+        "16-bit"
+      ]
+    },
+    "compatibleMachines": [
+      "performance"
+    ],
+    "lifecycleStatus": "active",
+    "webSourcePage": "synchro-resolver",
+    "docDescription": "LVDT/RVDT/Resolver emulation I/O module"
+  },
+  {
+    "moduleId": "IO171",
+    "friendlyName": "Thermocouple / RTD / Strain Measurement 16ch",
+    "technicalName": "IO171",
+    "categoryCoverage": "temperature",
+    "subCoverage": [
+      "measurement"
+    ],
+    "channelCapacity": 16,
+    "supportedSpecs": {
+      "range": [
+        "Thermocouple",
+        "RTD",
+        "Thermistor"
+      ],
+      "speed": [
+        "10 Hz",
+        "100 Hz",
+        "1 kHz"
+      ]
+    },
+    "compatibleMachines": [
+      "performance",
+      "baseline",
+      "unit"
+    ],
+    "lifecycleStatus": "active",
+    "webSourcePage": "temperature-strain"
+  },
+  {
+    "moduleId": "IO172",
+    "friendlyName": "RTD / Thermocouple / Strain Measurement 6ch Compact",
+    "technicalName": "IO172",
+    "categoryCoverage": "temperature",
+    "subCoverage": [
+      "measurement"
+    ],
+    "channelCapacity": 6,
+    "supportedSpecs": {
+      "range": [
+        "Thermocouple",
+        "RTD"
+      ],
+      "speed": [
+        "10 Hz",
+        "100 Hz"
+      ]
+    },
+    "compatibleMachines": [
+      "baseline",
+      "unit"
+    ],
+    "lifecycleStatus": "active",
+    "webSourcePage": "temperature-strain"
+  },
+  {
+    "moduleId": "IO975",
+    "friendlyName": "Thermocouple Simulator 32ch",
+    "technicalName": "IO975",
+    "categoryCoverage": "temperature",
+    "subCoverage": [
+      "simulation"
+    ],
+    "channelCapacity": 32,
+    "supportedSpecs": {
+      "range": [
+        "Thermocouple"
+      ],
+      "speed": [
+        "10 Hz",
+        "100 Hz",
+        "1 kHz"
+      ]
+    },
+    "compatibleMachines": [
+      "performance"
+    ],
+    "lifecycleStatus": "active",
+    "webSourcePage": "temperature-strain",
+    "docDescription": "are thermocouple simulation I/O modules"
+  },
+  {
+    "moduleId": "IO970",
+    "friendlyName": "RTD (PT100/PT1000) Simulator 18ch",
+    "technicalName": "IO970",
+    "categoryCoverage": "temperature",
+    "subCoverage": [
+      "simulation"
+    ],
+    "channelCapacity": 18,
+    "supportedSpecs": {
+      "range": [
+        "RTD"
+      ],
+      "speed": [
+        "10 Hz",
+        "100 Hz",
+        "1 kHz"
+      ]
+    },
+    "compatibleMachines": [
+      "performance"
+    ],
+    "lifecycleStatus": "active",
+    "webSourcePage": "temperature-strain"
+  },
+  {
+    "moduleId": "IO925",
+    "friendlyName": "Thermistor Simulator (Precision Resistor) 18ch",
+    "technicalName": "IO925",
+    "categoryCoverage": "temperature",
+    "subCoverage": [
+      "simulation"
+    ],
+    "channelCapacity": 18,
+    "supportedSpecs": {
+      "range": [
+        "Thermistor"
+      ],
+      "speed": [
+        "10 Hz",
+        "100 Hz"
+      ]
+    },
+    "compatibleMachines": [
+      "performance"
+    ],
+    "lifecycleStatus": "active",
+    "resolutionBits": 18,
+    "webSourcePage": "resistors"
+  },
+  {
+    "moduleId": "IO972",
+    "friendlyName": "Strain Gauge Simulator 6ch",
+    "technicalName": "IO972",
+    "categoryCoverage": "strain",
+    "subCoverage": [
+      "strain"
+    ],
+    "channelCapacity": 6,
+    "supportedSpecs": {
+      "range": [
+        "Full-Bridge",
+        "Half-Bridge",
+        "Quarter-Bridge"
+      ],
+      "speed": [
+        "1 kHz",
+        "10 kHz"
+      ]
+    },
+    "compatibleMachines": [
+      "performance"
+    ],
+    "lifecycleStatus": "active",
+    "webSourcePage": "temperature-strain"
+  },
+  {
+    "moduleId": "IO171-Strain",
+    "friendlyName": "Strain Gauge Measurement (via IO171) 16ch",
+    "technicalName": "IO171 (Strain)",
+    "categoryCoverage": "strain",
+    "subCoverage": [
+      "strain"
+    ],
+    "channelCapacity": 16,
+    "supportedSpecs": {
+      "range": [
+        "Full-Bridge",
+        "Half-Bridge",
+        "Quarter-Bridge"
+      ],
+      "speed": [
+        "1 kHz",
+        "10 kHz"
+      ]
+    },
+    "compatibleMachines": [
+      "performance",
+      "baseline",
+      "unit"
+    ]
+  },
+  {
+    "moduleId": "IO112-IEPE",
+    "friendlyName": "Vibration (IEPE) Measurement via IO112 18-bit",
+    "technicalName": "IO112 (IEPE)",
+    "categoryCoverage": "strain",
+    "subCoverage": [
+      "vibration"
+    ],
+    "channelCapacity": 32,
+    "supportedSpecs": {
+      "range": [
+        "100 mV/g",
+        "500 mV/g",
+        "1000 mV/g"
+      ],
+      "speed": [
+        "10 kHz",
+        "50 kHz",
+        "100 kHz"
+      ]
+    },
+    "compatibleMachines": [
+      "performance",
+      "baseline",
+      "mobile"
+    ]
+  },
+  {
+    "moduleId": "IO94x",
+    "friendlyName": "Relay Switching Module (Reed & Electromechanical)",
+    "technicalName": "IO94x",
+    "categoryCoverage": "fault",
+    "subCoverage": [
+      "relays"
+    ],
+    "channelCapacity": 32,
+    "supportedSpecs": {
+      "range": [
+        "SPST",
+        "SPDT",
+        "DPST"
+      ],
+      "speed": [
+        "120 V AC",
+        "250 V AC",
+        "30 V DC"
+      ]
+    },
+    "compatibleMachines": [
+      "performance"
+    ]
+  },
+  {
+    "moduleId": "IO98x",
+    "friendlyName": "Fault Insertion Module up to 75ch",
+    "technicalName": "IO98x",
+    "categoryCoverage": "fault",
+    "subCoverage": [
+      "switches"
+    ],
+    "channelCapacity": 75,
+    "supportedSpecs": {
+      "range": [
+        "MOSFET",
+        "IGBT"
+      ],
+      "speed": [
+        "1 A",
+        "5 A",
+        "20 A"
+      ]
+    },
+    "compatibleMachines": [
+      "performance"
+    ]
+  },
+  {
+    "moduleId": "FIU-BMS",
+    "friendlyName": "Fault Insertion Unit for BMS 36ch",
+    "technicalName": "Fault Insertion Unit (BMS)",
+    "categoryCoverage": "fault",
+    "subCoverage": [
+      "switches",
+      "relays"
+    ],
+    "channelCapacity": 36,
+    "supportedSpecs": {
+      "range": [
+        "MOSFET"
+      ],
+      "speed": [
+        "1 A",
+        "5 A"
+      ]
+    },
+    "compatibleMachines": [
+      "performance",
+      "mobile",
+      "baseline",
+      "unit"
+    ]
+  },
+  {
+    "moduleId": "IO145-HV",
+    "friendlyName": "High Voltage Analog Measurement +/-48 V",
+    "technicalName": "IO145 (HV mode)",
+    "categoryCoverage": "highvoltage",
+    "subCoverage": [
+      "measurement"
+    ],
+    "channelCapacity": 16,
+    "supportedSpecs": {
+      "range": [
+        "0–600 V"
+      ],
+      "speed": [
+        "1 kHz",
+        "10 kHz",
+        "100 kHz"
+      ]
+    },
+    "compatibleMachines": [
+      "performance",
+      "baseline",
+      "mobile"
+    ]
+  },
+  {
+    "moduleId": "IO334-PWM",
+    "friendlyName": "FPGA High-Speed PWM / Gate Driver 16ch",
+    "technicalName": "IO334 (PWM mode)",
+    "categoryCoverage": "highvoltage",
+    "subCoverage": [
+      "switching"
+    ],
+    "channelCapacity": 16,
+    "supportedSpecs": {
+      "range": [
+        "Gate Driver",
+        "PWM"
+      ],
+      "speed": [
+        "10 kHz",
+        "50 kHz",
+        "100 kHz"
+      ]
+    },
+    "compatibleMachines": [
+      "performance",
+      "baseline"
+    ]
+  },
+  {
+    "moduleId": "IO921",
+    "friendlyName": "Standard Resistor Simulation 3-18ch",
+    "technicalName": "IO921",
+    "categoryCoverage": "resistor",
+    "subCoverage": [
+      "simulation"
+    ],
+    "channelCapacity": 18,
+    "supportedSpecs": {
+      "range": [
+        "Standard 0-16 MΩ"
+      ],
+      "speed": [
+        "8-bit",
+        "12-bit",
+        "16-bit",
+        "24-bit"
+      ]
+    },
+    "compatibleMachines": [
+      "performance"
+    ],
+    "lifecycleStatus": "active",
+    "resolutionBits": 24,
+    "webSourcePage": "resistors"
+  },
+  {
+    "moduleId": "IO923",
+    "friendlyName": "Programmable Potentiometer 1-9ch",
+    "technicalName": "IO923",
+    "categoryCoverage": "resistor",
+    "subCoverage": [
+      "simulation"
+    ],
+    "channelCapacity": 9,
+    "supportedSpecs": {
+      "range": [
+        "Potentiometer 0-16 MΩ"
+      ],
+      "speed": [
+        "8-bit",
+        "12-bit",
+        "16-bit",
+        "24-bit"
+      ]
+    },
+    "compatibleMachines": [
+      "performance"
+    ],
+    "lifecycleStatus": "active",
+    "resolutionBits": 24,
+    "webSourcePage": "resistors"
+  },
+  {
+    "moduleId": "IO925",
+    "friendlyName": "High Precision Resistor Module 3-18ch",
+    "technicalName": "IO925",
+    "categoryCoverage": "resistor",
+    "subCoverage": [
+      "simulation"
+    ],
+    "channelCapacity": 18,
+    "supportedSpecs": {
+      "range": [
+        "High Precision 0-1.5 MΩ"
+      ],
+      "speed": [
+        "3-bit",
+        "9-bit",
+        "18-bit"
+      ]
+    },
+    "compatibleMachines": [
+      "performance"
+    ],
+    "lifecycleStatus": "active",
+    "resolutionBits": 18,
+    "webSourcePage": "resistors"
+  },
+  {
+    "moduleId": "IO927",
+    "friendlyName": "High Precision Resistor Module 3-18ch (variant)",
+    "technicalName": "IO927",
+    "categoryCoverage": "resistor",
+    "subCoverage": [
+      "simulation"
+    ],
+    "channelCapacity": 18,
+    "supportedSpecs": {
+      "range": [
+        "High Precision 0-1.5 MΩ"
+      ],
+      "speed": [
+        "3-bit",
+        "9-bit",
+        "18-bit"
+      ]
+    },
+    "compatibleMachines": [
+      "performance"
+    ],
+    "lifecycleStatus": "active",
+    "resolutionBits": 18,
+    "webSourcePage": "resistors"
+  },
+  {
+    "moduleId": "BCE",
+    "friendlyName": "Battery Cell Emulator 12ch",
+    "technicalName": "Battery Cell Emulator",
+    "categoryCoverage": "bms",
+    "subCoverage": [
+      "cell_emulation"
+    ],
+    "channelCapacity": 12,
+    "supportedSpecs": {
+      "range": [
+        "0-5 V",
+        "0-6 V",
+        "0-8 V"
+      ],
+      "speed": [
+        "5 A per channel"
+      ]
+    },
+    "compatibleMachines": [
+      "performance",
+      "mobile",
+      "baseline",
+      "unit"
+    ]
+  },
+  {
+    "moduleId": "FIU-BMS",
+    "friendlyName": "Fault Insertion Unit for BMS 12-36ch",
+    "technicalName": "Fault Insertion Unit (BMS)",
+    "categoryCoverage": "bms",
+    "subCoverage": [
+      "fault_insertion"
+    ],
+    "channelCapacity": 36,
+    "supportedSpecs": {
+      "range": [
+        "Open circuit",
+        "Short circuit",
+        "Reversed polarity"
+      ],
+      "speed": [
+        "1 kV isolation"
+      ]
+    },
+    "compatibleMachines": [
+      "performance",
+      "mobile",
+      "baseline",
+      "unit"
+    ]
+  },
+  {
+    "moduleId": "TSE",
+    "friendlyName": "Temperature Sensor Emulator 4-36ch",
+    "technicalName": "Temperature Sensor Emulator",
+    "categoryCoverage": "bms",
+    "subCoverage": [
+      "temp_emulation"
+    ],
+    "channelCapacity": 36,
+    "supportedSpecs": {
+      "range": [
+        "NTC Thermistor",
+        "PTC Thermistor",
+        "RTD"
+      ],
+      "speed": [
+        "1.3 kV isolation"
+      ]
+    },
+    "compatibleMachines": [
+      "performance",
+      "mobile",
+      "baseline",
+      "unit"
+    ]
+  },
+  {
+    "moduleId": "IO133",
+    "friendlyName": "Analog I/O 16in + 8out + 14 DIO",
+    "technicalName": "IO133",
+    "categoryCoverage": "analog",
+    "subCoverage": [
+      "inputs",
+      "outputs"
+    ],
+    "channelCapacity": 16,
+    "supportedSpecs": {
+      "inputMode": [
+        "Differential"
+      ],
+      "signalType": [
+        "Voltage"
+      ],
+      "signalRange": [
+        "±10 V"
+      ],
+      "resolution": [
+        "16-bit"
+      ],
+      "speed": [
+        "100 kHz"
+      ]
+    },
+    "compatibleMachines": [
+      "performance",
+      "pulse",
+      "baseline",
+      "mobile"
+    ],
+    "formFactor": "PMC",
+    "lifecycleStatus": "active",
+    "resolutionBits": 16,
+    "sampleRateHz": [
+      200000
+    ],
+    "voltageRange": {
+      "min": -10,
+      "max": 10,
+      "unit": "V"
+    },
+    "outputVoltageRange": {
+      "min": -10.8,
+      "max": 10.8,
+      "unit": "V"
+    },
+    "samplingMode": "SM/SM",
+    "inputChannelSpec": "16 DF",
+    "outputChannelSpec": "8 SE",
+    "webSourcePage": "analog",
+    "docDescription": "Simultaneous-sampling 16-bit analog I/O module with 16 differential inputs, 8 single-ended outputs and 14 digital I/O lines"
+  },
+  {
+    "moduleId": "IO132",
+    "friendlyName": "Analog I/O 8in + 4out + 14 DIO",
+    "technicalName": "IO132",
+    "categoryCoverage": "analog",
+    "subCoverage": [
+      "inputs",
+      "outputs"
+    ],
+    "channelCapacity": 8,
+    "supportedSpecs": {
+      "inputMode": [
+        "Differential"
+      ],
+      "signalType": [
+        "Voltage"
+      ],
+      "signalRange": [
+        "±10 V"
+      ],
+      "resolution": [
+        "16-bit"
+      ],
+      "speed": [
+        "100 kHz"
+      ]
+    },
+    "compatibleMachines": [
+      "performance",
+      "pulse",
+      "baseline",
+      "mobile"
+    ],
+    "formFactor": "PMC",
+    "lifecycleStatus": "active",
+    "resolutionBits": 16,
+    "sampleRateHz": [
+      200000
+    ],
+    "voltageRange": {
+      "min": -10,
+      "max": 10,
+      "unit": "V"
+    },
+    "outputVoltageRange": {
+      "min": -10.8,
+      "max": 10.8,
+      "unit": "V"
+    },
+    "samplingMode": "SM/SM",
+    "inputChannelSpec": "8 DF",
+    "outputChannelSpec": "4 SE",
+    "webSourcePage": "analog",
+    "docDescription": "Simultaneous-sampling 16-bit analog I/O module with 8 differential inputs, 4 single-ended outputs and 14 digital I/O lines"
+  },
+  {
+    "moduleId": "IO907",
+    "friendlyName": "Temperature Sensor Simulation 16ch",
+    "technicalName": "IO907",
+    "categoryCoverage": "temperature",
+    "subCoverage": [
+      "simulation"
+    ],
+    "channelCapacity": 16,
+    "supportedSpecs": {
+      "range": [
+        "Thermocouple",
+        "RTD",
+        "Thermistor"
+      ],
+      "speed": [
+        "10 Hz",
+        "100 Hz",
+        "1 kHz"
+      ]
+    },
+    "compatibleMachines": [
+      "performance"
+    ],
+    "lifecycleStatus": "active",
+    "webSourcePage": "temperature-strain",
+    "docDescription": "Temperature sensor simulation I/O module for HIL testing of automotive and industrial control systems"
+  },
+  {
+    "moduleId": "IO941",
+    "friendlyName": "Reed Relay Switching Module",
+    "technicalName": "IO941",
+    "categoryCoverage": "fault",
+    "subCoverage": [
+      "relays"
+    ],
+    "channelCapacity": 32,
+    "supportedSpecs": {
+      "range": [
+        "SPST",
+        "SPDT",
+        "DPST"
+      ],
+      "speed": [
+        "250 V AC",
+        "30 V DC"
+      ]
+    },
+    "compatibleMachines": [
+      "performance"
+    ],
+    "lifecycleStatus": "active",
+    "webSourcePage": "fault-insertion",
+    "docDescription": "Ruthenium reed relay and electromechanical relay switching I/O module, max 1.25 A / 300 Vdc / 250 Vac"
+  },
+  {
+    "moduleId": "IO981",
+    "friendlyName": "Fault Insertion Module (SPST/SPDT)",
+    "technicalName": "IO981",
+    "categoryCoverage": "fault",
+    "subCoverage": [
+      "switches"
+    ],
+    "channelCapacity": 48,
+    "supportedSpecs": {
+      "range": [
+        "MOSFET"
+      ],
+      "speed": [
+        "5 A",
+        "10 A"
+      ]
+    },
+    "compatibleMachines": [
+      "performance"
+    ],
+    "lifecycleStatus": "active",
+    "webSourcePage": "fault-insertion",
+    "docDescription": "Fault insertion I/O module with up to 75 channels for HIL testing of embedded controllers"
+  },
+  {
+    "moduleId": "IO983",
+    "friendlyName": "Fault Insertion Module (DPST)",
+    "technicalName": "IO983",
+    "categoryCoverage": "fault",
+    "subCoverage": [
+      "switches"
+    ],
+    "channelCapacity": 75,
+    "supportedSpecs": {
+      "range": [
+        "MOSFET"
+      ],
+      "speed": [
+        "5 A",
+        "10 A"
+      ]
+    },
+    "compatibleMachines": [
+      "performance"
+    ],
+    "lifecycleStatus": "active",
+    "webSourcePage": "fault-insertion",
+    "docDescription": "Fault insertion I/O module with DPST switch configuration, up to 75 channels"
+  }
+]

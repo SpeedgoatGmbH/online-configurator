@@ -1,0 +1,1625 @@
+[
+  {
+    "moduleId": "IO325",
+    "friendlyName": "Configurable FPGA Analog I/O 8+4ch",
+    "technicalName": "IO325",
+    "categoryCoverage": "analog",
+    "subCoverage": [
+      "inputs",
+      "outputs"
+    ],
+    "channelCapacity": 8,
+    "supportedSpecs": {
+      "inputMode": [
+        "Differential"
+      ],
+      "signalType": [
+        "Voltage"
+      ],
+      "signalRange": [
+        "±10 V"
+      ],
+      "resolution": [
+        "16-bit"
+      ],
+      "speed": [
+        "500 kHz"
+      ]
+    },
+    "compatibleMachines": [
+      "performance",
+      "baseline",
+      "mobile"
+    ],
+    "fpgaFamily": "IO325",
+    "supportsIOExtensions": true,
+    "lifecycleStatus": "active",
+    "resolutionBits": 16,
+    "sampleRateHz": [
+      1500000
+    ],
+    "voltageRange": {
+      "min": -10,
+      "max": 10,
+      "unit": "V"
+    },
+    "outputVoltageRange": {
+      "min": -10,
+      "max": 10,
+      "unit": "V"
+    },
+    "samplingMode": "SM/SM",
+    "inputChannelSpec": "8 DF",
+    "outputChannelSpec": "4 SE",
+    "webSourcePage": "analog",
+    "docDescription": "FPGA I/O module with 160k logic cells, 32 TTL I/O lines (of which up to 16 lines can be configured as RS422/RS485), 8 x 16-bit differential analog inputs and 4 x 16-bit analog outputs",
+    "fpgaLogicCells": "160k",
+    "fpgaCategory": "simulink-programmable",
+    "fpgaAnalogInputChannels": "8",
+    "fpgaAnalogOutputChannels": 4,
+    "fpgaDigitalIOLines": 32
+  },
+  {
+    "moduleId": "IO336",
+    "friendlyName": "Configurable FPGA Analog I/O 16+8ch",
+    "technicalName": "IO336",
+    "categoryCoverage": "analog",
+    "subCoverage": [
+      "inputs",
+      "outputs"
+    ],
+    "channelCapacity": 16,
+    "supportedSpecs": {
+      "inputMode": [
+        "Differential"
+      ],
+      "signalType": [
+        "Voltage"
+      ],
+      "signalRange": [
+        "±10 V"
+      ],
+      "resolution": [
+        "16-bit"
+      ],
+      "speed": [
+        "500 kHz"
+      ]
+    },
+    "compatibleMachines": [
+      "performance",
+      "baseline",
+      "mobile"
+    ],
+    "fpgaFamily": "IO336",
+    "supportsIOExtensions": true,
+    "lifecycleStatus": "active",
+    "resolutionBits": 16,
+    "sampleRateHz": [
+      1000000
+    ],
+    "voltageRange": {
+      "min": -10,
+      "max": 10,
+      "unit": "V"
+    },
+    "outputVoltageRange": {
+      "min": -10,
+      "max": 10,
+      "unit": "V"
+    },
+    "samplingMode": "SM/SM",
+    "inputChannelSpec": "16 DF",
+    "outputChannelSpec": "8 SE",
+    "webSourcePage": "analog",
+    "docDescription": "FPGA I/O module with 325k logic cells, 32 TTL I/O lines (of which up to 16 lines can be configured as RS422/RS485), 16 x 16-bit differential analog inputs and 8 x 16-bit analog outputs",
+    "fpgaLogicCells": "325k",
+    "fpgaCategory": "simulink-programmable",
+    "fpgaAnalogInputChannels": "16",
+    "fpgaAnalogOutputChannels": 8,
+    "fpgaDigitalIOLines": 32,
+    "configPackages": [
+      "Communication TTL",
+      "Communication RS422",
+      "HIL TTL",
+      "HIL RS422",
+      "RCP TTL",
+      "RCP RS422",
+      "TPI6020",
+      "Resolver TTL"
+    ]
+  },
+  {
+    "moduleId": "IO397",
+    "friendlyName": "Configurable FPGA Analog I/O 4+4ch Compact",
+    "technicalName": "IO397",
+    "categoryCoverage": "analog",
+    "subCoverage": [
+      "inputs",
+      "outputs"
+    ],
+    "channelCapacity": 4,
+    "supportedSpecs": {
+      "inputMode": [
+        "Single-ended",
+        "Differential"
+      ],
+      "signalType": [
+        "Voltage"
+      ],
+      "signalRange": [
+        "±10 V"
+      ],
+      "resolution": [
+        "16-bit"
+      ],
+      "speed": [
+        "100 kHz"
+      ]
+    },
+    "compatibleMachines": [
+      "baseline",
+      "unit"
+    ],
+    "fpgaFamily": "IO397",
+    "supportsIOExtensions": false,
+    "lifecycleStatus": "active",
+    "resolutionBits": 16,
+    "sampleRateHz": [
+      200000
+    ],
+    "voltageRange": {
+      "min": -10.24,
+      "max": 10.24,
+      "unit": "V"
+    },
+    "outputVoltageRange": {
+      "min": -10.8,
+      "max": 10.8,
+      "unit": "V"
+    },
+    "samplingMode": "SM/SM",
+    "inputChannelSpec": "4 SE / 4 DF",
+    "outputChannelSpec": "4 SE",
+    "webSourcePage": "analog",
+    "docDescription": "configurable I/O module containing an FPGA with 50k of logic cells, 14 x ESD protected TTL I/O lines, 4 x 16-bit analog inputs and 4 x 16-bit analog outputs",
+    "fpgaLogicCells": "50k",
+    "fpgaCategory": "simulink-programmable",
+    "fpgaAnalogInputChannels": "4",
+    "fpgaAnalogOutputChannels": 4,
+    "fpgaDigitalIOLines": 14,
+    "configPackages": [
+      "Communication",
+      "HIL",
+      "RCP",
+      "TPI6020"
+    ]
+  },
+  {
+    "moduleId": "IO335",
+    "friendlyName": "Configurable FPGA Analog Input 24ch 5 MHz",
+    "technicalName": "IO335",
+    "categoryCoverage": "analog",
+    "subCoverage": [
+      "inputs"
+    ],
+    "channelCapacity": 24,
+    "supportedSpecs": {
+      "inputMode": [
+        "Differential"
+      ],
+      "signalType": [
+        "Voltage"
+      ],
+      "signalRange": [
+        "±7.5 V"
+      ],
+      "resolution": [
+        "16-bit"
+      ],
+      "speed": [
+        "500 kHz"
+      ]
+    },
+    "compatibleMachines": [
+      "performance",
+      "baseline",
+      "mobile"
+    ],
+    "fpgaFamily": "IO335",
+    "supportsIOExtensions": true,
+    "lifecycleStatus": "active",
+    "resolutionBits": 16,
+    "sampleRateHz": [
+      5000000
+    ],
+    "voltageRange": {
+      "min": -7.5,
+      "max": 7.5,
+      "unit": "V"
+    },
+    "samplingMode": "SM/-",
+    "inputChannelSpec": "24 DF",
+    "webSourcePage": "analog",
+    "docDescription": "FPGA I/O module with 325k of logic cells, 3 x differential digital inputs and 24 x 16-bit differential analog inputs.",
+    "fpgaLogicCells": "325k",
+    "fpgaCategory": "simulink-programmable",
+    "fpgaAnalogInputChannels": "24"
+  },
+  {
+    "moduleId": "IO337",
+    "friendlyName": "Configurable FPGA Analog 8in+32out",
+    "technicalName": "IO337",
+    "categoryCoverage": "analog",
+    "subCoverage": [
+      "inputs",
+      "outputs"
+    ],
+    "channelCapacity": 8,
+    "supportedSpecs": {
+      "inputMode": [
+        "Differential"
+      ],
+      "signalType": [
+        "Voltage"
+      ],
+      "signalRange": [
+        "±10 V"
+      ],
+      "resolution": [
+        "16-bit"
+      ],
+      "speed": [
+        "500 kHz"
+      ]
+    },
+    "compatibleMachines": [
+      "performance"
+    ],
+    "fpgaFamily": "IO337",
+    "supportsIOExtensions": true,
+    "docDescription": "configurable I/O module containing 650k logic cells, 8 x 16-bit differential analog inputs, 32 x 16-bit analog outputs, and 4 x LVDS digital I/O channels",
+    "fpgaLogicCells": "650k",
+    "fpgaCategory": "simulink-programmable",
+    "fpgaAnalogInputChannels": "8",
+    "fpgaAnalogOutputChannels": 32,
+    "fpgaDigitalIOLines": 4,
+    "configPackages": [
+      "Communication TTL",
+      "Communication RS422",
+      "HIL TTL",
+      "HIL RS422",
+      "Resolver TTL"
+    ]
+  },
+  {
+    "moduleId": "IO344",
+    "friendlyName": "Configurable FPGA Analog 8+8ch Ultra-High-Speed 4 GSPS",
+    "technicalName": "IO344",
+    "categoryCoverage": "analog",
+    "subCoverage": [
+      "inputs",
+      "outputs"
+    ],
+    "channelCapacity": 8,
+    "supportedSpecs": {
+      "inputMode": [
+        "Single-ended"
+      ],
+      "signalType": [
+        "Voltage"
+      ],
+      "signalRange": [
+        "±10 V"
+      ],
+      "resolution": [
+        "14-bit"
+      ],
+      "speed": [
+        "500 kHz"
+      ]
+    },
+    "compatibleMachines": [
+      "performance"
+    ],
+    "fpgaFamily": "IO344",
+    "supportsIOExtensions": true,
+    "lifecycleStatus": "active",
+    "resolutionBits": 14,
+    "sampleRateHz": [
+      4000000000
+    ],
+    "samplingMode": "SM/SM",
+    "inputChannelSpec": "8 SE",
+    "outputChannelSpec": "8 SE",
+    "webSourcePage": "analog"
+  },
+  {
+    "moduleId": "IO332",
+    "friendlyName": "Configurable FPGA Analog I/O 16+8ch (PMC)",
+    "technicalName": "IO332",
+    "categoryCoverage": "analog",
+    "subCoverage": [
+      "inputs",
+      "outputs"
+    ],
+    "channelCapacity": 16,
+    "supportedSpecs": {
+      "inputMode": [
+        "Differential"
+      ],
+      "outputMode": [
+        "Single-ended"
+      ],
+      "signalType": [
+        "Voltage"
+      ],
+      "signalRange": [
+        "±10 V"
+      ],
+      "resolution": [
+        "16-bit"
+      ],
+      "speed": [
+        "500 kHz"
+      ]
+    },
+    "compatibleMachines": [
+      "performance",
+      "baseline",
+      "mobile"
+    ],
+    "fpgaFamily": "IO332",
+    "supportsIOExtensions": true,
+    "lifecycleStatus": "active",
+    "resolutionBits": 16,
+    "sampleRateHz": [
+      500000
+    ],
+    "voltageRange": {
+      "min": -10.24,
+      "max": 10.24,
+      "unit": "V"
+    },
+    "outputVoltageRange": {
+      "min": -10.8,
+      "max": 10.8,
+      "unit": "V"
+    },
+    "samplingMode": "SM/SM",
+    "inputChannelSpec": "16 DF",
+    "outputChannelSpec": "8 SE",
+    "webSourcePage": "analog",
+    "docDescription": "FPGA I/O module with 200k of logic cells. Optional I/O interfaces allow a variety of digital (TTL, LVDS, CMOS), RS485/RS422, and analog functionality to be added. Optional I/O interface extensions allow to extend the number of digital lines from the front of the enclosure",
+    "fpgaLogicCells": "200k",
+    "fpgaCategory": "simulink-programmable",
+    "supportsIOInterfaces": true
+  },
+  {
+    "moduleId": "IO334",
+    "friendlyName": "FPGA Analog I/O 16in + 16out 5 MHz",
+    "technicalName": "IO334",
+    "categoryCoverage": "analog",
+    "subCoverage": [
+      "outputs"
+    ],
+    "channelCapacity": 16,
+    "supportedSpecs": {
+      "outputMode": [
+        "Single-ended"
+      ],
+      "signalType": [
+        "Voltage"
+      ],
+      "signalRange": [
+        "±10 V"
+      ],
+      "resolution": [
+        "16-bit"
+      ],
+      "speed": [
+        "500 kHz"
+      ]
+    },
+    "compatibleMachines": [
+      "performance",
+      "baseline"
+    ],
+    "fpgaFamily": "IO334",
+    "supportsIOExtensions": true,
+    "lifecycleStatus": "active",
+    "resolutionBits": 16,
+    "sampleRateHz": [
+      5000000
+    ],
+    "voltageRange": {
+      "min": -20,
+      "max": 20,
+      "unit": "V"
+    },
+    "outputVoltageRange": {
+      "min": -10,
+      "max": 10,
+      "unit": "V"
+    },
+    "samplingMode": "SM/SM",
+    "inputChannelSpec": "16 DF",
+    "outputChannelSpec": "16 SE",
+    "webSourcePage": "analog",
+    "docDescription": "FPGA I/O module with 325k logic cells, 16 x 16-bit differential analog inputs and 16 x 16-bit analog outputs",
+    "fpgaLogicCells": "325k",
+    "fpgaCategory": "simulink-programmable",
+    "fpgaAnalogInputChannels": "16",
+    "fpgaAnalogOutputChannels": 16,
+    "configPackages": [
+      "Communication TTL",
+      "Communication RS422",
+      "HIL TTL",
+      "HIL RS422",
+      "RCP TTL",
+      "RCP RS422",
+      "Resolver TTL"
+    ]
+  },
+  {
+    "moduleId": "IO337",
+    "friendlyName": "FPGA Analog 8in + 32out",
+    "technicalName": "IO337",
+    "categoryCoverage": "analog",
+    "subCoverage": [
+      "outputs"
+    ],
+    "channelCapacity": 32,
+    "supportedSpecs": {
+      "outputMode": [
+        "Single-ended"
+      ],
+      "signalType": [
+        "Voltage"
+      ],
+      "signalRange": [
+        "±10 V"
+      ],
+      "resolution": [
+        "16-bit"
+      ],
+      "speed": [
+        "500 kHz"
+      ]
+    },
+    "compatibleMachines": [
+      "performance"
+    ],
+    "fpgaFamily": "IO337",
+    "supportsIOExtensions": true
+  },
+  {
+    "moduleId": "IO306",
+    "friendlyName": "Configurable Digital I/O 64ch TTL",
+    "technicalName": "IO306",
+    "categoryCoverage": "digital",
+    "subCoverage": [
+      "inputs",
+      "outputs"
+    ],
+    "channelCapacity": 64,
+    "supportedSpecs": {
+      "signalType": [
+        "TTL / Discrete"
+      ],
+      "range": [
+        "5 V TTL",
+        "3.3 V TTL"
+      ],
+      "resolution": [
+        "None"
+      ]
+    },
+    "compatibleMachines": [
+      "performance",
+      "baseline",
+      "mobile"
+    ],
+    "fpgaFamily": "IO306",
+    "supportsIOExtensions": false,
+    "lifecycleStatus": "active",
+    "webSourcePage": "digital",
+    "docDescription": "configurable I/O module containing an FPGA with 25k of logic cells and 64 ESD protected TTL I/O lines",
+    "fpgaLogicCells": "25k",
+    "fpgaCategory": "configurable",
+    "fpgaDigitalIOLines": 64,
+    "configPackages": [
+      "Communication",
+      "HIL",
+      "RCP"
+    ]
+  },
+  {
+    "moduleId": "IO307",
+    "friendlyName": "Configurable Digital 32 TTL + 16 RS422",
+    "technicalName": "IO307",
+    "categoryCoverage": "digital",
+    "subCoverage": [
+      "inputs",
+      "outputs"
+    ],
+    "channelCapacity": 48,
+    "supportedSpecs": {
+      "signalType": [
+        "TTL / Discrete",
+        "Differential Serial"
+      ],
+      "range": [
+        "5 V TTL",
+        "3.3 V TTL",
+        "RS422/RS485"
+      ],
+      "resolution": [
+        "None"
+      ]
+    },
+    "compatibleMachines": [
+      "performance",
+      "baseline",
+      "mobile"
+    ],
+    "fpgaFamily": "IO307",
+    "supportsIOExtensions": false,
+    "lifecycleStatus": "active",
+    "webSourcePage": "digital",
+    "docDescription": "configurable I/O module containing an FPGA with 25k of logic cells, 32 x TTL I/O lines and 16 x ESD protected RS422/RS485 I/O lines.",
+    "fpgaLogicCells": "25k",
+    "fpgaCategory": "configurable",
+    "fpgaDigitalIOLines": 48,
+    "configPackages": [
+      "Communication",
+      "HIL",
+      "RCP"
+    ]
+  },
+  {
+    "moduleId": "IO308",
+    "friendlyName": "Configurable Digital 32ch RS422/RS485",
+    "technicalName": "IO308",
+    "categoryCoverage": "digital",
+    "subCoverage": [
+      "inputs",
+      "outputs"
+    ],
+    "channelCapacity": 32,
+    "supportedSpecs": {
+      "signalType": [
+        "Differential Serial"
+      ],
+      "range": [
+        "RS422/RS485"
+      ],
+      "resolution": [
+        "None"
+      ]
+    },
+    "compatibleMachines": [
+      "performance",
+      "baseline",
+      "mobile"
+    ],
+    "fpgaFamily": "IO308",
+    "supportsIOExtensions": false,
+    "lifecycleStatus": "active",
+    "webSourcePage": "digital",
+    "docDescription": "configurable I/O module containing an FPGA with 25k of logic cells and 32 x ESD protected RS422/RS485 I/O lines.",
+    "fpgaLogicCells": "25k",
+    "fpgaCategory": "configurable",
+    "fpgaDigitalIOLines": 32
+  },
+  {
+    "moduleId": "IO317",
+    "friendlyName": "Configurable FPGA 48-line TTL+RS422 (XMC)",
+    "technicalName": "IO317",
+    "categoryCoverage": "digital",
+    "subCoverage": [
+      "inputs",
+      "outputs"
+    ],
+    "channelCapacity": 48,
+    "supportedSpecs": {
+      "signalType": [
+        "TTL / Discrete",
+        "Differential Serial"
+      ],
+      "range": [
+        "5 V TTL",
+        "RS422/RS485"
+      ],
+      "resolution": [
+        "None"
+      ]
+    },
+    "compatibleMachines": [
+      "performance",
+      "baseline",
+      "mobile"
+    ],
+    "fpgaFamily": "IO317",
+    "supportsIOExtensions": true,
+    "lifecycleStatus": "active",
+    "webSourcePage": "digital",
+    "docDescription": "FPGA I/O module with 100k of logic cells, 32 x TTL I/O lines and 16 x ESD protected RS422/RS485 I/O lines.",
+    "fpgaLogicCells": "100k",
+    "fpgaCategory": "configurable",
+    "fpgaDigitalIOLines": 48
+  },
+  {
+    "moduleId": "IO318",
+    "friendlyName": "Configurable FPGA 32ch RS422/RS485 (XMC)",
+    "technicalName": "IO318",
+    "categoryCoverage": "digital",
+    "subCoverage": [
+      "inputs",
+      "outputs"
+    ],
+    "channelCapacity": 32,
+    "supportedSpecs": {
+      "signalType": [
+        "Differential Serial"
+      ],
+      "range": [
+        "RS422/RS485"
+      ],
+      "resolution": [
+        "None"
+      ]
+    },
+    "compatibleMachines": [
+      "performance",
+      "baseline",
+      "mobile"
+    ],
+    "fpgaFamily": "IO318",
+    "supportsIOExtensions": true,
+    "lifecycleStatus": "active",
+    "webSourcePage": "digital",
+    "docDescription": "FPGA I/O module with 100k of logic cells and 32 x RS422 differential I/O lines",
+    "fpgaLogicCells": "100k",
+    "fpgaCategory": "configurable",
+    "fpgaDigitalIOLines": 32
+  },
+  {
+    "moduleId": "IO391",
+    "friendlyName": "Configurable Digital 26ch TTL Compact",
+    "technicalName": "IO391",
+    "categoryCoverage": "digital",
+    "subCoverage": [
+      "inputs",
+      "outputs"
+    ],
+    "channelCapacity": 26,
+    "supportedSpecs": {
+      "signalType": [
+        "TTL / Discrete"
+      ],
+      "range": [
+        "5 V TTL",
+        "3.3 V TTL"
+      ],
+      "resolution": [
+        "None"
+      ]
+    },
+    "compatibleMachines": [
+      "baseline",
+      "unit"
+    ],
+    "fpgaFamily": "IO391",
+    "supportsIOExtensions": false,
+    "lifecycleStatus": "active",
+    "webSourcePage": "digital",
+    "docDescription": "configurable I/O module containing an FPGA with 50k of logic cells and 26 x ESD protected TTL I/O lines",
+    "fpgaLogicCells": "50k",
+    "fpgaCategory": "configurable",
+    "fpgaDigitalIOLines": 26
+  },
+  {
+    "moduleId": "IO393",
+    "friendlyName": "Configurable Digital 14 TTL + 6 RS422 Compact",
+    "technicalName": "IO393",
+    "categoryCoverage": "digital",
+    "subCoverage": [
+      "inputs",
+      "outputs"
+    ],
+    "channelCapacity": 20,
+    "supportedSpecs": {
+      "signalType": [
+        "TTL / Discrete",
+        "Differential Serial"
+      ],
+      "range": [
+        "5 V TTL",
+        "3.3 V TTL",
+        "RS422/RS485"
+      ],
+      "resolution": [
+        "None"
+      ]
+    },
+    "compatibleMachines": [
+      "baseline",
+      "unit"
+    ],
+    "fpgaFamily": "IO393",
+    "supportsIOExtensions": false,
+    "lifecycleStatus": "active",
+    "webSourcePage": "digital",
+    "docDescription": "configurable I/O module containing an FPGA with 50k of logic cells, 6x differential digital I/O lines and 14 x ESD protected TTL I/O lines",
+    "fpgaLogicCells": "50k",
+    "fpgaCategory": "configurable",
+    "fpgaDigitalIOLines": 14
+  },
+  {
+    "moduleId": "IO392",
+    "friendlyName": "Configurable 13ch RS422/RS485 Compact",
+    "technicalName": "IO392",
+    "categoryCoverage": "digital",
+    "subCoverage": [
+      "inputs",
+      "outputs"
+    ],
+    "channelCapacity": 13,
+    "supportedSpecs": {
+      "signalType": [
+        "Differential Serial"
+      ],
+      "range": [
+        "RS422/RS485"
+      ],
+      "resolution": [
+        "None"
+      ],
+      "speed": [
+        "Driver enabled"
+      ]
+    },
+    "compatibleMachines": [
+      "baseline",
+      "unit"
+    ],
+    "fpgaFamily": "IO392",
+    "supportsIOExtensions": false,
+    "lifecycleStatus": "active",
+    "webSourcePage": "digital",
+    "docDescription": "configurable I/O module containing an FPGA with 50k of logic cells and 13 x RS422/485 differential I/O lines",
+    "fpgaLogicCells": "50k",
+    "fpgaCategory": "configurable"
+  },
+  {
+    "moduleId": "IO324",
+    "friendlyName": "Configurable FPGA 96-line TTL + RS422 (XMC)",
+    "technicalName": "IO324",
+    "categoryCoverage": "digital",
+    "subCoverage": [
+      "pwm",
+      "capture"
+    ],
+    "channelCapacity": 96,
+    "supportedSpecs": {
+      "range": [
+        "TTL 5 V",
+        "TTL 3.3 V",
+        "RS422"
+      ],
+      "speed": [
+        "1 MHz",
+        "5 MHz",
+        "10 MHz",
+        "25 MHz"
+      ]
+    },
+    "compatibleMachines": [
+      "performance",
+      "baseline",
+      "mobile"
+    ],
+    "fpgaFamily": "IO324",
+    "supportsIOExtensions": true,
+    "lifecycleStatus": "active",
+    "resolutionBits": 16,
+    "sampleRateHz": [
+      1000000
+    ],
+    "voltageRange": {
+      "min": -25,
+      "max": 25,
+      "unit": "V"
+    },
+    "outputVoltageRange": {
+      "min": -10,
+      "max": 10,
+      "unit": "V"
+    },
+    "samplingMode": "SQ/SM",
+    "inputChannelSpec": "32 SE / 16 DF",
+    "outputChannelSpec": "8 SE",
+    "webSourcePage": "analog",
+    "docDescription": "FPGA I/O module with 200k of logic cells, 32 TTL I/O lines (of which up to 16 lines can be configured as RS422/RS485), 32/16 x 16-bit single-ended/differential analog inputs and 8 x 16-bit analog outputs",
+    "fpgaLogicCells": "200k",
+    "fpgaCategory": "simulink-programmable",
+    "fpgaAnalogInputChannels": "32/16",
+    "fpgaAnalogOutputChannels": 8,
+    "fpgaDigitalIOLines": 32,
+    "configPackages": [
+      "Communication TTL",
+      "Communication RS422",
+      "HIL TTL",
+      "HIL RS422",
+      "RCP TTL",
+      "RCP RS422",
+      "TPI6020",
+      "Resolver TTL"
+    ]
+  },
+  {
+    "moduleId": "IO324",
+    "friendlyName": "Configurable FPGA 96-line TTL + RS422 (XMC)",
+    "technicalName": "IO324",
+    "categoryCoverage": "motion",
+    "subCoverage": [
+      "encoder"
+    ],
+    "channelCapacity": 32,
+    "supportedSpecs": {
+      "range": [
+        "Incremental",
+        "QAD (A/B/Z)",
+        "QAE (A/B)",
+        "SSI",
+        "BiSS",
+        "EnDat"
+      ],
+      "speed": [
+        "10 kHz",
+        "100 kHz",
+        "1 MHz"
+      ],
+      "resolution": [
+        "16-bit",
+        "24-bit",
+        "32-bit"
+      ]
+    },
+    "compatibleMachines": [
+      "performance",
+      "baseline",
+      "mobile"
+    ],
+    "fpgaFamily": "IO324",
+    "supportsIOExtensions": true,
+    "lifecycleStatus": "active",
+    "resolutionBits": 16,
+    "sampleRateHz": [
+      1000000
+    ],
+    "voltageRange": {
+      "min": -25,
+      "max": 25,
+      "unit": "V"
+    },
+    "outputVoltageRange": {
+      "min": -10,
+      "max": 10,
+      "unit": "V"
+    },
+    "samplingMode": "SQ/SM",
+    "inputChannelSpec": "32 SE / 16 DF",
+    "outputChannelSpec": "8 SE",
+    "webSourcePage": "analog"
+  },
+  {
+    "moduleId": "IO316",
+    "friendlyName": "Configurable FPGA 48-line TTL (XMC)",
+    "technicalName": "IO316",
+    "categoryCoverage": "digital",
+    "subCoverage": [
+      "pwm",
+      "capture"
+    ],
+    "channelCapacity": 48,
+    "supportedSpecs": {
+      "range": [
+        "TTL 5 V"
+      ],
+      "speed": [
+        "1 MHz",
+        "5 MHz",
+        "10 MHz",
+        "25 MHz"
+      ]
+    },
+    "compatibleMachines": [
+      "performance",
+      "baseline",
+      "mobile"
+    ],
+    "fpgaFamily": "IO316",
+    "supportsIOExtensions": true,
+    "lifecycleStatus": "active",
+    "webSourcePage": "digital",
+    "docDescription": "FPGA I/O module with 100k of logic cells and 64 ESD protected TTL I/O lines",
+    "fpgaLogicCells": "100k",
+    "fpgaCategory": "configurable",
+    "fpgaDigitalIOLines": 64
+  },
+  {
+    "moduleId": "IO316",
+    "friendlyName": "Configurable FPGA 48-line TTL (XMC)",
+    "technicalName": "IO316",
+    "categoryCoverage": "motion",
+    "subCoverage": [
+      "encoder"
+    ],
+    "channelCapacity": 16,
+    "supportedSpecs": {
+      "range": [
+        "Incremental",
+        "QAD (A/B/Z)",
+        "QAE (A/B)",
+        "SSI"
+      ],
+      "speed": [
+        "10 kHz",
+        "100 kHz",
+        "1 MHz"
+      ],
+      "resolution": [
+        "16-bit",
+        "24-bit",
+        "32-bit"
+      ]
+    },
+    "compatibleMachines": [
+      "performance",
+      "baseline",
+      "mobile"
+    ],
+    "fpgaFamily": "IO316",
+    "supportsIOExtensions": true,
+    "lifecycleStatus": "active",
+    "webSourcePage": "digital"
+  },
+  {
+    "moduleId": "IO333",
+    "friendlyName": "Configurable FPGA 96-line TTL (PMC)",
+    "technicalName": "IO333",
+    "categoryCoverage": "digital",
+    "subCoverage": [
+      "pwm",
+      "capture"
+    ],
+    "channelCapacity": 96,
+    "supportedSpecs": {
+      "range": [
+        "TTL 5 V"
+      ],
+      "speed": [
+        "1 MHz",
+        "5 MHz",
+        "10 MHz",
+        "25 MHz"
+      ]
+    },
+    "compatibleMachines": [
+      "performance",
+      "pulse",
+      "baseline"
+    ],
+    "fpgaFamily": "IO333",
+    "supportsIOExtensions": true,
+    "lifecycleStatus": "active",
+    "resolutionBits": 16,
+    "sampleRateHz": [
+      500000
+    ],
+    "voltageRange": {
+      "min": -10.24,
+      "max": 10.24,
+      "unit": "V"
+    },
+    "outputVoltageRange": {
+      "min": -10.8,
+      "max": 10.8,
+      "unit": "V"
+    },
+    "samplingMode": "SM/SM",
+    "inputChannelSpec": "16 DF",
+    "outputChannelSpec": "8 SE",
+    "webSourcePage": "analog",
+    "docDescription": "FPGA I/O module with 325k or 410k logic cells, 8 MGT transceivers, and PCIe interface. Optional I/O interfaces allow a variety of digital (TTL, LVDS, CMOS), RS485/RS422, and analog functionality to be added. Optional I/O interface extensions allow to extend the number of digital lines from the front of the enclosure",
+    "fpgaLogicCells": "325k/410k",
+    "fpgaCategory": "simulink-programmable",
+    "supportsIOInterfaces": true
+  },
+  {
+    "moduleId": "IO333",
+    "friendlyName": "Configurable FPGA 96-line TTL (PMC)",
+    "technicalName": "IO333",
+    "categoryCoverage": "motion",
+    "subCoverage": [
+      "encoder"
+    ],
+    "channelCapacity": 32,
+    "supportedSpecs": {
+      "range": [
+        "Incremental",
+        "QAD (A/B/Z)",
+        "QAE (A/B)",
+        "SSI"
+      ],
+      "speed": [
+        "10 kHz",
+        "100 kHz",
+        "1 MHz"
+      ],
+      "resolution": [
+        "16-bit",
+        "24-bit",
+        "32-bit"
+      ]
+    },
+    "compatibleMachines": [
+      "performance",
+      "pulse",
+      "baseline"
+    ],
+    "fpgaFamily": "IO333",
+    "supportsIOExtensions": true,
+    "lifecycleStatus": "active",
+    "resolutionBits": 16,
+    "sampleRateHz": [
+      500000
+    ],
+    "voltageRange": {
+      "min": -10.24,
+      "max": 10.24,
+      "unit": "V"
+    },
+    "outputVoltageRange": {
+      "min": -10.8,
+      "max": 10.8,
+      "unit": "V"
+    },
+    "samplingMode": "SM/SM",
+    "inputChannelSpec": "16 DF",
+    "outputChannelSpec": "8 SE",
+    "webSourcePage": "analog"
+  },
+  {
+    "moduleId": "IO332",
+    "friendlyName": "Configurable FPGA 64-line selectable (PMC)",
+    "technicalName": "IO332",
+    "categoryCoverage": "digital",
+    "subCoverage": [
+      "pwm",
+      "capture"
+    ],
+    "channelCapacity": 64,
+    "supportedSpecs": {
+      "range": [
+        "TTL 5 V",
+        "TTL 3.3 V",
+        "RS422",
+        "LVDS"
+      ],
+      "speed": [
+        "1 MHz",
+        "5 MHz",
+        "10 MHz",
+        "25 MHz"
+      ]
+    },
+    "compatibleMachines": [
+      "performance",
+      "baseline",
+      "mobile"
+    ],
+    "fpgaFamily": "IO332",
+    "supportsIOExtensions": true,
+    "lifecycleStatus": "active",
+    "resolutionBits": 16,
+    "sampleRateHz": [
+      500000
+    ],
+    "voltageRange": {
+      "min": -10.24,
+      "max": 10.24,
+      "unit": "V"
+    },
+    "outputVoltageRange": {
+      "min": -10.8,
+      "max": 10.8,
+      "unit": "V"
+    },
+    "samplingMode": "SM/SM",
+    "inputChannelSpec": "16 DF",
+    "outputChannelSpec": "8 SE",
+    "webSourcePage": "analog"
+  },
+  {
+    "moduleId": "IO332",
+    "friendlyName": "Configurable FPGA 64-line selectable (PMC)",
+    "technicalName": "IO332",
+    "categoryCoverage": "motion",
+    "subCoverage": [
+      "encoder"
+    ],
+    "channelCapacity": 21,
+    "supportedSpecs": {
+      "range": [
+        "Incremental",
+        "QAD (A/B/Z)",
+        "QAE (A/B)",
+        "SSI",
+        "BiSS",
+        "EnDat"
+      ],
+      "speed": [
+        "10 kHz",
+        "100 kHz",
+        "1 MHz"
+      ],
+      "resolution": [
+        "16-bit",
+        "24-bit",
+        "32-bit"
+      ]
+    },
+    "compatibleMachines": [
+      "performance",
+      "baseline",
+      "mobile"
+    ],
+    "fpgaFamily": "IO332",
+    "supportsIOExtensions": true,
+    "lifecycleStatus": "active",
+    "resolutionBits": 16,
+    "sampleRateHz": [
+      500000
+    ],
+    "voltageRange": {
+      "min": -10.24,
+      "max": 10.24,
+      "unit": "V"
+    },
+    "outputVoltageRange": {
+      "min": -10.8,
+      "max": 10.8,
+      "unit": "V"
+    },
+    "samplingMode": "SM/SM",
+    "inputChannelSpec": "16 DF",
+    "outputChannelSpec": "8 SE",
+    "webSourcePage": "analog"
+  },
+  {
+    "moduleId": "IO334",
+    "friendlyName": "Configurable FPGA 56-line TTL+RS422 (XMC)",
+    "technicalName": "IO334",
+    "categoryCoverage": "digital",
+    "subCoverage": [
+      "pwm",
+      "capture"
+    ],
+    "channelCapacity": 56,
+    "supportedSpecs": {
+      "range": [
+        "TTL 5 V",
+        "RS422"
+      ],
+      "speed": [
+        "1 MHz",
+        "5 MHz",
+        "10 MHz",
+        "25 MHz"
+      ]
+    },
+    "compatibleMachines": [
+      "performance",
+      "baseline"
+    ],
+    "fpgaFamily": "IO334",
+    "supportsIOExtensions": true,
+    "lifecycleStatus": "active",
+    "resolutionBits": 16,
+    "sampleRateHz": [
+      5000000
+    ],
+    "voltageRange": {
+      "min": -20,
+      "max": 20,
+      "unit": "V"
+    },
+    "outputVoltageRange": {
+      "min": -10,
+      "max": 10,
+      "unit": "V"
+    },
+    "samplingMode": "SM/SM",
+    "inputChannelSpec": "16 DF",
+    "outputChannelSpec": "16 SE",
+    "webSourcePage": "analog"
+  },
+  {
+    "moduleId": "IO334",
+    "friendlyName": "Configurable FPGA 56-line (XMC)",
+    "technicalName": "IO334",
+    "categoryCoverage": "motion",
+    "subCoverage": [
+      "encoder"
+    ],
+    "channelCapacity": 18,
+    "supportedSpecs": {
+      "range": [
+        "Incremental",
+        "QAD (A/B/Z)",
+        "QAE (A/B)",
+        "SSI",
+        "BiSS",
+        "EnDat"
+      ],
+      "speed": [
+        "10 kHz",
+        "100 kHz",
+        "1 MHz"
+      ],
+      "resolution": [
+        "16-bit",
+        "24-bit",
+        "32-bit"
+      ]
+    },
+    "compatibleMachines": [
+      "performance",
+      "baseline"
+    ],
+    "fpgaFamily": "IO334",
+    "supportsIOExtensions": true,
+    "lifecycleStatus": "active",
+    "resolutionBits": 16,
+    "sampleRateHz": [
+      5000000
+    ],
+    "voltageRange": {
+      "min": -20,
+      "max": 20,
+      "unit": "V"
+    },
+    "outputVoltageRange": {
+      "min": -10,
+      "max": 10,
+      "unit": "V"
+    },
+    "samplingMode": "SM/SM",
+    "inputChannelSpec": "16 DF",
+    "outputChannelSpec": "16 SE",
+    "webSourcePage": "analog"
+  },
+  {
+    "moduleId": "IO335",
+    "friendlyName": "Configurable FPGA 56-line (XMC)",
+    "technicalName": "IO335",
+    "categoryCoverage": "digital",
+    "subCoverage": [
+      "pwm",
+      "capture"
+    ],
+    "channelCapacity": 56,
+    "supportedSpecs": {
+      "range": [
+        "TTL 5 V",
+        "RS422"
+      ],
+      "speed": [
+        "1 MHz",
+        "5 MHz",
+        "10 MHz",
+        "25 MHz"
+      ]
+    },
+    "compatibleMachines": [
+      "performance",
+      "baseline",
+      "mobile"
+    ],
+    "fpgaFamily": "IO335",
+    "supportsIOExtensions": true,
+    "lifecycleStatus": "active",
+    "resolutionBits": 16,
+    "sampleRateHz": [
+      5000000
+    ],
+    "voltageRange": {
+      "min": -7.5,
+      "max": 7.5,
+      "unit": "V"
+    },
+    "samplingMode": "SM/-",
+    "inputChannelSpec": "24 DF",
+    "webSourcePage": "analog"
+  },
+  {
+    "moduleId": "IO317",
+    "friendlyName": "Configurable FPGA 48-line TTL+RS422 (XMC)",
+    "technicalName": "IO317",
+    "categoryCoverage": "digital",
+    "subCoverage": [
+      "pwm",
+      "capture"
+    ],
+    "channelCapacity": 48,
+    "supportedSpecs": {
+      "range": [
+        "TTL 5 V",
+        "RS422"
+      ],
+      "speed": [
+        "1 MHz",
+        "5 MHz",
+        "10 MHz",
+        "25 MHz"
+      ]
+    },
+    "compatibleMachines": [
+      "performance",
+      "baseline",
+      "mobile"
+    ],
+    "fpgaFamily": "IO317",
+    "supportsIOExtensions": true,
+    "lifecycleStatus": "active",
+    "webSourcePage": "digital"
+  },
+  {
+    "moduleId": "IO317",
+    "friendlyName": "Configurable FPGA 48-line TTL+RS422 (XMC)",
+    "technicalName": "IO317",
+    "categoryCoverage": "motion",
+    "subCoverage": [
+      "encoder"
+    ],
+    "channelCapacity": 16,
+    "supportedSpecs": {
+      "range": [
+        "Incremental",
+        "QAD (A/B/Z)",
+        "QAE (A/B)",
+        "SSI",
+        "BiSS",
+        "EnDat"
+      ],
+      "speed": [
+        "10 kHz",
+        "100 kHz",
+        "1 MHz"
+      ],
+      "resolution": [
+        "16-bit",
+        "24-bit",
+        "32-bit"
+      ]
+    },
+    "compatibleMachines": [
+      "performance",
+      "baseline",
+      "mobile"
+    ],
+    "fpgaFamily": "IO317",
+    "supportsIOExtensions": true,
+    "lifecycleStatus": "active",
+    "webSourcePage": "digital"
+  },
+  {
+    "moduleId": "IO391",
+    "friendlyName": "Configurable FPGA 26-line TTL Compact (mPCIe)",
+    "technicalName": "IO391",
+    "categoryCoverage": "digital",
+    "subCoverage": [
+      "pwm",
+      "capture"
+    ],
+    "channelCapacity": 26,
+    "supportedSpecs": {
+      "range": [
+        "TTL 5 V",
+        "TTL 3.3 V"
+      ],
+      "speed": [
+        "1 MHz",
+        "5 MHz",
+        "10 MHz"
+      ]
+    },
+    "compatibleMachines": [
+      "baseline",
+      "unit"
+    ],
+    "fpgaFamily": "IO391",
+    "supportsIOExtensions": false,
+    "lifecycleStatus": "active",
+    "webSourcePage": "digital"
+  },
+  {
+    "moduleId": "IO391",
+    "friendlyName": "Configurable FPGA 26-line TTL Compact (mPCIe)",
+    "technicalName": "IO391",
+    "categoryCoverage": "motion",
+    "subCoverage": [
+      "encoder"
+    ],
+    "channelCapacity": 8,
+    "supportedSpecs": {
+      "range": [
+        "Incremental",
+        "QAD (A/B/Z)",
+        "QAE (A/B)",
+        "SSI"
+      ],
+      "speed": [
+        "10 kHz",
+        "100 kHz",
+        "1 MHz"
+      ],
+      "resolution": [
+        "16-bit",
+        "24-bit",
+        "32-bit"
+      ]
+    },
+    "compatibleMachines": [
+      "baseline",
+      "unit"
+    ],
+    "fpgaFamily": "IO391",
+    "supportsIOExtensions": false,
+    "lifecycleStatus": "active",
+    "webSourcePage": "digital"
+  },
+  {
+    "moduleId": "IO3xx-Enc",
+    "friendlyName": "Configurable FPGA Encoder Interface",
+    "technicalName": "IO3xx (Encoder config)",
+    "categoryCoverage": "motion",
+    "subCoverage": [
+      "encoder"
+    ],
+    "channelCapacity": 16,
+    "supportedSpecs": {
+      "range": [
+        "Incremental",
+        "SSI",
+        "BiSS",
+        "EnDat"
+      ],
+      "speed": [
+        "10 kHz",
+        "100 kHz",
+        "1 MHz"
+      ],
+      "resolution": [
+        "16-bit",
+        "24-bit",
+        "32-bit"
+      ]
+    },
+    "compatibleMachines": [
+      "performance",
+      "baseline",
+      "mobile"
+    ],
+    "fpgaFamily": "IO324",
+    "supportsIOExtensions": true
+  },
+  {
+    "moduleId": "IO3xx-Res",
+    "friendlyName": "Configurable FPGA Resolver Measurement",
+    "technicalName": "IO3xx (Resolver config)",
+    "categoryCoverage": "motion",
+    "subCoverage": [
+      "resolver"
+    ],
+    "channelCapacity": 4,
+    "supportedSpecs": {
+      "range": [
+        "Single-speed"
+      ],
+      "speed": [
+        "5 kHz",
+        "10 kHz"
+      ],
+      "resolution": [
+        "12-bit",
+        "14-bit"
+      ]
+    },
+    "compatibleMachines": [
+      "performance",
+      "baseline",
+      "mobile"
+    ],
+    "fpgaFamily": "IO324",
+    "supportsIOExtensions": true
+  },
+  {
+    "moduleId": "IO324",
+    "friendlyName": "Configurable FPGA Mixed I/O 32AI+8AO+32DIO",
+    "technicalName": "IO324",
+    "categoryCoverage": "custom",
+    "subCoverage": [
+      "gen_purpose"
+    ],
+    "channelCapacity": 72,
+    "supportedSpecs": {
+      "range": [
+        "Analog In",
+        "Analog Out",
+        "Digital I/O"
+      ],
+      "speed": [
+        "Standard",
+        "High-speed",
+        "Deterministic"
+      ]
+    },
+    "compatibleMachines": [
+      "performance",
+      "baseline",
+      "mobile"
+    ],
+    "fpgaFamily": "IO324",
+    "supportsIOExtensions": true,
+    "lifecycleStatus": "active",
+    "resolutionBits": 16,
+    "sampleRateHz": [
+      1000000
+    ],
+    "voltageRange": {
+      "min": -25,
+      "max": 25,
+      "unit": "V"
+    },
+    "outputVoltageRange": {
+      "min": -10,
+      "max": 10,
+      "unit": "V"
+    },
+    "samplingMode": "SQ/SM",
+    "inputChannelSpec": "32 SE / 16 DF",
+    "outputChannelSpec": "8 SE",
+    "webSourcePage": "analog"
+  },
+  {
+    "moduleId": "IO397-GP",
+    "friendlyName": "Configurable FPGA Mixed I/O 4AI+4AO+14DIO Compact",
+    "technicalName": "IO397 (mixed)",
+    "categoryCoverage": "custom",
+    "subCoverage": [
+      "gen_purpose"
+    ],
+    "channelCapacity": 22,
+    "supportedSpecs": {
+      "range": [
+        "Analog In",
+        "Analog Out",
+        "Digital I/O"
+      ],
+      "speed": [
+        "Standard",
+        "High-speed"
+      ]
+    },
+    "compatibleMachines": [
+      "baseline",
+      "unit"
+    ],
+    "fpgaFamily": "IO397",
+    "supportsIOExtensions": false
+  }
+]

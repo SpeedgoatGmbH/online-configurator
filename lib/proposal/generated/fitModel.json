@@ -1,0 +1,1838 @@
+{
+  "generatedFrom": "mat_fit_model_v1",
+  "generatedAtUtc": "2026-03-04T10:30:00.502Z",
+  "boards": {
+    "IO306": {
+      "boardModel": "IO306",
+      "resources": {
+        "slices": 3758,
+        "lut": 15032,
+        "register": 30064,
+        "ram16": 52,
+        "ram8": 104,
+        "dsp": 38
+      },
+      "signalCapacity": {
+        "analogInputs": 0,
+        "analogOutputs": 0,
+        "digitalTTL": 64,
+        "digitalRs422": 0,
+        "digitalLvds": 0,
+        "resolver": 0
+      },
+      "supportsFrontPlugin": false,
+      "supportedInterfaces": [],
+      "supportedExtensions": []
+    },
+    "IO306_SYNC": {
+      "boardModel": "IO306_SYNC",
+      "resources": {
+        "slices": 3758,
+        "lut": 15032,
+        "register": 30064,
+        "ram16": 52,
+        "ram8": 104,
+        "dsp": 38
+      },
+      "signalCapacity": {
+        "analogInputs": 0,
+        "analogOutputs": 0,
+        "digitalTTL": 64,
+        "digitalRs422": 0,
+        "digitalLvds": 0,
+        "resolver": 0
+      },
+      "supportsFrontPlugin": false,
+      "supportedInterfaces": [],
+      "supportedExtensions": []
+    },
+    "IO307": {
+      "boardModel": "IO307",
+      "resources": {
+        "slices": 3758,
+        "lut": 15032,
+        "register": 30064,
+        "ram16": 52,
+        "ram8": 104,
+        "dsp": 38
+      },
+      "signalCapacity": {
+        "analogInputs": 0,
+        "analogOutputs": 0,
+        "digitalTTL": 48,
+        "digitalRs422": 16,
+        "digitalLvds": 0,
+        "resolver": 0
+      },
+      "supportsFrontPlugin": false,
+      "supportedInterfaces": [],
+      "supportedExtensions": []
+    },
+    "IO308": {
+      "boardModel": "IO308",
+      "resources": {
+        "slices": 3758,
+        "lut": 15032,
+        "register": 30064,
+        "ram16": 52,
+        "ram8": 104,
+        "dsp": 38
+      },
+      "signalCapacity": {
+        "analogInputs": 0,
+        "analogOutputs": 0,
+        "digitalTTL": 32,
+        "digitalRs422": 32,
+        "digitalLvds": 0,
+        "resolver": 0
+      },
+      "supportsFrontPlugin": false,
+      "supportedInterfaces": [],
+      "supportedExtensions": []
+    },
+    "IO309A": {
+      "boardModel": "IO309A",
+      "resources": {
+        "slices": 0,
+        "lut": 47232,
+        "register": 94464,
+        "ram16": 0,
+        "ram8": 150,
+        "dsp": 240
+      },
+      "signalCapacity": {
+        "analogInputs": 0,
+        "analogOutputs": 0,
+        "digitalTTL": 64,
+        "digitalRs422": 0,
+        "digitalLvds": 0,
+        "resolver": 0
+      },
+      "supportsFrontPlugin": false,
+      "supportedInterfaces": [],
+      "supportedExtensions": []
+    },
+    "IO309B": {
+      "boardModel": "IO309B",
+      "resources": {
+        "slices": 0,
+        "lut": 47232,
+        "register": 94464,
+        "ram16": 0,
+        "ram8": 150,
+        "dsp": 240
+      },
+      "signalCapacity": {
+        "analogInputs": 0,
+        "analogOutputs": 0,
+        "digitalTTL": 48,
+        "digitalRs422": 16,
+        "digitalLvds": 0,
+        "resolver": 0
+      },
+      "supportsFrontPlugin": false,
+      "supportedInterfaces": [],
+      "supportedExtensions": []
+    },
+    "IO309C": {
+      "boardModel": "IO309C",
+      "resources": {
+        "slices": 0,
+        "lut": 47232,
+        "register": 94464,
+        "ram16": 0,
+        "ram8": 150,
+        "dsp": 240
+      },
+      "signalCapacity": {
+        "analogInputs": 0,
+        "analogOutputs": 0,
+        "digitalTTL": 32,
+        "digitalRs422": 32,
+        "digitalLvds": 0,
+        "resolver": 0
+      },
+      "supportsFrontPlugin": false,
+      "supportedInterfaces": [],
+      "supportedExtensions": []
+    },
+    "IO316": {
+      "boardModel": "IO316",
+      "resources": {
+        "slices": 15822,
+        "lut": 63288,
+        "register": 126576,
+        "ram16": 268,
+        "ram8": 536,
+        "dsp": 180
+      },
+      "signalCapacity": {
+        "analogInputs": 0,
+        "analogOutputs": 0,
+        "digitalTTL": 64,
+        "digitalRs422": 0,
+        "digitalLvds": 0,
+        "resolver": 0
+      },
+      "supportsFrontPlugin": false,
+      "supportedInterfaces": [],
+      "supportedExtensions": []
+    },
+    "IO316_SYNC": {
+      "boardModel": "IO316_SYNC",
+      "resources": {
+        "slices": 15822,
+        "lut": 63288,
+        "register": 126576,
+        "ram16": 268,
+        "ram8": 536,
+        "dsp": 180
+      },
+      "signalCapacity": {
+        "analogInputs": 0,
+        "analogOutputs": 0,
+        "digitalTTL": 64,
+        "digitalRs422": 0,
+        "digitalLvds": 0,
+        "resolver": 0
+      },
+      "supportsFrontPlugin": false,
+      "supportedInterfaces": [],
+      "supportedExtensions": []
+    },
+    "IO317": {
+      "boardModel": "IO317",
+      "resources": {
+        "slices": 15822,
+        "lut": 63288,
+        "register": 126576,
+        "ram16": 268,
+        "ram8": 536,
+        "dsp": 180
+      },
+      "signalCapacity": {
+        "analogInputs": 0,
+        "analogOutputs": 0,
+        "digitalTTL": 48,
+        "digitalRs422": 16,
+        "digitalLvds": 0,
+        "resolver": 0
+      },
+      "supportsFrontPlugin": false,
+      "supportedInterfaces": [],
+      "supportedExtensions": []
+    },
+    "IO318": {
+      "boardModel": "IO318",
+      "resources": {
+        "slices": 15822,
+        "lut": 63288,
+        "register": 126576,
+        "ram16": 268,
+        "ram8": 536,
+        "dsp": 180
+      },
+      "signalCapacity": {
+        "analogInputs": 0,
+        "analogOutputs": 0,
+        "digitalTTL": 32,
+        "digitalRs422": 32,
+        "digitalLvds": 0,
+        "resolver": 0
+      },
+      "supportsFrontPlugin": false,
+      "supportedInterfaces": [],
+      "supportedExtensions": []
+    },
+    "IO322": {
+      "boardModel": "IO322",
+      "resources": {
+        "slices": 6822,
+        "lut": 27288,
+        "register": 54576,
+        "ram16": 116,
+        "ram8": 232,
+        "dsp": 58
+      },
+      "signalCapacity": {
+        "analogInputs": 0,
+        "analogOutputs": 0,
+        "digitalTTL": 48,
+        "digitalRs422": 0,
+        "digitalLvds": 0,
+        "resolver": 0
+      },
+      "supportsFrontPlugin": false,
+      "supportedInterfaces": [],
+      "supportedExtensions": []
+    },
+    "IO323": {
+      "boardModel": "IO323",
+      "resources": {
+        "slices": 15822,
+        "lut": 63288,
+        "register": 126576,
+        "ram16": 268,
+        "ram8": 536,
+        "dsp": 180
+      },
+      "signalCapacity": {
+        "analogInputs": 0,
+        "analogOutputs": 0,
+        "digitalTTL": 48,
+        "digitalRs422": 0,
+        "digitalLvds": 0,
+        "resolver": 0
+      },
+      "supportsFrontPlugin": false,
+      "supportedInterfaces": [],
+      "supportedExtensions": []
+    },
+    "IO324": {
+      "boardModel": "IO324",
+      "resources": {
+        "slices": 33650,
+        "lut": 134600,
+        "register": 269200,
+        "ram16": 365,
+        "ram8": 730,
+        "dsp": 740
+      },
+      "signalCapacity": {
+        "analogInputs": 32,
+        "analogOutputs": 8,
+        "digitalTTL": 24,
+        "digitalRs422": 8,
+        "digitalLvds": 0,
+        "resolver": 0
+      },
+      "supportsFrontPlugin": false,
+      "supportedInterfaces": [],
+      "supportedExtensions": []
+    },
+    "IO325": {
+      "boardModel": "IO325",
+      "resources": {
+        "slices": 25350,
+        "lut": 101400,
+        "register": 202800,
+        "ram16": 325,
+        "ram8": 650,
+        "dsp": 600
+      },
+      "signalCapacity": {
+        "analogInputs": 8,
+        "analogOutputs": 4,
+        "digitalTTL": 24,
+        "digitalRs422": 8,
+        "digitalLvds": 0,
+        "resolver": 0
+      },
+      "supportsFrontPlugin": false,
+      "supportedInterfaces": [],
+      "supportedExtensions": []
+    },
+    "IO331": {
+      "boardModel": "IO331",
+      "resources": {
+        "slices": 50950,
+        "lut": 133800,
+        "register": 267600,
+        "ram16": 365,
+        "ram8": 730,
+        "dsp": 740
+      },
+      "signalCapacity": {
+        "analogInputs": 0,
+        "analogOutputs": 0,
+        "digitalTTL": 0,
+        "digitalRs422": 0,
+        "digitalLvds": 0,
+        "resolver": 0
+      },
+      "supportsFrontPlugin": true,
+      "supportedInterfaces": [
+        "IO33X-1-LV",
+        "IO33X-2",
+        "IO33X-3",
+        "IO33X-4",
+        "IO33X-6",
+        "IO33X-7",
+        "IO33X-8"
+      ],
+      "supportedExtensions": []
+    },
+    "IO332": {
+      "boardModel": "IO332",
+      "resources": {
+        "slices": 50950,
+        "lut": 133800,
+        "register": 267600,
+        "ram16": 365,
+        "ram8": 730,
+        "dsp": 740
+      },
+      "signalCapacity": {
+        "analogInputs": 0,
+        "analogOutputs": 0,
+        "digitalTTL": 0,
+        "digitalRs422": 0,
+        "digitalLvds": 0,
+        "resolver": 0
+      },
+      "supportsFrontPlugin": true,
+      "supportedInterfaces": [
+        "IO33X-1-LV",
+        "IO33X-2",
+        "IO33X-3",
+        "IO33X-4",
+        "IO33X-6",
+        "IO33X-7",
+        "IO33X-8"
+      ],
+      "supportedExtensions": []
+    },
+    "IO333": {
+      "boardModel": "IO333",
+      "resources": {
+        "slices": 50950,
+        "lut": 203800,
+        "register": 407600,
+        "ram16": 445,
+        "ram8": 890,
+        "dsp": 840
+      },
+      "signalCapacity": {
+        "analogInputs": 0,
+        "analogOutputs": 0,
+        "digitalTTL": 0,
+        "digitalRs422": 0,
+        "digitalLvds": 0,
+        "resolver": 0
+      },
+      "supportsFrontPlugin": true,
+      "supportedInterfaces": [
+        "IO33X-1-LV",
+        "IO33X-2",
+        "IO33X-3",
+        "IO33X-4",
+        "IO33X-6",
+        "IO33X-7",
+        "IO33X-8"
+      ],
+      "supportedExtensions": []
+    },
+    "IO334": {
+      "boardModel": "IO334",
+      "resources": {
+        "slices": 50950,
+        "lut": 203800,
+        "register": 407600,
+        "ram16": 445,
+        "ram8": 890,
+        "dsp": 840
+      },
+      "signalCapacity": {
+        "analogInputs": 16,
+        "analogOutputs": 16,
+        "digitalTTL": 0,
+        "digitalRs422": 0,
+        "digitalLvds": 0,
+        "resolver": 0
+      },
+      "supportsFrontPlugin": false,
+      "supportedInterfaces": [],
+      "supportedExtensions": []
+    },
+    "IO336": {
+      "boardModel": "IO336",
+      "resources": {
+        "slices": 50950,
+        "lut": 203800,
+        "register": 407600,
+        "ram16": 445,
+        "ram8": 890,
+        "dsp": 840
+      },
+      "signalCapacity": {
+        "analogInputs": 16,
+        "analogOutputs": 8,
+        "digitalTTL": 24,
+        "digitalRs422": 8,
+        "digitalLvds": 0,
+        "resolver": 0
+      },
+      "supportsFrontPlugin": false,
+      "supportedInterfaces": [],
+      "supportedExtensions": []
+    },
+    "IO337": {
+      "boardModel": "IO337",
+      "resources": {
+        "slices": 0,
+        "lut": 0,
+        "register": 0,
+        "ram16": 0,
+        "ram8": 0,
+        "dsp": 0
+      },
+      "signalCapacity": {
+        "analogInputs": 8,
+        "analogOutputs": 32,
+        "digitalTTL": 4,
+        "digitalRs422": 0,
+        "digitalLvds": 4,
+        "resolver": 0
+      },
+      "supportsFrontPlugin": false,
+      "supportedInterfaces": [],
+      "supportedExtensions": []
+    },
+    "IO360A": {
+      "boardModel": "IO360A",
+      "resources": {
+        "slices": 0,
+        "lut": 87840,
+        "register": 175680,
+        "ram16": 0,
+        "ram8": 128,
+        "dsp": 728
+      },
+      "signalCapacity": {
+        "analogInputs": 0,
+        "analogOutputs": 0,
+        "digitalTTL": 64,
+        "digitalRs422": 0,
+        "digitalLvds": 0,
+        "resolver": 0
+      },
+      "supportsFrontPlugin": false,
+      "supportedInterfaces": [],
+      "supportedExtensions": [
+        "-120",
+        "-21",
+        "-22",
+        "-24",
+        "-40"
+      ]
+    },
+    "IO360B": {
+      "boardModel": "IO360B",
+      "resources": {
+        "slices": 0,
+        "lut": 87840,
+        "register": 175680,
+        "ram16": 0,
+        "ram8": 128,
+        "dsp": 728
+      },
+      "signalCapacity": {
+        "analogInputs": 0,
+        "analogOutputs": 0,
+        "digitalTTL": 48,
+        "digitalRs422": 16,
+        "digitalLvds": 0,
+        "resolver": 0
+      },
+      "supportsFrontPlugin": false,
+      "supportedInterfaces": [],
+      "supportedExtensions": [
+        "-120",
+        "-21",
+        "-22",
+        "-24",
+        "-40"
+      ]
+    },
+    "IO360C": {
+      "boardModel": "IO360C",
+      "resources": {
+        "slices": 0,
+        "lut": 87840,
+        "register": 175680,
+        "ram16": 0,
+        "ram8": 128,
+        "dsp": 728
+      },
+      "signalCapacity": {
+        "analogInputs": 0,
+        "analogOutputs": 0,
+        "digitalTTL": 32,
+        "digitalRs422": 32,
+        "digitalLvds": 0,
+        "resolver": 0
+      },
+      "supportsFrontPlugin": false,
+      "supportedInterfaces": [],
+      "supportedExtensions": [
+        "-120",
+        "-21",
+        "-22",
+        "-24",
+        "-40"
+      ]
+    },
+    "IO361A": {
+      "boardModel": "IO361A",
+      "resources": {
+        "slices": 0,
+        "lut": 214604,
+        "register": 429208,
+        "ram16": 0,
+        "ram8": 714,
+        "dsp": 1973
+      },
+      "signalCapacity": {
+        "analogInputs": 0,
+        "analogOutputs": 0,
+        "digitalTTL": 40,
+        "digitalRs422": 0,
+        "digitalLvds": 0,
+        "resolver": 0
+      },
+      "supportsFrontPlugin": false,
+      "supportedInterfaces": [],
+      "supportedExtensions": [
+        "-120",
+        "-21",
+        "-22",
+        "-24",
+        "-40"
+      ]
+    },
+    "IO361B": {
+      "boardModel": "IO361B",
+      "resources": {
+        "slices": 0,
+        "lut": 214604,
+        "register": 429208,
+        "ram16": 0,
+        "ram8": 714,
+        "dsp": 1973
+      },
+      "signalCapacity": {
+        "analogInputs": 0,
+        "analogOutputs": 0,
+        "digitalTTL": 32,
+        "digitalRs422": 8,
+        "digitalLvds": 0,
+        "resolver": 0
+      },
+      "supportsFrontPlugin": false,
+      "supportedInterfaces": [],
+      "supportedExtensions": [
+        "-120",
+        "-21",
+        "-22",
+        "-24",
+        "-40"
+      ]
+    },
+    "IO361C": {
+      "boardModel": "IO361C",
+      "resources": {
+        "slices": 0,
+        "lut": 214604,
+        "register": 429208,
+        "ram16": 0,
+        "ram8": 714,
+        "dsp": 1973
+      },
+      "signalCapacity": {
+        "analogInputs": 0,
+        "analogOutputs": 0,
+        "digitalTTL": 20,
+        "digitalRs422": 20,
+        "digitalLvds": 0,
+        "resolver": 0
+      },
+      "supportsFrontPlugin": false,
+      "supportedInterfaces": [],
+      "supportedExtensions": [
+        "-120",
+        "-21",
+        "-22",
+        "-24",
+        "-40"
+      ]
+    },
+    "IO391": {
+      "boardModel": "IO391",
+      "resources": {
+        "slices": 7250,
+        "lut": 32600,
+        "register": 65200,
+        "ram16": 150,
+        "ram8": 75,
+        "dsp": 120
+      },
+      "signalCapacity": {
+        "analogInputs": 0,
+        "analogOutputs": 0,
+        "digitalTTL": 26,
+        "digitalRs422": 0,
+        "digitalLvds": 0,
+        "resolver": 0
+      },
+      "supportsFrontPlugin": false,
+      "supportedInterfaces": [],
+      "supportedExtensions": []
+    },
+    "IO392": {
+      "boardModel": "IO392",
+      "resources": {
+        "slices": 7250,
+        "lut": 32600,
+        "register": 65200,
+        "ram16": 150,
+        "ram8": 75,
+        "dsp": 120
+      },
+      "signalCapacity": {
+        "analogInputs": 0,
+        "analogOutputs": 0,
+        "digitalTTL": 13,
+        "digitalRs422": 13,
+        "digitalLvds": 0,
+        "resolver": 0
+      },
+      "supportsFrontPlugin": false,
+      "supportedInterfaces": [],
+      "supportedExtensions": []
+    },
+    "IO393": {
+      "boardModel": "IO393",
+      "resources": {
+        "slices": 7250,
+        "lut": 32600,
+        "register": 65200,
+        "ram16": 150,
+        "ram8": 75,
+        "dsp": 120
+      },
+      "signalCapacity": {
+        "analogInputs": 0,
+        "analogOutputs": 0,
+        "digitalTTL": 20,
+        "digitalRs422": 6,
+        "digitalLvds": 0,
+        "resolver": 0
+      },
+      "supportsFrontPlugin": false,
+      "supportedInterfaces": [],
+      "supportedExtensions": []
+    },
+    "IO394": {
+      "boardModel": "IO394",
+      "resources": {
+        "slices": 7250,
+        "lut": 32600,
+        "register": 65200,
+        "ram16": 150,
+        "ram8": 75,
+        "dsp": 120
+      },
+      "signalCapacity": {
+        "analogInputs": 0,
+        "analogOutputs": 0,
+        "digitalTTL": 13,
+        "digitalRs422": 13,
+        "digitalLvds": 0,
+        "resolver": 0
+      },
+      "supportsFrontPlugin": false,
+      "supportedInterfaces": [],
+      "supportedExtensions": []
+    },
+    "IO397": {
+      "boardModel": "IO397",
+      "resources": {
+        "slices": 7250,
+        "lut": 32600,
+        "register": 65200,
+        "ram16": 150,
+        "ram8": 75,
+        "dsp": 120
+      },
+      "signalCapacity": {
+        "analogInputs": 4,
+        "analogOutputs": 4,
+        "digitalTTL": 14,
+        "digitalRs422": 0,
+        "digitalLvds": 0,
+        "resolver": 0
+      },
+      "supportsFrontPlugin": false,
+      "supportedInterfaces": [],
+      "supportedExtensions": []
+    },
+    "Pulse_IO": {
+      "boardModel": "Pulse_IO",
+      "resources": {
+        "slices": 728,
+        "lut": 87840,
+        "register": 175680,
+        "ram16": 128,
+        "ram8": 0,
+        "dsp": 728
+      },
+      "signalCapacity": {
+        "analogInputs": 0,
+        "analogOutputs": 0,
+        "digitalTTL": 0,
+        "digitalRs422": 0,
+        "digitalLvds": 0,
+        "resolver": 0
+      },
+      "supportsFrontPlugin": false,
+      "supportedInterfaces": [],
+      "supportedExtensions": [
+        "-120",
+        "-21",
+        "-22",
+        "-24",
+        "-40"
+      ]
+    }
+  },
+  "interfaces": {
+    "IO33X-1-LV": {
+      "analogInputs": 0,
+      "analogOutputs": 0,
+      "digitalTTL": 64,
+      "digitalRs422": 0,
+      "digitalLvds": 0,
+      "resolver": 0
+    },
+    "IO33X-2": {
+      "analogInputs": 0,
+      "analogOutputs": 0,
+      "digitalTTL": 0,
+      "digitalRs422": 30,
+      "digitalLvds": 0,
+      "resolver": 0
+    },
+    "IO33X-3": {
+      "analogInputs": 0,
+      "analogOutputs": 0,
+      "digitalTTL": 16,
+      "digitalRs422": 22,
+      "digitalLvds": 0,
+      "resolver": 0
+    },
+    "IO33X-4": {
+      "analogInputs": 0,
+      "analogOutputs": 0,
+      "digitalTTL": 0,
+      "digitalRs422": 30,
+      "digitalLvds": 0,
+      "resolver": 0
+    },
+    "IO33X-6": {
+      "analogInputs": 16,
+      "analogOutputs": 8,
+      "digitalTTL": 16,
+      "digitalRs422": 0,
+      "digitalLvds": 0,
+      "resolver": 0
+    },
+    "IO33X-7": {
+      "analogInputs": 0,
+      "analogOutputs": 16,
+      "digitalTTL": 0,
+      "digitalRs422": 0,
+      "digitalLvds": 0,
+      "resolver": 0
+    },
+    "IO33X-8": {
+      "analogInputs": 0,
+      "analogOutputs": 0,
+      "digitalTTL": 0,
+      "digitalRs422": 0,
+      "digitalLvds": 0,
+      "resolver": 0
+    }
+  },
+  "extensions": {
+    "-21": {
+      "analogInputs": 0,
+      "analogOutputs": 0,
+      "digitalTTL": 62,
+      "digitalRs422": 0,
+      "digitalLvds": 0,
+      "resolver": 0
+    },
+    "-22": {
+      "analogInputs": 0,
+      "analogOutputs": 0,
+      "digitalTTL": 30,
+      "digitalRs422": 16,
+      "digitalLvds": 0,
+      "resolver": 0
+    },
+    "-24": {
+      "analogInputs": 8,
+      "analogOutputs": 4,
+      "digitalTTL": 40,
+      "digitalRs422": 8,
+      "digitalLvds": 0,
+      "resolver": 2
+    },
+    "-120": {
+      "analogInputs": 16,
+      "analogOutputs": 16,
+      "digitalTTL": 0,
+      "digitalRs422": 0,
+      "digitalLvds": 0,
+      "resolver": 0
+    },
+    "-40": {
+      "analogInputs": 0,
+      "analogOutputs": 0,
+      "digitalTTL": 0,
+      "digitalRs422": 0,
+      "digitalLvds": 0,
+      "resolver": 0
+    }
+  },
+  "codeModules": {
+    "adbms683233": {
+      "name": "ADBMS6832_33",
+      "normalizedName": "adbms683233",
+      "mappable": true,
+      "resources": {
+        "base": {
+          "slices": 140,
+          "lut": -136,
+          "register": 64,
+          "ram16": 0,
+          "ram8": 0,
+          "dsp": 0
+        },
+        "perChannel": {
+          "slices": 332,
+          "lut": 919,
+          "register": 1359,
+          "ram16": 0,
+          "ram8": 0,
+          "dsp": 0
+        }
+      }
+    },
+    "adc": {
+      "name": "ADC",
+      "normalizedName": "adc",
+      "mappable": true,
+      "resources": {
+        "base": {
+          "slices": 0,
+          "lut": 0,
+          "register": 0,
+          "ram16": 0,
+          "ram8": 0,
+          "dsp": 0
+        },
+        "perChannel": {
+          "slices": 0,
+          "lut": 0,
+          "register": 0,
+          "ram16": 0,
+          "ram8": 0,
+          "dsp": 0
+        }
+      }
+    },
+    "adctrigger": {
+      "name": "AdcTrigger",
+      "normalizedName": "adctrigger",
+      "mappable": false,
+      "resources": {
+        "base": {
+          "slices": 0,
+          "lut": 0,
+          "register": 0,
+          "ram16": 0,
+          "ram8": 0,
+          "dsp": 0
+        },
+        "perChannel": {
+          "slices": 0,
+          "lut": 0,
+          "register": 0,
+          "ram16": 0,
+          "ram8": 0,
+          "dsp": 0
+        }
+      }
+    },
+    "biss": {
+      "name": "Biss",
+      "normalizedName": "biss",
+      "mappable": true,
+      "maxChannels": 32,
+      "resources": {
+        "base": {
+          "slices": 140,
+          "lut": -136,
+          "register": 64,
+          "ram16": 0,
+          "ram8": 0,
+          "dsp": 0
+        },
+        "perChannel": {
+          "slices": 332,
+          "lut": 919,
+          "register": 1359,
+          "ram16": 0,
+          "ram8": 0,
+          "dsp": 0
+        }
+      }
+    },
+    "bissencoder": {
+      "name": "BissEncoder",
+      "normalizedName": "bissencoder",
+      "mappable": true,
+      "maxChannels": 32,
+      "resources": {
+        "base": {
+          "slices": 308,
+          "lut": -11,
+          "register": 40,
+          "ram16": 0,
+          "ram8": 0,
+          "dsp": 0
+        },
+        "perChannel": {
+          "slices": 436,
+          "lut": 1680,
+          "register": 1350,
+          "ram16": 0,
+          "ram8": 0,
+          "dsp": 0
+        }
+      }
+    },
+    "bisssniffer": {
+      "name": "BissSniffer",
+      "normalizedName": "bisssniffer",
+      "mappable": true,
+      "maxChannels": 32,
+      "resources": {
+        "base": {
+          "slices": 0,
+          "lut": -55,
+          "register": -7,
+          "ram16": 0,
+          "ram8": 0,
+          "dsp": 0
+        },
+        "perChannel": {
+          "slices": 175,
+          "lut": 417,
+          "register": 691,
+          "ram16": 0,
+          "ram8": 0,
+          "dsp": 0
+        }
+      }
+    },
+    "cap": {
+      "name": "CAP",
+      "normalizedName": "cap",
+      "mappable": true,
+      "maxChannels": 64,
+      "resources": {
+        "base": {
+          "slices": 33,
+          "lut": 212,
+          "register": 200,
+          "ram16": 0,
+          "ram8": 0,
+          "dsp": 13
+        },
+        "perChannel": {
+          "slices": 154,
+          "lut": 248,
+          "register": 436,
+          "ram16": 1,
+          "ram8": 0,
+          "dsp": 0
+        }
+      }
+    },
+    "crd": {
+      "name": "CRD",
+      "normalizedName": "crd",
+      "mappable": true,
+      "resources": {
+        "base": {
+          "slices": 4,
+          "lut": -120,
+          "register": 0,
+          "ram16": 0,
+          "ram8": 0,
+          "dsp": 0
+        },
+        "perChannel": {
+          "slices": 400,
+          "lut": 946,
+          "register": 1041,
+          "ram16": 0,
+          "ram8": 0,
+          "dsp": 4
+        }
+      }
+    },
+    "cre": {
+      "name": "CRE",
+      "normalizedName": "cre",
+      "mappable": true,
+      "resources": {
+        "base": {
+          "slices": 396,
+          "lut": -1089,
+          "register": 0,
+          "ram16": 0,
+          "ram8": 0,
+          "dsp": 0
+        },
+        "perChannel": {
+          "slices": 1072,
+          "lut": 3941,
+          "register": 4661,
+          "ram16": 0,
+          "ram8": 0,
+          "dsp": 0
+        }
+      }
+    },
+    "dac": {
+      "name": "DAC",
+      "normalizedName": "dac",
+      "mappable": true,
+      "resources": {
+        "base": {
+          "slices": 0,
+          "lut": 0,
+          "register": 0,
+          "ram16": 0,
+          "ram8": 0,
+          "dsp": 0
+        },
+        "perChannel": {
+          "slices": 0,
+          "lut": 0,
+          "register": 0,
+          "ram16": 0,
+          "ram8": 0,
+          "dsp": 0
+        }
+      }
+    },
+    "dio": {
+      "name": "DIO",
+      "normalizedName": "dio",
+      "mappable": true,
+      "maxChannels": 256,
+      "resources": {
+        "base": {
+          "slices": 0,
+          "lut": 0,
+          "register": 0,
+          "ram16": 0,
+          "ram8": 0,
+          "dsp": 0
+        },
+        "perChannel": {
+          "slices": 0,
+          "lut": 0,
+          "register": 0,
+          "ram16": 0,
+          "ram8": 0,
+          "dsp": 0
+        }
+      }
+    },
+    "dactrigger": {
+      "name": "DacTrigger",
+      "normalizedName": "dactrigger",
+      "mappable": false,
+      "resources": {
+        "base": {
+          "slices": 0,
+          "lut": 0,
+          "register": 0,
+          "ram16": 0,
+          "ram8": 0,
+          "dsp": 0
+        },
+        "perChannel": {
+          "slices": 0,
+          "lut": 0,
+          "register": 0,
+          "ram16": 0,
+          "ram8": 0,
+          "dsp": 0
+        }
+      }
+    },
+    "dshotrx": {
+      "name": "DshotRx",
+      "normalizedName": "dshotrx",
+      "mappable": true,
+      "maxChannels": 32,
+      "resources": {
+        "base": {
+          "slices": 62,
+          "lut": 2,
+          "register": 7,
+          "ram16": 0,
+          "ram8": 0,
+          "dsp": 0
+        },
+        "perChannel": {
+          "slices": 423,
+          "lut": 1530,
+          "register": 282,
+          "ram16": 0,
+          "ram8": 0,
+          "dsp": 4
+        }
+      }
+    },
+    "dshottx": {
+      "name": "DshotTx",
+      "normalizedName": "dshottx",
+      "mappable": true,
+      "maxChannels": 32,
+      "resources": {
+        "base": {
+          "slices": -46,
+          "lut": 910,
+          "register": -45,
+          "ram16": 0,
+          "ram8": 0,
+          "dsp": 0
+        },
+        "perChannel": {
+          "slices": 61,
+          "lut": 68,
+          "register": 162,
+          "ram16": 0,
+          "ram8": 0,
+          "dsp": 0
+        }
+      }
+    },
+    "endat": {
+      "name": "Endat",
+      "normalizedName": "endat",
+      "mappable": true,
+      "maxChannels": 32,
+      "resources": {
+        "base": {
+          "slices": 34,
+          "lut": 33,
+          "register": 95,
+          "ram16": 0,
+          "ram8": 0,
+          "dsp": 0
+        },
+        "perChannel": {
+          "slices": 357,
+          "lut": 1088,
+          "register": 457,
+          "ram16": 0,
+          "ram8": 0,
+          "dsp": 0
+        }
+      }
+    },
+    "endatencoder": {
+      "name": "EndatEncoder",
+      "normalizedName": "endatencoder",
+      "mappable": true,
+      "maxChannels": 32,
+      "resources": {
+        "base": {
+          "slices": 206,
+          "lut": -127,
+          "register": 16,
+          "ram16": 0,
+          "ram8": 0,
+          "dsp": 0
+        },
+        "perChannel": {
+          "slices": 439,
+          "lut": 1347,
+          "register": 1608,
+          "ram16": 0,
+          "ram8": 0,
+          "dsp": 0
+        }
+      }
+    },
+    "endatsniffer": {
+      "name": "EndatSniffer",
+      "normalizedName": "endatsniffer",
+      "mappable": true,
+      "maxChannels": 32,
+      "resources": {
+        "base": {
+          "slices": 3,
+          "lut": -92,
+          "register": -7,
+          "ram16": 0,
+          "ram8": 0,
+          "dsp": 0
+        },
+        "perChannel": {
+          "slices": 281,
+          "lut": 851,
+          "register": 491,
+          "ram16": 0,
+          "ram8": 0,
+          "dsp": 0
+        }
+      }
+    },
+    "i2cm": {
+      "name": "I2CM",
+      "normalizedName": "i2cm",
+      "mappable": true,
+      "maxChannels": 32,
+      "resources": {
+        "base": {
+          "slices": 0,
+          "lut": 81,
+          "register": 70,
+          "ram16": 0,
+          "ram8": 0,
+          "dsp": 0
+        },
+        "perChannel": {
+          "slices": 94,
+          "lut": 232,
+          "register": 146,
+          "ram16": 2,
+          "ram8": 0,
+          "dsp": 0
+        }
+      }
+    },
+    "i2cs": {
+      "name": "I2CS",
+      "normalizedName": "i2cs",
+      "mappable": true,
+      "maxChannels": 32,
+      "resources": {
+        "base": {
+          "slices": -12,
+          "lut": 0,
+          "register": 0,
+          "ram16": 0,
+          "ram8": 0,
+          "dsp": 0
+        },
+        "perChannel": {
+          "slices": 45,
+          "lut": 115,
+          "register": 107,
+          "ram16": 2,
+          "ram8": 0,
+          "dsp": 0
+        }
+      }
+    },
+    "inta": {
+      "name": "INTA",
+      "normalizedName": "inta",
+      "mappable": true,
+      "resources": {
+        "base": {
+          "slices": 130,
+          "lut": 240,
+          "register": 10,
+          "ram16": 0,
+          "ram8": 0,
+          "dsp": 0
+        },
+        "perChannel": {
+          "slices": 270,
+          "lut": 720,
+          "register": 660,
+          "ram16": 0,
+          "ram8": 0,
+          "dsp": 0
+        }
+      }
+    },
+    "pmfl": {
+      "name": "PMFL",
+      "normalizedName": "pmfl",
+      "mappable": true,
+      "resources": {
+        "base": {
+          "slices": 0,
+          "lut": 0,
+          "register": 0,
+          "ram16": 0,
+          "ram8": 0,
+          "dsp": 0
+        },
+        "perChannel": {
+          "slices": 0,
+          "lut": 0,
+          "register": 0,
+          "ram16": 0,
+          "ram8": 0,
+          "dsp": 0
+        }
+      }
+    },
+    "pwm": {
+      "name": "PWM",
+      "normalizedName": "pwm",
+      "mappable": true,
+      "maxChannels": 64,
+      "resources": {
+        "base": {
+          "slices": 270,
+          "lut": 363,
+          "register": 725,
+          "ram16": 0,
+          "ram8": 0,
+          "dsp": 0
+        },
+        "perChannel": {
+          "slices": 270,
+          "lut": 406,
+          "register": 707,
+          "ram16": 0,
+          "ram8": 0,
+          "dsp": 0
+        }
+      }
+    },
+    "pullcontrol": {
+      "name": "PullControl",
+      "normalizedName": "pullcontrol",
+      "mappable": false,
+      "resources": {
+        "base": {
+          "slices": 0,
+          "lut": 0,
+          "register": 0,
+          "ram16": 0,
+          "ram8": 0,
+          "dsp": 0
+        },
+        "perChannel": {
+          "slices": 0,
+          "lut": 0,
+          "register": 0,
+          "ram16": 0,
+          "ram8": 0,
+          "dsp": 0
+        }
+      }
+    },
+    "pulsecounter": {
+      "name": "PulseCounter",
+      "normalizedName": "pulsecounter",
+      "mappable": true,
+      "maxChannels": 32,
+      "resources": {
+        "base": {
+          "slices": 0,
+          "lut": 0,
+          "register": 0,
+          "ram16": 0,
+          "ram8": 0,
+          "dsp": 0
+        },
+        "perChannel": {
+          "slices": 30,
+          "lut": 70,
+          "register": 55,
+          "ram16": 0,
+          "ram8": 0,
+          "dsp": 0
+        }
+      }
+    },
+    "qad": {
+      "name": "QAD",
+      "normalizedName": "qad",
+      "mappable": true,
+      "maxChannels": 64,
+      "resources": {
+        "base": {
+          "slices": -20,
+          "lut": 47,
+          "register": 0,
+          "ram16": 0,
+          "ram8": 0,
+          "dsp": 0
+        },
+        "perChannel": {
+          "slices": 188,
+          "lut": 511,
+          "register": 507,
+          "ram16": 0,
+          "ram8": 0,
+          "dsp": 0
+        }
+      }
+    },
+    "qae": {
+      "name": "QAE",
+      "normalizedName": "qae",
+      "mappable": true,
+      "maxChannels": 64,
+      "resources": {
+        "base": {
+          "slices": 28,
+          "lut": 47,
+          "register": 4,
+          "ram16": 0,
+          "ram8": 0,
+          "dsp": 0
+        },
+        "perChannel": {
+          "slices": 185,
+          "lut": 511,
+          "register": 364,
+          "ram16": 0,
+          "ram8": 0,
+          "dsp": 0
+        }
+      }
+    },
+    "resolveremulation": {
+      "name": "ResolverEmulation",
+      "normalizedName": "resolveremulation",
+      "mappable": true,
+      "maxChannels": 64,
+      "resources": {
+        "base": {
+          "slices": 0,
+          "lut": 0,
+          "register": 0,
+          "ram16": 0,
+          "ram8": 0,
+          "dsp": 0
+        },
+        "perChannel": {
+          "slices": 0,
+          "lut": 0,
+          "register": 0,
+          "ram16": 0,
+          "ram8": 0,
+          "dsp": 0
+        }
+      }
+    },
+    "resolvermeasurement": {
+      "name": "ResolverMeasurement",
+      "normalizedName": "resolvermeasurement",
+      "mappable": false,
+      "maxChannels": 2,
+      "resources": {
+        "base": {
+          "slices": 0,
+          "lut": 0,
+          "register": 0,
+          "ram16": 0,
+          "ram8": 0,
+          "dsp": 0
+        },
+        "perChannel": {
+          "slices": 0,
+          "lut": 0,
+          "register": 0,
+          "ram16": 0,
+          "ram8": 0,
+          "dsp": 0
+        }
+      }
+    },
+    "spi": {
+      "name": "SPI",
+      "normalizedName": "spi",
+      "mappable": true,
+      "maxChannels": 32,
+      "resources": {
+        "base": {
+          "slices": 88,
+          "lut": 0,
+          "register": 0,
+          "ram16": 0,
+          "ram8": 0,
+          "dsp": 0
+        },
+        "perChannel": {
+          "slices": 400,
+          "lut": 1198,
+          "register": 1562,
+          "ram16": 0,
+          "ram8": 0,
+          "dsp": 0
+        }
+      }
+    },
+    "spim": {
+      "name": "SPIM",
+      "normalizedName": "spim",
+      "mappable": false,
+      "resources": {
+        "base": {
+          "slices": 88,
+          "lut": 0,
+          "register": 0,
+          "ram16": 0,
+          "ram8": 0,
+          "dsp": 0
+        },
+        "perChannel": {
+          "slices": 400,
+          "lut": 1198,
+          "register": 1562,
+          "ram16": 0,
+          "ram8": 0,
+          "dsp": 0
+        }
+      }
+    },
+    "spis": {
+      "name": "SPIS",
+      "normalizedName": "spis",
+      "mappable": false,
+      "resources": {
+        "base": {
+          "slices": 88,
+          "lut": 0,
+          "register": 0,
+          "ram16": 0,
+          "ram8": 0,
+          "dsp": 0
+        },
+        "perChannel": {
+          "slices": 400,
+          "lut": 1198,
+          "register": 1562,
+          "ram16": 0,
+          "ram8": 0,
+          "dsp": 0
+        }
+      }
+    },
+    "spisniffer": {
+      "name": "SPISniffer",
+      "normalizedName": "spisniffer",
+      "mappable": true,
+      "maxChannels": 32,
+      "resources": {
+        "base": {
+          "slices": 120,
+          "lut": 161,
+          "register": 95,
+          "ram16": 0,
+          "ram8": 0,
+          "dsp": 0
+        },
+        "perChannel": {
+          "slices": 253,
+          "lut": 443,
+          "register": 1025,
+          "ram16": 0,
+          "ram8": 0,
+          "dsp": 0
+        }
+      }
+    },
+    "ssim": {
+      "name": "SSIM",
+      "normalizedName": "ssim",
+      "mappable": true,
+      "maxChannels": 64,
+      "resources": {
+        "base": {
+          "slices": -19,
+          "lut": 22,
+          "register": 66,
+          "ram16": 0,
+          "ram8": 0,
+          "dsp": 0
+        },
+        "perChannel": {
+          "slices": 116,
+          "lut": 295,
+          "register": 284,
+          "ram16": 0,
+          "ram8": 0,
+          "dsp": 0
+        }
+      }
+    },
+    "ssis": {
+      "name": "SSIS",
+      "normalizedName": "ssis",
+      "mappable": true,
+      "maxChannels": 64,
+      "resources": {
+        "base": {
+          "slices": 7,
+          "lut": 18,
+          "register": 28,
+          "ram16": 0,
+          "ram8": 0,
+          "dsp": 0
+        },
+        "perChannel": {
+          "slices": 114,
+          "lut": 293,
+          "register": 255,
+          "ram16": 0,
+          "ram8": 0,
+          "dsp": 0
+        }
+      }
+    },
+    "ssisniffer": {
+      "name": "SSISniffer",
+      "normalizedName": "ssisniffer",
+      "mappable": true,
+      "maxChannels": 64,
+      "resources": {
+        "base": {
+          "slices": 1,
+          "lut": 1,
+          "register": 1,
+          "ram16": 0,
+          "ram8": 0,
+          "dsp": 0
+        },
+        "perChannel": {
+          "slices": 1,
+          "lut": 1,
+          "register": 1,
+          "ram16": 0,
+          "ram8": 0,
+          "dsp": 0
+        }
+      }
+    },
+    "sentrx": {
+      "name": "SentRx",
+      "normalizedName": "sentrx",
+      "mappable": true,
+      "maxChannels": 32,
+      "resources": {
+        "base": {
+          "slices": 0,
+          "lut": 0,
+          "register": 0,
+          "ram16": 0,
+          "ram8": 0,
+          "dsp": 0
+        },
+        "perChannel": {
+          "slices": 100,
+          "lut": 1538,
+          "register": 1566,
+          "ram16": 0,
+          "ram8": 0,
+          "dsp": 0
+        }
+      }
+    },
+    "senttx": {
+      "name": "SentTx",
+      "normalizedName": "senttx",
+      "mappable": true,
+      "maxChannels": 32,
+      "resources": {
+        "base": {
+          "slices": 0,
+          "lut": 0,
+          "register": 0,
+          "ram16": 0,
+          "ram8": 0,
+          "dsp": 0
+        },
+        "perChannel": {
+          "slices": 100,
+          "lut": 1538,
+          "register": 1566,
+          "ram16": 0,
+          "ram8": 0,
+          "dsp": 0
+        }
+      }
+    },
+    "serial": {
+      "name": "Serial",
+      "normalizedName": "serial",
+      "mappable": true,
+      "maxChannels": 32,
+      "resources": {
+        "base": {
+          "slices": 258,
+          "lut": 467,
+          "register": 390,
+          "ram16": 0,
+          "ram8": 0,
+          "dsp": 0
+        },
+        "perChannel": {
+          "slices": 242,
+          "lut": 666,
+          "register": 527,
+          "ram16": 4,
+          "ram8": 0,
+          "dsp": 0
+        }
+      }
+    }
+  },
+  "moduleAliases": {
+    "IO306": "IO306",
+    "IO306_SYNC": "IO306_SYNC",
+    "IO307": "IO307",
+    "IO308": "IO308",
+    "IO309A": "IO309A",
+    "IO309": "IO309A",
+    "IO309B": "IO309B",
+    "IO309C": "IO309C",
+    "IO316": "IO316",
+    "IO316_SYNC": "IO316_SYNC",
+    "IO317": "IO317",
+    "IO318": "IO318",
+    "IO322": "IO322",
+    "IO323": "IO323",
+    "IO324": "IO324",
+    "IO325": "IO325",
+    "IO331": "IO331",
+    "IO332": "IO332",
+    "IO333": "IO333",
+    "IO334": "IO334",
+    "IO336": "IO336",
+    "IO337": "IO337",
+    "IO360A": "IO360A",
+    "IO360": "IO360A",
+    "IO360B": "IO360B",
+    "IO360C": "IO360C",
+    "IO361A": "IO361A",
+    "IO361": "IO361A",
+    "IO361B": "IO361B",
+    "IO361C": "IO361C",
+    "IO391": "IO391",
+    "IO392": "IO392",
+    "IO393": "IO393",
+    "IO394": "IO394",
+    "IO397": "IO397",
+    "Pulse_IO": "Pulse_IO"
+  }
+}

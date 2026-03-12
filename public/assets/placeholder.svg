@@ -1,0 +1,12 @@
+<svg width="480" height="240" viewBox="0 0 480 240" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#c7d2fe" />
+      <stop offset="100%" stop-color="#0ea5e9" />
+    </linearGradient>
+  </defs>
+  <rect width="480" height="240" rx="24" fill="url(#grad)" />
+  <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="'Segoe UI', 'Inter', sans-serif" font-size="28" fill="#0f172a" opacity="0.65">
+    Speedgoat Asset
+  </text>
+</svg>

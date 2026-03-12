@@ -1,0 +1,1168 @@
+[
+  {
+    "name": "RCP TTL",
+    "fpgaFamily": "IO334",
+    "extension": "21",
+    "allocations": [
+      {
+        "codeModule": "PWM",
+        "maxChannels": 10
+      },
+      {
+        "codeModule": "PWM Capture",
+        "maxChannels": 4
+      },
+      {
+        "codeModule": "Quadrature",
+        "maxChannels": 3
+      },
+      {
+        "codeModule": "Pulse Counter",
+        "maxChannels": 3
+      },
+      {
+        "codeModule": "Serial",
+        "maxChannels": 2
+      },
+      {
+        "codeModule": "I2C",
+        "maxChannels": 3
+      },
+      {
+        "codeModule": "Interrupt",
+        "maxChannels": 1
+      }
+    ]
+  },
+  {
+    "name": "HIL TTL",
+    "fpgaFamily": "IO334",
+    "extension": "21",
+    "allocations": [
+      {
+        "codeModule": "PWM",
+        "maxChannels": 5
+      },
+      {
+        "codeModule": "PWM Capture",
+        "maxChannels": 12
+      },
+      {
+        "codeModule": "Quadrature",
+        "maxChannels": 3
+      },
+      {
+        "codeModule": "Pulse Counter",
+        "maxChannels": 2
+      },
+      {
+        "codeModule": "Serial",
+        "maxChannels": 2
+      },
+      {
+        "codeModule": "SPI",
+        "maxChannels": 1
+      },
+      {
+        "codeModule": "I2C",
+        "maxChannels": 3
+      },
+      {
+        "codeModule": "Interrupt",
+        "maxChannels": 1
+      }
+    ]
+  },
+  {
+    "name": "Communication TTL",
+    "fpgaFamily": "IO334",
+    "extension": "21",
+    "allocations": [
+      {
+        "codeModule": "PWM",
+        "maxChannels": 5
+      },
+      {
+        "codeModule": "PWM Capture",
+        "maxChannels": 6
+      },
+      {
+        "codeModule": "Quadrature",
+        "maxChannels": 2
+      },
+      {
+        "codeModule": "Serial",
+        "maxChannels": 4
+      },
+      {
+        "codeModule": "SPI",
+        "maxChannels": 4
+      },
+      {
+        "codeModule": "I2C",
+        "maxChannels": 3
+      },
+      {
+        "codeModule": "Interrupt",
+        "maxChannels": 1
+      }
+    ]
+  },
+  {
+    "name": "RCP RS422",
+    "fpgaFamily": "IO334",
+    "extension": "22",
+    "allocations": [
+      {
+        "codeModule": "PWM",
+        "maxChannels": 6
+      },
+      {
+        "codeModule": "PWM Capture",
+        "maxChannels": 4
+      },
+      {
+        "codeModule": "Quadrature",
+        "maxChannels": 2
+      },
+      {
+        "codeModule": "Pulse Counter",
+        "maxChannels": 1
+      },
+      {
+        "codeModule": "SSI",
+        "maxChannels": 3
+      },
+      {
+        "codeModule": "EnDat",
+        "maxChannels": 2
+      },
+      {
+        "codeModule": "I2C",
+        "maxChannels": 3
+      },
+      {
+        "codeModule": "Interrupt",
+        "maxChannels": 1
+      }
+    ]
+  },
+  {
+    "name": "HIL RS422",
+    "fpgaFamily": "IO334",
+    "extension": "22",
+    "allocations": [
+      {
+        "codeModule": "PWM",
+        "maxChannels": 3
+      },
+      {
+        "codeModule": "PWM Capture",
+        "maxChannels": 9
+      },
+      {
+        "codeModule": "Quadrature",
+        "maxChannels": 2
+      },
+      {
+        "codeModule": "SSI",
+        "maxChannels": 3
+      },
+      {
+        "codeModule": "EnDat",
+        "maxChannels": 2
+      },
+      {
+        "codeModule": "I2C",
+        "maxChannels": 3
+      },
+      {
+        "codeModule": "Interrupt",
+        "maxChannels": 1
+      }
+    ]
+  },
+  {
+    "name": "Communication RS422",
+    "fpgaFamily": "IO334",
+    "extension": "22",
+    "allocations": [
+      {
+        "codeModule": "PWM",
+        "maxChannels": 5
+      },
+      {
+        "codeModule": "PWM Capture",
+        "maxChannels": 3
+      },
+      {
+        "codeModule": "Quadrature",
+        "maxChannels": 2
+      },
+      {
+        "codeModule": "Serial",
+        "maxChannels": 6
+      },
+      {
+        "codeModule": "I2C",
+        "maxChannels": 3
+      },
+      {
+        "codeModule": "SPI",
+        "maxChannels": 1
+      }
+    ]
+  },
+  {
+    "name": "Resolver TTL",
+    "fpgaFamily": "IO334",
+    "extension": "24",
+    "allocations": [
+      {
+        "codeModule": "Resolver",
+        "maxChannels": 2
+      },
+      {
+        "codeModule": "PWM",
+        "maxChannels": 7
+      },
+      {
+        "codeModule": "PWM Capture",
+        "maxChannels": 4
+      },
+      {
+        "codeModule": "Pulse Counter",
+        "maxChannels": 3
+      },
+      {
+        "codeModule": "Serial",
+        "maxChannels": 2
+      },
+      {
+        "codeModule": "SPI",
+        "maxChannels": 2
+      },
+      {
+        "codeModule": "Interrupt",
+        "maxChannels": 1
+      }
+    ]
+  },
+  {
+    "name": "RCP TTL",
+    "fpgaFamily": "IO324",
+    "extension": "21",
+    "allocations": [
+      {
+        "codeModule": "PWM",
+        "maxChannels": 10
+      },
+      {
+        "codeModule": "PWM Capture",
+        "maxChannels": 4
+      },
+      {
+        "codeModule": "Quadrature",
+        "maxChannels": 3
+      },
+      {
+        "codeModule": "Pulse Counter",
+        "maxChannels": 3
+      },
+      {
+        "codeModule": "Serial",
+        "maxChannels": 2
+      },
+      {
+        "codeModule": "I2C",
+        "maxChannels": 3
+      },
+      {
+        "codeModule": "Interrupt",
+        "maxChannels": 1
+      }
+    ]
+  },
+  {
+    "name": "HIL TTL",
+    "fpgaFamily": "IO324",
+    "extension": "21",
+    "allocations": [
+      {
+        "codeModule": "PWM",
+        "maxChannels": 5
+      },
+      {
+        "codeModule": "PWM Capture",
+        "maxChannels": 12
+      },
+      {
+        "codeModule": "Quadrature",
+        "maxChannels": 3
+      },
+      {
+        "codeModule": "Pulse Counter",
+        "maxChannels": 2
+      },
+      {
+        "codeModule": "Serial",
+        "maxChannels": 2
+      },
+      {
+        "codeModule": "SPI",
+        "maxChannels": 1
+      },
+      {
+        "codeModule": "I2C",
+        "maxChannels": 3
+      },
+      {
+        "codeModule": "Interrupt",
+        "maxChannels": 1
+      }
+    ]
+  },
+  {
+    "name": "Communication TTL",
+    "fpgaFamily": "IO324",
+    "extension": "21",
+    "allocations": [
+      {
+        "codeModule": "PWM",
+        "maxChannels": 5
+      },
+      {
+        "codeModule": "PWM Capture",
+        "maxChannels": 6
+      },
+      {
+        "codeModule": "Quadrature",
+        "maxChannels": 2
+      },
+      {
+        "codeModule": "Serial",
+        "maxChannels": 4
+      },
+      {
+        "codeModule": "SPI",
+        "maxChannels": 4
+      },
+      {
+        "codeModule": "I2C",
+        "maxChannels": 3
+      },
+      {
+        "codeModule": "Interrupt",
+        "maxChannels": 1
+      }
+    ]
+  },
+  {
+    "name": "RCP RS422",
+    "fpgaFamily": "IO324",
+    "extension": "22",
+    "allocations": [
+      {
+        "codeModule": "PWM",
+        "maxChannels": 6
+      },
+      {
+        "codeModule": "PWM Capture",
+        "maxChannels": 4
+      },
+      {
+        "codeModule": "Quadrature",
+        "maxChannels": 2
+      },
+      {
+        "codeModule": "Pulse Counter",
+        "maxChannels": 1
+      },
+      {
+        "codeModule": "SSI",
+        "maxChannels": 3
+      },
+      {
+        "codeModule": "EnDat",
+        "maxChannels": 2
+      },
+      {
+        "codeModule": "I2C",
+        "maxChannels": 3
+      },
+      {
+        "codeModule": "Interrupt",
+        "maxChannels": 1
+      }
+    ]
+  },
+  {
+    "name": "HIL RS422",
+    "fpgaFamily": "IO324",
+    "extension": "22",
+    "allocations": [
+      {
+        "codeModule": "PWM",
+        "maxChannels": 3
+      },
+      {
+        "codeModule": "PWM Capture",
+        "maxChannels": 9
+      },
+      {
+        "codeModule": "Quadrature",
+        "maxChannels": 2
+      },
+      {
+        "codeModule": "SSI",
+        "maxChannels": 3
+      },
+      {
+        "codeModule": "EnDat",
+        "maxChannels": 2
+      },
+      {
+        "codeModule": "I2C",
+        "maxChannels": 3
+      },
+      {
+        "codeModule": "Interrupt",
+        "maxChannels": 1
+      }
+    ]
+  },
+  {
+    "name": "Communication RS422",
+    "fpgaFamily": "IO324",
+    "extension": "22",
+    "allocations": [
+      {
+        "codeModule": "PWM",
+        "maxChannels": 5
+      },
+      {
+        "codeModule": "PWM Capture",
+        "maxChannels": 3
+      },
+      {
+        "codeModule": "Quadrature",
+        "maxChannels": 2
+      },
+      {
+        "codeModule": "Serial",
+        "maxChannels": 6
+      },
+      {
+        "codeModule": "I2C",
+        "maxChannels": 3
+      },
+      {
+        "codeModule": "SPI",
+        "maxChannels": 1
+      }
+    ]
+  },
+  {
+    "name": "Resolver TTL",
+    "fpgaFamily": "IO324",
+    "extension": "24",
+    "allocations": [
+      {
+        "codeModule": "Resolver",
+        "maxChannels": 2
+      },
+      {
+        "codeModule": "PWM",
+        "maxChannels": 7
+      },
+      {
+        "codeModule": "PWM Capture",
+        "maxChannels": 4
+      },
+      {
+        "codeModule": "Pulse Counter",
+        "maxChannels": 3
+      },
+      {
+        "codeModule": "Serial",
+        "maxChannels": 2
+      },
+      {
+        "codeModule": "SPI",
+        "maxChannels": 2
+      },
+      {
+        "codeModule": "Interrupt",
+        "maxChannels": 1
+      }
+    ]
+  },
+  {
+    "name": "TPI6020",
+    "fpgaFamily": "IO324",
+    "extension": "21",
+    "allocations": [
+      {
+        "codeModule": "TPI6020",
+        "maxChannels": 2
+      },
+      {
+        "codeModule": "PWM",
+        "maxChannels": 6
+      },
+      {
+        "codeModule": "Quadrature",
+        "maxChannels": 2
+      },
+      {
+        "codeModule": "Interrupt",
+        "maxChannels": 1
+      }
+    ]
+  },
+  {
+    "name": "RCP TTL",
+    "fpgaFamily": "IO336",
+    "extension": "21",
+    "allocations": [
+      {
+        "codeModule": "PWM",
+        "maxChannels": 10
+      },
+      {
+        "codeModule": "PWM Capture",
+        "maxChannels": 4
+      },
+      {
+        "codeModule": "Quadrature",
+        "maxChannels": 3
+      },
+      {
+        "codeModule": "Pulse Counter",
+        "maxChannels": 3
+      },
+      {
+        "codeModule": "Serial",
+        "maxChannels": 2
+      },
+      {
+        "codeModule": "I2C",
+        "maxChannels": 3
+      },
+      {
+        "codeModule": "Interrupt",
+        "maxChannels": 1
+      }
+    ]
+  },
+  {
+    "name": "HIL TTL",
+    "fpgaFamily": "IO336",
+    "extension": "21",
+    "allocations": [
+      {
+        "codeModule": "PWM",
+        "maxChannels": 5
+      },
+      {
+        "codeModule": "PWM Capture",
+        "maxChannels": 12
+      },
+      {
+        "codeModule": "Quadrature",
+        "maxChannels": 3
+      },
+      {
+        "codeModule": "Pulse Counter",
+        "maxChannels": 2
+      },
+      {
+        "codeModule": "Serial",
+        "maxChannels": 2
+      },
+      {
+        "codeModule": "SPI",
+        "maxChannels": 1
+      },
+      {
+        "codeModule": "I2C",
+        "maxChannels": 3
+      },
+      {
+        "codeModule": "Interrupt",
+        "maxChannels": 1
+      }
+    ]
+  },
+  {
+    "name": "Communication TTL",
+    "fpgaFamily": "IO336",
+    "extension": "21",
+    "allocations": [
+      {
+        "codeModule": "PWM",
+        "maxChannels": 5
+      },
+      {
+        "codeModule": "PWM Capture",
+        "maxChannels": 6
+      },
+      {
+        "codeModule": "Quadrature",
+        "maxChannels": 2
+      },
+      {
+        "codeModule": "Serial",
+        "maxChannels": 4
+      },
+      {
+        "codeModule": "SPI",
+        "maxChannels": 4
+      },
+      {
+        "codeModule": "I2C",
+        "maxChannels": 3
+      },
+      {
+        "codeModule": "Interrupt",
+        "maxChannels": 1
+      }
+    ]
+  },
+  {
+    "name": "RCP RS422",
+    "fpgaFamily": "IO336",
+    "extension": "22",
+    "allocations": [
+      {
+        "codeModule": "PWM",
+        "maxChannels": 6
+      },
+      {
+        "codeModule": "PWM Capture",
+        "maxChannels": 4
+      },
+      {
+        "codeModule": "Quadrature",
+        "maxChannels": 2
+      },
+      {
+        "codeModule": "Pulse Counter",
+        "maxChannels": 1
+      },
+      {
+        "codeModule": "SSI",
+        "maxChannels": 3
+      },
+      {
+        "codeModule": "EnDat",
+        "maxChannels": 2
+      },
+      {
+        "codeModule": "I2C",
+        "maxChannels": 3
+      },
+      {
+        "codeModule": "Interrupt",
+        "maxChannels": 1
+      }
+    ]
+  },
+  {
+    "name": "HIL RS422",
+    "fpgaFamily": "IO336",
+    "extension": "22",
+    "allocations": [
+      {
+        "codeModule": "PWM",
+        "maxChannels": 3
+      },
+      {
+        "codeModule": "PWM Capture",
+        "maxChannels": 9
+      },
+      {
+        "codeModule": "Quadrature",
+        "maxChannels": 2
+      },
+      {
+        "codeModule": "SSI",
+        "maxChannels": 3
+      },
+      {
+        "codeModule": "EnDat",
+        "maxChannels": 2
+      },
+      {
+        "codeModule": "I2C",
+        "maxChannels": 3
+      },
+      {
+        "codeModule": "Interrupt",
+        "maxChannels": 1
+      }
+    ]
+  },
+  {
+    "name": "Communication RS422",
+    "fpgaFamily": "IO336",
+    "extension": "22",
+    "allocations": [
+      {
+        "codeModule": "PWM",
+        "maxChannels": 5
+      },
+      {
+        "codeModule": "PWM Capture",
+        "maxChannels": 3
+      },
+      {
+        "codeModule": "Quadrature",
+        "maxChannels": 2
+      },
+      {
+        "codeModule": "Serial",
+        "maxChannels": 6
+      },
+      {
+        "codeModule": "I2C",
+        "maxChannels": 3
+      },
+      {
+        "codeModule": "SPI",
+        "maxChannels": 1
+      }
+    ]
+  },
+  {
+    "name": "Resolver TTL",
+    "fpgaFamily": "IO336",
+    "extension": "24",
+    "allocations": [
+      {
+        "codeModule": "Resolver",
+        "maxChannels": 2
+      },
+      {
+        "codeModule": "PWM",
+        "maxChannels": 7
+      },
+      {
+        "codeModule": "PWM Capture",
+        "maxChannels": 4
+      },
+      {
+        "codeModule": "Pulse Counter",
+        "maxChannels": 3
+      },
+      {
+        "codeModule": "Serial",
+        "maxChannels": 2
+      },
+      {
+        "codeModule": "SPI",
+        "maxChannels": 2
+      },
+      {
+        "codeModule": "Interrupt",
+        "maxChannels": 1
+      }
+    ]
+  },
+  {
+    "name": "TPI6020",
+    "fpgaFamily": "IO336",
+    "extension": "21",
+    "allocations": [
+      {
+        "codeModule": "TPI6020",
+        "maxChannels": 2
+      },
+      {
+        "codeModule": "PWM",
+        "maxChannels": 6
+      },
+      {
+        "codeModule": "Quadrature",
+        "maxChannels": 2
+      },
+      {
+        "codeModule": "Interrupt",
+        "maxChannels": 1
+      }
+    ]
+  },
+  {
+    "name": "Communication TTL",
+    "fpgaFamily": "IO337",
+    "extension": "21",
+    "allocations": [
+      {
+        "codeModule": "SPI",
+        "maxChannels": 4
+      },
+      {
+        "codeModule": "I2C",
+        "maxChannels": 3
+      },
+      {
+        "codeModule": "Serial",
+        "maxChannels": 4
+      }
+    ]
+  },
+  {
+    "name": "Communication RS422",
+    "fpgaFamily": "IO337",
+    "extension": "22",
+    "allocations": [
+      {
+        "codeModule": "SPI",
+        "maxChannels": 4
+      },
+      {
+        "codeModule": "I2C",
+        "maxChannels": 3
+      },
+      {
+        "codeModule": "Serial",
+        "maxChannels": 4
+      }
+    ]
+  },
+  {
+    "name": "HIL TTL",
+    "fpgaFamily": "IO337",
+    "extension": "21",
+    "allocations": [
+      {
+        "codeModule": "PWM",
+        "maxChannels": 5
+      },
+      {
+        "codeModule": "PWM Capture",
+        "maxChannels": 12
+      },
+      {
+        "codeModule": "Pulse Counter",
+        "maxChannels": 2
+      },
+      {
+        "codeModule": "Quadrature",
+        "maxChannels": 3
+      },
+      {
+        "codeModule": "Interrupt",
+        "maxChannels": 1
+      }
+    ]
+  },
+  {
+    "name": "HIL RS422",
+    "fpgaFamily": "IO337",
+    "extension": "22",
+    "allocations": [
+      {
+        "codeModule": "PWM",
+        "maxChannels": 5
+      },
+      {
+        "codeModule": "PWM Capture",
+        "maxChannels": 12
+      },
+      {
+        "codeModule": "Quadrature",
+        "maxChannels": 3
+      },
+      {
+        "codeModule": "SSI",
+        "maxChannels": 3
+      },
+      {
+        "codeModule": "EnDat",
+        "maxChannels": 2
+      },
+      {
+        "codeModule": "Interrupt",
+        "maxChannels": 1
+      }
+    ]
+  },
+  {
+    "name": "Resolver TTL",
+    "fpgaFamily": "IO337",
+    "extension": "24",
+    "allocations": [
+      {
+        "codeModule": "Resolver",
+        "maxChannels": 2
+      },
+      {
+        "codeModule": "PWM",
+        "maxChannels": 7
+      },
+      {
+        "codeModule": "PWM Capture",
+        "maxChannels": 4
+      },
+      {
+        "codeModule": "Pulse Counter",
+        "maxChannels": 3
+      },
+      {
+        "codeModule": "Serial",
+        "maxChannels": 2
+      },
+      {
+        "codeModule": "SPI",
+        "maxChannels": 2
+      },
+      {
+        "codeModule": "Interrupt",
+        "maxChannels": 1
+      }
+    ]
+  },
+  {
+    "name": "Communication",
+    "fpgaFamily": "IO306",
+    "extension": "none",
+    "allocations": [
+      {
+        "codeModule": "SPI",
+        "maxChannels": 4
+      },
+      {
+        "codeModule": "I2C",
+        "maxChannels": 3
+      }
+    ]
+  },
+  {
+    "name": "HIL",
+    "fpgaFamily": "IO306",
+    "extension": "none",
+    "allocations": [
+      {
+        "codeModule": "PWM",
+        "maxChannels": 5
+      },
+      {
+        "codeModule": "PWM Capture",
+        "maxChannels": 12
+      },
+      {
+        "codeModule": "Quadrature",
+        "maxChannels": 3
+      },
+      {
+        "codeModule": "Pulse Counter",
+        "maxChannels": 2
+      },
+      {
+        "codeModule": "Interrupt",
+        "maxChannels": 1
+      }
+    ]
+  },
+  {
+    "name": "RCP",
+    "fpgaFamily": "IO306",
+    "extension": "none",
+    "allocations": [
+      {
+        "codeModule": "PWM",
+        "maxChannels": 10
+      },
+      {
+        "codeModule": "PWM Capture",
+        "maxChannels": 4
+      },
+      {
+        "codeModule": "Quadrature",
+        "maxChannels": 3
+      },
+      {
+        "codeModule": "Pulse Counter",
+        "maxChannels": 3
+      },
+      {
+        "codeModule": "Interrupt",
+        "maxChannels": 1
+      }
+    ]
+  },
+  {
+    "name": "Communication",
+    "fpgaFamily": "IO307",
+    "extension": "none",
+    "allocations": [
+      {
+        "codeModule": "Serial",
+        "maxChannels": 4
+      },
+      {
+        "codeModule": "SPI",
+        "maxChannels": 4
+      },
+      {
+        "codeModule": "I2C",
+        "maxChannels": 3
+      }
+    ]
+  },
+  {
+    "name": "HIL",
+    "fpgaFamily": "IO307",
+    "extension": "none",
+    "allocations": [
+      {
+        "codeModule": "SSI",
+        "maxChannels": 3
+      },
+      {
+        "codeModule": "BiSS",
+        "maxChannels": 2
+      },
+      {
+        "codeModule": "EnDat",
+        "maxChannels": 2
+      },
+      {
+        "codeModule": "Quadrature",
+        "maxChannels": 3
+      },
+      {
+        "codeModule": "PWM",
+        "maxChannels": 5
+      },
+      {
+        "codeModule": "PWM Capture",
+        "maxChannels": 12
+      },
+      {
+        "codeModule": "Pulse Counter",
+        "maxChannels": 2
+      },
+      {
+        "codeModule": "Interrupt",
+        "maxChannels": 1
+      }
+    ]
+  },
+  {
+    "name": "RCP",
+    "fpgaFamily": "IO307",
+    "extension": "none",
+    "allocations": [
+      {
+        "codeModule": "SSI",
+        "maxChannels": 3
+      },
+      {
+        "codeModule": "BiSS",
+        "maxChannels": 2
+      },
+      {
+        "codeModule": "EnDat",
+        "maxChannels": 2
+      },
+      {
+        "codeModule": "Quadrature",
+        "maxChannels": 3
+      },
+      {
+        "codeModule": "PWM",
+        "maxChannels": 10
+      },
+      {
+        "codeModule": "PWM Capture",
+        "maxChannels": 4
+      },
+      {
+        "codeModule": "Pulse Counter",
+        "maxChannels": 3
+      },
+      {
+        "codeModule": "Interrupt",
+        "maxChannels": 1
+      }
+    ]
+  },
+  {
+    "name": "Communication",
+    "fpgaFamily": "IO397",
+    "extension": "none",
+    "allocations": [
+      {
+        "codeModule": "SPI",
+        "maxChannels": 4
+      },
+      {
+        "codeModule": "I2C",
+        "maxChannels": 3
+      },
+      {
+        "codeModule": "Serial",
+        "maxChannels": 2
+      }
+    ]
+  },
+  {
+    "name": "HIL",
+    "fpgaFamily": "IO397",
+    "extension": "none",
+    "allocations": [
+      {
+        "codeModule": "PWM Capture",
+        "maxChannels": 4
+      },
+      {
+        "codeModule": "Quadrature",
+        "maxChannels": 3
+      },
+      {
+        "codeModule": "Interrupt",
+        "maxChannels": 1
+      }
+    ]
+  },
+  {
+    "name": "RCP",
+    "fpgaFamily": "IO397",
+    "extension": "none",
+    "allocations": [
+      {
+        "codeModule": "PWM",
+        "maxChannels": 4
+      },
+      {
+        "codeModule": "Quadrature",
+        "maxChannels": 3
+      },
+      {
+        "codeModule": "Interrupt",
+        "maxChannels": 1
+      }
+    ]
+  },
+  {
+    "name": "TPI6020",
+    "fpgaFamily": "IO397",
+    "extension": "none",
+    "allocations": [
+      {
+        "codeModule": "TPI6020",
+        "maxChannels": 1
+      },
+      {
+        "codeModule": "PWM",
+        "maxChannels": 4
+      },
+      {
+        "codeModule": "Quadrature",
+        "maxChannels": 2
+      }
+    ]
+  }
+]
