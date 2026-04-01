@@ -1,18 +1,19 @@
+const exportBasePath = process.env.PAGES_BASE_PATH || ''
+const isExportBuild = process.env.NODE_ENV === 'production'
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  output: 'export',
+  ...(isExportBuild ? { output: 'export' } : {}),
   images: {
     unoptimized: true,
   },
-  // When deploying to GitHub Pages under a sub-path (e.g. /online-configurator),
-  // set basePath and assetPrefix via PAGES_BASE_PATH env var. Leave empty for custom domains.
-  basePath: process.env.PAGES_BASE_PATH || '',
-  assetPrefix: process.env.PAGES_BASE_PATH || '',
-  // Expose basePath to client code – next/image does NOT auto-prepend basePath in
-  // static-export mode (output:'export', unoptimized:true), so images must be prefixed manually.
+  // Keep export-only path rewriting out of `next dev`; it breaks app-router asset URLs there.
+  basePath: isExportBuild ? exportBasePath : '',
+  assetPrefix: isExportBuild ? exportBasePath : '',
+  // Expose the deployment base path to client code for static-export image prefixes.
   env: {
-    NEXT_PUBLIC_BASE_PATH: process.env.PAGES_BASE_PATH || '',
+    NEXT_PUBLIC_BASE_PATH: isExportBuild ? exportBasePath : '',
   },
   webpack: (config, { dev }) => {
     if (dev) {
