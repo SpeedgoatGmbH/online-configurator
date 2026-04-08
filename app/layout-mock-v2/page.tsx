@@ -1441,7 +1441,7 @@ export default function LayoutMockV2Page() {
       </header>
 
       <main className="min-h-screen bg-[linear-gradient(180deg,#f4f7fa_0%,#f8fafc_28%,#ffffff_100%)] pb-14">
-        <section id="hero-section" className="relative overflow-hidden scroll-mt-28 px-4 pt-20 md:px-8 md:pt-28">
+        <section id="hero-section" className="relative overflow-visible scroll-mt-28 px-4 pt-20 md:px-8 md:pt-28">
           <div className="absolute inset-0">
             <Image
               src={`${BASE_PATH}/assets/machine-performance.png`}
@@ -1496,7 +1496,7 @@ export default function LayoutMockV2Page() {
                     </a>
                   )}
                 </div>
-                <details className="group relative">
+                <details className="group relative z-[70]">
                   <summary
                     aria-label="What differs between versions"
                     className="inline-flex h-8 w-8 cursor-pointer list-none items-center justify-center rounded-full border border-white/20 bg-white/10 text-white/78 backdrop-blur-sm transition hover:text-white [&::-webkit-details-marker]:hidden"
@@ -1507,7 +1507,7 @@ export default function LayoutMockV2Page() {
                       <circle cx="10" cy="5.5" r="0.75" fill="currentColor" stroke="none" />
                     </svg>
                   </summary>
-                  <div className="absolute right-0 top-full z-50 mt-2 w-[320px] rounded-xl border border-slate-200 bg-white p-3 text-left shadow-[0_18px_40px_rgba(15,23,42,0.18)]">
+                  <div className="absolute right-0 top-full z-[80] mt-2 w-[min(320px,calc(100vw-2rem))] rounded-xl border border-slate-200 bg-white p-3 text-left shadow-[0_18px_40px_rgba(15,23,42,0.18)]">
                     <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">Version differences</p>
                     <div className="mt-2 space-y-2.5">
                       {VERSION_SELECTOR_NOTES.map((version) => (
