@@ -912,10 +912,12 @@ function ConfiguratorV3({ onSummaryChange, onRequirementsChange, onLoadTemplate,
     <>
       <CompactCard
         variant="default"
-        className="overflow-visible border-slate-200 bg-gradient-to-b from-white to-slate-50/50 p-3 shadow-[0_8px_24px_rgba(15,23,42,0.04)]"
+        className="relative overflow-visible border-slate-200 bg-[linear-gradient(180deg,rgba(255,255,255,1),rgba(249,251,253,0.98))] p-3 shadow-[0_12px_24px_rgba(15,23,42,0.07)]"
       >
+        <div className="pointer-events-none absolute inset-0 rounded-[var(--ui-radius-lg)] bg-[linear-gradient(180deg,rgba(255,255,255,1),rgba(250,252,254,0.98))]" />
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-20 rounded-t-[var(--ui-radius-lg)] bg-[linear-gradient(180deg,rgba(0,105,180,0.06),rgba(0,105,180,0))]" />
         {/* All display groups — core + additional, single 2-column flow */}
-        <div className="space-y-0 divide-y divide-slate-100">
+        <div className="relative space-y-0 divide-y divide-slate-100">
           {DISPLAY_GROUPS.map(([left, right], rowIdx) => (
             <div key={rowIdx} className="grid grid-cols-1 items-start gap-x-4 min-[640px]:grid-cols-2">
               {renderDisplayGroup(left)}

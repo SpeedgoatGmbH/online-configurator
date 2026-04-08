@@ -1,12 +1,21 @@
 'use client'
 
+import * as RadixTooltip from '@radix-ui/react-tooltip'
 import Image from 'next/image'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { useEffect, useMemo, useState } from 'react'
-import { CompactButton, CompactCard, CompactChip, CompactTooltip } from '@/components/ui/compact'
+import MachineSlotMapImage from '@/components/MachineSlotMapImage'
+import ConfiguratorWIP from '@/components/ConfiguratorWIP'
+import simulinkBackground from '@/assets/Gemini_Generated_Image_c6c1uec6c1uec6c1.png'
+import type { ClosedLoopRate, ProposalGenerateResponse, RequirementRow } from '@/components/configurator/proposalTypes'
+import type { ConfiguratorSummary } from '@/components/configurator/useConfigurator'
+import { CompactButton, CompactCard } from '@/components/ui/compact'
 import { cn } from '@/lib/cn'
+import { simulateProposal } from '@/lib/proposal/simulator'
 
 const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH || ''
+const VER2_SIMULINK_BACKGROUND = `${BASE_PATH}/assets/Gemini_Generated_Image_4qdl7x4qdl7x4qdl.png`
 
 const HEADER_NAV_ITEMS = [
   { label: 'Testing Workflows', hasMenu: true },
@@ -17,9 +26,36 @@ const HEADER_NAV_ITEMS = [
   { label: 'Contact', hasMenu: false },
 ] as const
 
+const HEADER_NAV_TARGETS: Record<(typeof HEADER_NAV_ITEMS)[number]['label'], string> = {
+  'Testing Workflows': 'hero-section',
+  'Test Systems': 'systems-section',
+  'Industries': 'industries-section',
+  Resources: 'resources-section',
+  Company: 'hero-section',
+  Contact: 'contact-section',
+}
+
+const VERSION_SELECTOR_NOTES = [
+  {
+    label: 'Ver 1',
+    description: 'Baseline split layout with the original selector flow and cleaner default presentation.',
+  },
+  {
+    label: 'Ver 2',
+    description: 'More branded and atmospheric treatment with the same core machine-selection logic as Ver 1.',
+  },
+  {
+    label: 'Ver 3',
+    description: 'Recommendation-first layout with one dominant suggested platform and explicit compare states.',
+  },
+] as const
+
 type PerformanceBand = '10k' | '100k' | 'mhz'
 type InterfaceId = 'high-fidelity' | 'general-io' | 'high-speed-daq'
 type InteractiveGroupId = 'analog' | 'digital' | 'pwm-position' | 'communication'
+type ApplicationProfileId = 'general-control' | 'high-fidelity' | 'measurement'
+type DeploymentEnvironment = 'office-lab' | 'field'
+type IoVolume = 'lt100' | 'gt100'
 
 const PERFORMANCE_OPTIONS: Array<{
   id: PerformanceBand
@@ -27,6 +63,7 @@ const PERFORMANCE_OPTIONS: Array<{
   shortLabel: string
   summary: string
   detail: string
+  advancedNote?: string
   pulseCount: number
   visualMode: 'pulses' | 'dense'
   tierLabel: string
@@ -36,23 +73,23 @@ const PERFORMANCE_OPTIONS: Array<{
 }> = [
   {
     id: '10k',
-    title: 'Up to 10 kHz',
-    shortLabel: '10 kHz',
-    summary: 'Sufficient for most control loops outside power electronics.',
-    detail: 'Best for general control & monitoring',
+    title: 'Up to 20 kHz',
+    shortLabel: '20 kHz',
+    summary: 'General control, monitoring, communication, and slower plant dynamics.',
+    detail: 'General timing requirements',
     pulseCount: 2,
     visualMode: 'pulses',
     tierLabel: 'Standard',
     tierColor: 'bg-slate-100 text-slate-600',
     recommendLabel: 'Most common choice',
-    typicalUse: 'General HIL, communication buses, monitoring, system-level behavior.',
+    typicalUse: 'General HIL/RCP, communication buses, monitoring, mechanical and thermal system behavior.',
   },
   {
     id: '100k',
     title: 'Up to 100 kHz',
     shortLabel: '100 kHz',
-    summary: 'Fast loops, typically required for motor controls and power electronics.',
-    detail: 'Best for fast motor & power control',
+    summary: 'Fast control loops for motor drives, inverters, and sharper electromechanical dynamics.',
+    detail: 'Fast control and power-stage timing',
     pulseCount: 5,
     visualMode: 'pulses',
     tierLabel: 'High-speed',
@@ -62,10 +99,12 @@ const PERFORMANCE_OPTIONS: Array<{
   },
   {
     id: 'mhz',
-    title: 'Above 100 kHz up to MHz',
+    title: 'Above 100 kHz into the MHz range',
     shortLabel: '>100 kHz',
-    summary: 'High-performance power electronics HIL and sub-microsecond behavior.',
-    detail: 'Best for sub-microsecond dynamics',
+    summary: 'Very fast switching effects, converter behavior, and sub-microsecond dynamics.',
+    detail: 'Sub-microsecond switching behavior',
+    advancedNote:
+      'At this timing range, CPU and I/O latency become critical. Fast I/O technologies such as simultaneous-sampling ADCs, DMA acquisition, multi-rate partitioning, or FPGA offload may be required.',
     pulseCount: 24,
     visualMode: 'dense',
     tierLabel: 'Ultra-fast',
@@ -80,6 +119,11 @@ const MACHINE_OPTIONS = [
     id: 'performance',
     name: 'Performance',
     image: `${BASE_PATH}/assets/machine-performance.png`,
+    cardDescriptor: 'For office and lab use. Enormous expansion possibilities.',
+    selectorImageClassName: 'scale-[1.55] translate-y-[1px]',
+    previewImageClassName: 'scale-[1.18] translate-y-[4px]',
+    maxSlots: 7,
+    maxSlotsExpanded: 42,
     score: { '10k': 3, '100k': 5, mhz: 5 } as Record<PerformanceBand, number>,
     officeLab: true,
     rackMount: true,
@@ -93,9 +137,35 @@ const MACHINE_OPTIONS = [
     } as Record<PerformanceBand, string>,
   },
   {
+    id: 'testbench',
+    name: 'Testbench',
+    image: `${BASE_PATH}/assets/download.jpg`,
+    cardDescriptor: 'Modular rack system with customization services to your needs.',
+    selectorImageClassName: 'scale-[1.35] translate-y-[2px]',
+    previewImageClassName: 'scale-[1.1] translate-y-[4px]',
+    maxSlots: 14,
+    maxSlotsExpanded: 56,
+    score: { '10k': 5, '100k': 4, mhz: 3 } as Record<PerformanceBand, number>,
+    officeLab: true,
+    rackMount: true,
+    field: false,
+    expandability: 'Extensive',
+    upgradeability: 'Yes',
+    fitNote: {
+      '10k': 'Ideal for large rack-mount lab setups with maximum I/O density and expansion slots.',
+      '100k': 'Strong choice for fast-control rack deployments with high channel counts.',
+      mhz: 'Supports high-speed work but Performance may be more suitable for FPGA-intensive applications.',
+    } as Record<PerformanceBand, string>,
+  },
+  {
     id: 'pulse',
     name: 'Pulse',
     image: `${BASE_PATH}/assets/machine-pulse.png`,
+    cardDescriptor: 'Scalable desktop system for control design and controller testing.',
+    selectorImageClassName: 'scale-[1.42] translate-y-[2px]',
+    previewImageClassName: 'scale-[1.12] translate-y-[6px]',
+    maxSlots: 3,
+    maxSlotsExpanded: 8,
     score: { '10k': 4, '100k': 4, mhz: 2 } as Record<PerformanceBand, number>,
     officeLab: true,
     rackMount: false,
@@ -112,6 +182,11 @@ const MACHINE_OPTIONS = [
     id: 'mobile',
     name: 'Mobile',
     image: `${BASE_PATH}/assets/machine-mobile.png`,
+    cardDescriptor: 'For field and harsh environments. Withstands shock and vibration.',
+    selectorImageClassName: 'scale-[1.32] translate-y-[1px]',
+    previewImageClassName: 'scale-[1.1] translate-y-[3px]',
+    maxSlots: 5,
+    maxSlotsExpanded: 14,
     score: { '10k': 4, '100k': 4, mhz: 3 } as Record<PerformanceBand, number>,
     officeLab: true,
     rackMount: false,
@@ -128,6 +203,11 @@ const MACHINE_OPTIONS = [
     id: 'baseline',
     name: 'Baseline',
     image: `${BASE_PATH}/assets/machine-baseline.png`,
+    cardDescriptor: 'Entry-level solution for office to in-vehicle operation.',
+    selectorImageClassName: 'scale-[1.38] translate-y-[2px]',
+    previewImageClassName: 'scale-[1.14] translate-y-[4px]',
+    maxSlots: 4,
+    maxSlotsExpanded: 6,
     score: { '10k': 5, '100k': 2, mhz: 0 } as Record<PerformanceBand, number>,
     officeLab: true,
     rackMount: false,
@@ -144,6 +224,11 @@ const MACHINE_OPTIONS = [
     id: 'unit',
     name: 'Unit',
     image: `${BASE_PATH}/assets/machine-unit.png`,
+    cardDescriptor: 'Small form factor for field, in-vehicle, and confined areas.',
+    selectorImageClassName: 'scale-[1.44] translate-y-[2px]',
+    previewImageClassName: 'scale-[1.16] translate-y-[4px]',
+    maxSlots: 1,
+    maxSlotsExpanded: 1,
     score: { '10k': 2, '100k': 1, mhz: 0 } as Record<PerformanceBand, number>,
     officeLab: true,
     rackMount: false,
@@ -250,7 +335,7 @@ const INTERFACE_OPTIONS: Array<{
   {
     id: 'high-fidelity',
     title: 'Analog & digital for high-fidelity controls & simulation',
-    subtitle: '> 10 kHz closed-loop',
+    subtitle: '> 20 kHz closed-loop',
     description: 'Covers fast analog, digital, PWM, capture, and encoder I/O for high-fidelity control and simulation.',
     chips: ['Analog In/Out', 'Digital In/Out', 'PWM', 'Capture', 'Encoder'],
   },
@@ -273,258 +358,104 @@ const INTERFACE_OPTIONS: Array<{
 const PANEL_CLASS =
   'relative overflow-hidden border-slate-200 bg-white shadow-[0_2px_8px_rgba(15,23,42,0.04)]'
 
-const TIMELINE_STEPS = [
+const APPLICATION_PROFILES: Array<{
+  id: ApplicationProfileId
+  title: string
+  description: string
+  performanceBand: PerformanceBand
+  interfaces: InterfaceId[]
+  badge: string
+}> = [
   {
-    number: '1',
-    title: 'Sample Rate',
-    subtitle: 'Fastest closed-loop rate',
+    id: 'general-control',
+    title: 'General controls or HIL',
+    description: 'Control precision up to roughly 10 kHz with broad communication and standard I/O needs.',
+    performanceBand: '10k',
+    interfaces: ['general-io'],
+    badge: 'General purpose',
   },
   {
-    number: '2',
-    title: 'Target Machine',
-    subtitle: 'Recommended real-time system',
+    id: 'high-fidelity',
+    title: 'High-fidelity controls or HIL',
+    description: 'Fast control loops, electrification, power electronics, and sharper dynamic behavior.',
+    performanceBand: '100k',
+    interfaces: ['high-fidelity', 'general-io'],
+    badge: 'High speed',
   },
   {
-    number: '3',
-    title: 'I/O Configuration',
-    subtitle: 'Interfaces & protocols',
+    id: 'measurement',
+    title: 'Test & measurement',
+    description: 'No closed control loop. Emphasis on acquisition, signal generation, and measurement interfaces.',
+    performanceBand: 'mhz',
+    interfaces: ['high-speed-daq', 'general-io'],
+    badge: 'DAQ-focused',
   },
 ] as const
 
-function renderStars(score: number) {
-  return Array.from({ length: 5 }, (_, index) => {
-    const isActive = index < score
-    return (
-      <span
-        key={`${score}-${index}`}
-        className={cn('text-sm', isActive ? 'text-amber-400' : 'text-slate-200')}
-      >
-        ★
-      </span>
-    )
-  })
-}
+const DEPLOYMENT_OPTIONS: Array<{
+  id: DeploymentEnvironment
+  title: string
+  description: string
+}> = [
+  {
+    id: 'office-lab',
+    title: 'Office / Lab',
+    description: 'Bench, rack, or engineering-lab deployment with less emphasis on rugged portability.',
+  },
+  {
+    id: 'field',
+    title: 'Field',
+    description: 'Vehicle-near, mobile, or rugged deployment where portability and field readiness matter.',
+  },
+] as const
 
-function BooleanCell({ value }: { value: boolean }) {
-  return value ? (
-    <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-emerald-50 text-emerald-600">
-      <svg className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
-    </span>
-  ) : (
-    <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-slate-50 text-slate-300">
-      <svg className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" /></svg>
-    </span>
-  )
-}
+const IO_VOLUME_OPTIONS: Array<{
+  id: IoVolume
+  title: string
+  description: string
+}> = [
+  {
+    id: 'lt100',
+    title: 'I/O below 100',
+    description: 'Compact and medium configurations with a smaller channel footprint.',
+  },
+  {
+    id: 'gt100',
+    title: 'I/O above 100',
+    description: 'Higher channel density with stronger expansion and headroom requirements.',
+  },
+] as const
 
-const EXPANDABILITY_LEVELS: Record<string, { bars: number; label: string }> = {
-  Extensive: { bars: 4, label: 'Extensive' },
-  Moderate: { bars: 3, label: 'Moderate' },
-  Basic: { bars: 2, label: 'Basic' },
-  Limited: { bars: 1, label: 'Limited' },
-}
-
-const EXPANDABILITY_MODULE_COLORS = ['#0069B4', '#1E88D7', '#29A8DD', '#46B8D5'] as const
-
-function ExpandabilityCell({ level }: { level: string }) {
-  const config = EXPANDABILITY_LEVELS[level] ?? { bars: 1, label: level }
-  return (
-    <div className="inline-flex min-w-[92px] flex-col items-center gap-1">
-      <div className="flex items-end gap-[3px]">
-        {Array.from({ length: 4 }, (_, i) => {
-          const isActive = i < config.bars
-          const h = 8 + i * 4
-          return (
-            <div
-              key={i}
-              className="rounded-sm"
-              style={{
-                width: 6,
-                height: h,
-                backgroundColor: isActive ? EXPANDABILITY_MODULE_COLORS[Math.min(i, EXPANDABILITY_MODULE_COLORS.length - 1)] : '#E2E8F0',
-                opacity: isActive ? 0.85 : 0.5,
-              }}
-            />
-          )
-        })}
-      </div>
-      <span className="text-[11px] font-semibold text-slate-700">{config.label}</span>
-    </div>
-  )
-}
-
-function selectedColumnFrame(position: 'header' | 'body' | 'footer') {
-  const frame = [
-    'inset 1px 0 0 rgba(0,105,180,0.24)',
-    'inset -1px 0 0 rgba(0,105,180,0.24)',
-  ]
-
-  if (position === 'header') {
-    frame.push('inset 0 2px 0 rgb(0,105,180)')
-  }
-
-  if (position === 'footer') {
-    frame.push('inset 0 -2px 0 rgb(0,105,180)')
-  }
-
-  return { boxShadow: frame.join(', ') }
-}
-
-function PerformanceVisual({
-  pulseCount,
-  visualMode,
-  active,
-}: {
-  pulseCount: number
-  visualMode: 'pulses' | 'dense'
-  active: boolean
-}) {
-  // Show the underlying analog waveform plus the sampled points/stems.
-  const w = 200
-  const h = 74
-  const left = 6
-  const right = w - 6
-  const mid = 37
-  const amplitude = 30
-  const cycles = 1.75
-  const phase = -Math.PI / 4
-  const sampleCount = visualMode === 'dense' ? 15 : pulseCount <= 2 ? 4 : 8
-  const sampleXs = Array.from({ length: sampleCount }, (_, index) => {
-    if (sampleCount <= 1) return w / 2
-    return left + ((right - left) / (sampleCount - 1)) * index
-  })
-  const signalY = (x: number) => {
-    const normalizedX = (x - left) / (right - left)
-    return mid - amplitude * Math.sin(normalizedX * cycles * 2 * Math.PI + phase)
-  }
-  const waveformPath = Array.from({ length: 72 }, (_, index) => {
-    const x = left + ((right - left) / 71) * index
-    return `${index === 0 ? 'M' : 'L'} ${x.toFixed(2)} ${signalY(x).toFixed(2)}`
-  }).join(' ')
-
-  return (
-    <svg
-      viewBox={`0 0 ${w} ${h}`}
-      className="h-[76px] w-full"
-      preserveAspectRatio="xMidYMid meet"
-      shapeRendering="geometricPrecision"
-      aria-hidden="true"
-    >
-      <line
-        x1={left}
-        y1={mid}
-        x2={right}
-        y2={mid}
-        vectorEffect="non-scaling-stroke"
-        strokeWidth={0.9}
-        strokeDasharray="2.5 4"
-        className={cn(
-          'transition-colors duration-200',
-          active ? 'stroke-[rgba(0,105,180,0.16)]' : 'stroke-slate-200'
-        )}
-      />
-      <path
-        d={waveformPath}
-        fill="none"
-        vectorEffect="non-scaling-stroke"
-        strokeWidth={1.55}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        className={cn(
-          'transition-colors duration-200',
-          active ? 'stroke-[rgba(0,105,180,0.55)]' : 'stroke-slate-300'
-        )}
-      />
-      {sampleXs.map((x, index) => (
-        <g key={`${x}-${index}`}>
-          <line
-            x1={x}
-            y1={mid}
-            x2={x}
-            y2={signalY(x)}
-            vectorEffect="non-scaling-stroke"
-            strokeWidth={visualMode === 'dense' ? 1 : 0.95}
-            strokeLinecap="round"
-            className={cn(
-              'transition-colors duration-200',
-              active ? 'stroke-[rgba(0,105,180,0.85)]' : 'stroke-slate-400'
-            )}
-          />
-          <circle
-            cx={x}
-            cy={signalY(x)}
-            r={visualMode === 'dense' ? 1.7 : 1.85}
-            className={cn(
-              'transition-colors duration-200',
-              active ? 'fill-[rgba(0,105,180,1)]' : 'fill-slate-500'
-            )}
-          />
-        </g>
-      ))}
-    </svg>
-  )
-}
-
-function StepTimeline() {
-  return (
-    <CompactCard className={cn(PANEL_CLASS, 'p-3 md:p-4')}>
-      <div className="relative flex flex-col gap-3 md:flex-row md:items-center md:gap-5">
-        <div className="shrink-0">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">Configuration flow</p>
-          <p className="mt-1 text-sm font-medium text-slate-700">Define speed, choose system, configure I/O</p>
-        </div>
-        <div className="min-w-0 flex-1 overflow-x-auto">
-          <div className="flex min-w-[640px] items-center">
-            {TIMELINE_STEPS.map((step, index) => (
-              <div key={step.number} className="flex min-w-0 flex-1 items-center">
-                <div className="flex items-center gap-3">
-                  <div
-                    className={cn(
-                      'flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-semibold',
-                      index === 0
-                        ? 'bg-[rgb(var(--speedgoat-blue))] text-white'
-                        : 'border border-slate-200 bg-white text-slate-600'
-                    )}
-                  >
-                    {step.number}
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-sm font-semibold text-slate-900">{step.title}</p>
-                    <p className="text-xs text-slate-500">{step.subtitle}</p>
-                  </div>
-                </div>
-                {index < TIMELINE_STEPS.length - 1 ? (
-                  <div className="mx-4 h-px flex-1 bg-[linear-gradient(90deg,rgba(0,105,180,0.32),rgba(148,163,184,0.3))]" />
-                ) : null}
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </CompactCard>
-  )
+const EMPTY_CONFIGURATOR_SUMMARY: ConfiguratorSummary = {
+  totalSignals: 0,
+  rowCount: 0,
+  categoryTotals: {},
 }
 
 function SectionCard({
   eyebrow,
   title,
   description,
+  sectionId,
   children,
 }: {
   eyebrow: string
   title: React.ReactNode
   description?: string
+  sectionId?: string
   children: React.ReactNode
 }) {
   return (
-    <CompactCard className={cn(PANEL_CLASS, 'p-4 md:p-5')}>
-      <div className="relative">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">{eyebrow}</p>
-        <h2 className="mt-1.5 text-lg font-semibold text-slate-900 md:text-xl">{title}</h2>
-        {description ? <p className="mt-1.5 max-w-3xl text-sm text-slate-600">{description}</p> : null}
-        <div className="mt-4">{children}</div>
-      </div>
-    </CompactCard>
+    <div id={sectionId} className="scroll-mt-28">
+      <CompactCard className={cn(PANEL_CLASS, 'p-4 md:p-5')}>
+        <div className="relative">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">{eyebrow}</p>
+          <h2 className="mt-1.5 text-lg font-semibold text-slate-900 md:text-xl">{title}</h2>
+          {description ? <p className="mt-1.5 max-w-3xl text-sm text-slate-600">{description}</p> : null}
+          <div className="mt-4">{children}</div>
+        </div>
+      </CompactCard>
+    </div>
   )
 }
 
@@ -603,11 +534,278 @@ function InlineConfigRow({
   )
 }
 
+function getRecommendedMachineId(
+  environment: DeploymentEnvironment,
+  ioVolume: IoVolume,
+  band: PerformanceBand
+): string {
+  if (environment === 'office-lab') {
+    if (band === 'mhz') return 'performance'
+    if (ioVolume === 'gt100') return 'performance'
+    return 'pulse'
+  }
+  // field
+  if (band === 'mhz') return 'mobile'
+  return ioVolume === 'gt100' ? 'mobile' : 'baseline'
+}
+
+/** Score a machine for secondary ranking — does NOT override the primary recommendation. */
+function scoreMachine(
+  machine: (typeof MACHINE_OPTIONS)[number],
+  environment: DeploymentEnvironment,
+  ioVolume: IoVolume,
+  band: PerformanceBand
+): number {
+  let s = machine.score[band]
+
+  // Testbench is an optional specialist choice, not a default recommendation target.
+  if (machine.id === 'testbench') s -= 100
+
+  // Deployment fit
+  if (environment === 'field') {
+    s += machine.field ? 2 : -3
+  } else {
+    s += machine.rackMount ? 1 : 0
+  }
+
+  // I/O volume fit
+  if (ioVolume === 'gt100') {
+    if (machine.expandability === 'Extensive') s += 3
+    else if (machine.expandability === 'Moderate') s += 1
+    else s -= 1
+  } else {
+    if (machine.expandability === 'Limited') s += 1
+  }
+
+  return s
+}
+
+function getMachineReason(
+  machine: (typeof MACHINE_OPTIONS)[number],
+  application: (typeof APPLICATION_PROFILES)[number],
+  environment: DeploymentEnvironment,
+  ioVolume: IoVolume
+) {
+  const reasonParts = [application.description]
+
+  if (environment === 'field') {
+    reasonParts.push(machine.field ? 'Supports field-oriented deployment well.' : 'Less ideal for field deployment.')
+  } else {
+    reasonParts.push(machine.officeLab ? 'Fits office and lab setups well.' : 'Less focused on stationary lab setups.')
+  }
+
+  if (ioVolume === 'gt100') {
+    reasonParts.push(
+      machine.expandability === 'Extensive'
+        ? 'Has the expansion headroom expected for larger I/O counts.'
+        : 'Expansion headroom is more limited for larger I/O counts.'
+    )
+  } else {
+    reasonParts.push('Works with smaller and mid-size I/O footprints.')
+  }
+
+  return reasonParts.join(' ')
+}
+
+function getRecommendationRationale(
+  machine: (typeof MACHINE_OPTIONS)[number],
+  application: (typeof APPLICATION_PROFILES)[number],
+  environment: DeploymentEnvironment,
+  ioVolume: IoVolume
+) {
+  const applicationLead =
+    application.id === 'measurement'
+      ? 'measurement-led workflows'
+      : application.id === 'high-fidelity'
+      ? 'high-fidelity control and HIL'
+      : 'general control and HIL'
+
+  const environmentLead = environment === 'field' ? 'field deployment' : 'office and lab setups'
+  const ioLead = ioVolume === 'gt100' ? 'larger I/O counts' : 'sub-100-I/O setups'
+
+  return `${machine.name} is the recommended starting setup for ${applicationLead}, ${environmentLead}, and ${ioLead}.`
+}
+
+function getMachineCapacityLabel(machine: (typeof MACHINE_OPTIONS)[number]) {
+  if (machine.expandability === 'Extensive' && machine.maxSlotsExpanded >= 14) return 'High'
+  if (machine.expandability === 'Extensive' || machine.expandability === 'Moderate') return 'Moderate'
+  return 'Compact'
+}
+
+function getMachineBestFor(machine: (typeof MACHINE_OPTIONS)[number]) {
+  switch (machine.id) {
+    case 'performance':
+      return 'Advanced / system-level HIL'
+    case 'mobile':
+      return 'Portable / in-vehicle HIL'
+    case 'baseline':
+      return 'Compact general-purpose setups'
+    case 'unit':
+      return 'Embedded deployment'
+    case 'testbench':
+      return 'Comprehensive rack test setups'
+    case 'pulse':
+    default:
+      return 'Prototyping and entry-level HIL'
+  }
+}
+
+function getMachineBestForCompact(machine: (typeof MACHINE_OPTIONS)[number]) {
+  switch (machine.id) {
+    case 'performance':
+      return 'Advanced HIL'
+    case 'mobile':
+      return 'Portable HIL'
+    case 'baseline':
+      return 'Compact setups'
+    case 'unit':
+      return 'Embedded'
+    case 'testbench':
+      return 'Rack systems'
+    case 'pulse':
+    default:
+      return 'Entry HIL'
+  }
+}
+
+function getMachineStatusLabel(machineId: string, recommendedMachineId: string) {
+  if (machineId === recommendedMachineId) return 'Best fit'
+
+  switch (machineId) {
+    case 'performance':
+      return 'Strong alternative'
+    case 'mobile':
+      return 'Good for field / in-vehicle'
+    case 'baseline':
+      return 'Compact option'
+    case 'unit':
+      return 'Embedded deployment'
+    case 'testbench':
+      return 'Rack test system'
+    case 'pulse':
+    default:
+      return 'Compact lab option'
+  }
+}
+
+function getCompactMachineStatusLabel(machineId: string, recommendedMachineId: string) {
+  if (machineId === recommendedMachineId) return 'Best fit'
+
+  switch (machineId) {
+    case 'performance':
+      return 'Alternative'
+    case 'mobile':
+      return 'Field'
+    case 'baseline':
+      return 'Compact'
+    case 'unit':
+      return 'Compact'
+    case 'testbench':
+      return 'Rack'
+    case 'pulse':
+    default:
+      return 'Lab'
+  }
+}
+
+function getMachineStatusTone(machineId: string, recommendedMachineId: string) {
+  if (machineId === recommendedMachineId) return 'recommended'
+  if (machineId === 'performance') return 'alternative'
+  return 'neutral'
+}
+
+function getComparisonBullets(
+  inspecting: (typeof MACHINE_OPTIONS)[number],
+  recommended: (typeof MACHINE_OPTIONS)[number],
+  environment: DeploymentEnvironment,
+  ioVolume: IoVolume
+) {
+  if (inspecting.id === recommended.id) {
+    return [
+      `Best aligned with your current ${environment === 'field' ? 'deployment context' : 'office / lab setup'}.`,
+      ioVolume === 'gt100'
+        ? 'Provides the expansion headroom expected for larger I/O counts.'
+        : 'Fits smaller and mid-size I/O footprints without oversizing the system.',
+      'Strong default recommendation for the current inputs.',
+    ]
+  }
+
+  const bullets: string[] = []
+  const expandabilityRank = { Limited: 1, Moderate: 2, Extensive: 3 } as const
+
+  if (expandabilityRank[inspecting.expandability as keyof typeof expandabilityRank] > expandabilityRank[recommended.expandability as keyof typeof expandabilityRank]) {
+    bullets.push(`More headroom for expansion than ${recommended.name}.`)
+  }
+
+  if (inspecting.maxSlotsExpanded > recommended.maxSlotsExpanded) {
+    bullets.push(`Better fit when maximum flexibility or future growth matters.`)
+  }
+
+  if (environment === 'field' && inspecting.field && !recommended.field) {
+    bullets.push(`Better suited to field or vehicle-near deployment than ${recommended.name}.`)
+  } else if (environment === 'office-lab' && inspecting.rackMount && !recommended.rackMount) {
+    bullets.push(`Stronger fit for structured lab or rack-based setups than ${recommended.name}.`)
+  }
+
+  if (inspecting.score['100k'] > recommended.score['100k']) {
+    bullets.push(`More comfortable for higher-performance or more complex real-time models.`)
+  }
+
+  if (bullets.length < 3) {
+    bullets.push(`Tradeoff: likely more system than needed for the current ${ioVolume === 'gt100' ? 'I/O profile' : 'compact I/O footprint'}.`)
+  } else {
+    bullets.push(`Tradeoff: larger and likely more than needed for the current recommendation inputs.`)
+  }
+
+  return bullets.slice(0, 4)
+}
+
+function getDecisionSummary(args: {
+  recommended: (typeof MACHINE_OPTIONS)[number]
+  inspecting: (typeof MACHINE_OPTIONS)[number] | null
+  selected: (typeof MACHINE_OPTIONS)[number] | null
+  environment: DeploymentEnvironment
+  ioVolume: IoVolume
+}) {
+  const { recommended, inspecting, selected, environment, ioVolume } = args
+
+  if (selected) {
+    return `Selected: ${selected.name}. ${recommended.id === selected.id ? `${selected.name} also remains the recommended match for your current selections.` : `${recommended.name} remains the recommended match, while ${selected.name} is your manual selection.`}`
+  }
+
+  if (inspecting && inspecting.id !== recommended.id) {
+    return `You're viewing ${inspecting.name}. ${recommended.name} remains the recommended match for your current ${environment === 'field' ? 'field-oriented' : 'office / lab'} ${ioVolume === 'gt100' ? 'high-I/O' : 'sub-100-I/O'} setup.`
+  }
+
+  return `${recommended.name} is recommended for your current inputs. It best matches the deployment context, performance band, and I/O scale you selected.`
+}
+
+function getInspectingSummary(
+  inspecting: (typeof MACHINE_OPTIONS)[number] | null,
+  recommended: (typeof MACHINE_OPTIONS)[number]
+) {
+  if (!inspecting) return 'View one machine in detail. Expand a card to see how it differs from the recommended option.'
+  if (inspecting.id === recommended.id) return `You're viewing ${inspecting.name}. It remains the recommended match for your current selections.`
+  return `You're viewing ${inspecting.name}. ${recommended.name} remains the recommended match for your current selections.`
+}
+
 export default function LayoutMockV2Page() {
+  const pathname = usePathname()
   const [isScrolled, setIsScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
-  const [selectedBand, setSelectedBand] = useState<PerformanceBand>('100k')
+  const [expandedMachineId, setExpandedMachineId] = useState<string | null>(null)
+  const [selectedApplicationId, setSelectedApplicationId] = useState<ApplicationProfileId>('high-fidelity')
+  const [selectedEnvironment, setSelectedEnvironment] = useState<DeploymentEnvironment>('office-lab')
+  const [selectedIoVolume, setSelectedIoVolume] = useState<IoVolume>('lt100')
   const [selectedMachineId, setSelectedMachineId] = useState<string | null>(null)
+
+  // Reset manual machine override when any filter changes
+  useEffect(() => {
+    setSelectedMachineId(null)
+    setExpandedMachineId(null)
+  }, [selectedApplicationId, selectedEnvironment, selectedIoVolume])
+  const [configuratorSummary, setConfiguratorSummary] = useState<ConfiguratorSummary>(EMPTY_CONFIGURATOR_SUMMARY)
+  const [configuratorRequirements, setConfiguratorRequirements] = useState<RequirementRow[]>([])
   const [selectedInterfaces, setSelectedInterfaces] = useState<InterfaceId[]>(['high-fidelity'])
   const [activeGroupId, setActiveGroupId] = useState<string | null>(null)
   const [groupConfig, setGroupConfig] = useState({
@@ -648,29 +846,180 @@ export default function LayoutMockV2Page() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
+  const scrollToSection = (sectionId: string) => {
+    if (typeof window === 'undefined') return
+    setMenuOpen(false)
+    document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
+  const handleHeaderNavClick = (label: (typeof HEADER_NAV_ITEMS)[number]['label']) => {
+    scrollToSection(HEADER_NAV_TARGETS[label])
+  }
+
+  const openAdvancedConfigurator = () => {
+    if (typeof window === 'undefined') return
+    setMenuOpen(false)
+    window.location.href = '/v2'
+  }
+
+  const selectedApplication = useMemo(
+    () => APPLICATION_PROFILES.find((option) => option.id === selectedApplicationId) ?? APPLICATION_PROFILES[1],
+    [selectedApplicationId]
+  )
+
+  const selectedBand = selectedApplication.performanceBand
+
   const selectedPerformance = useMemo(
     () => PERFORMANCE_OPTIONS.find((option) => option.id === selectedBand) ?? PERFORMANCE_OPTIONS[1],
     [selectedBand]
   )
 
-  const sortedMachines = useMemo(() => {
-    return [...MACHINE_OPTIONS].sort((left, right) => right.score[selectedBand] - left.score[selectedBand])
+  const selectedClosedLoopRate = useMemo<ClosedLoopRate>(() => {
+    if (selectedBand === 'mhz') return 'above100k'
+    return selectedBand
   }, [selectedBand])
 
-  const primaryRecommendedMachine = sortedMachines[0]
+  const recommendedMachineId = useMemo(
+    () => getRecommendedMachineId(selectedEnvironment, selectedIoVolume, selectedBand),
+    [selectedEnvironment, selectedIoVolume, selectedBand]
+  )
+
+  const primaryRecommendedMachine = useMemo(
+    () => MACHINE_OPTIONS.find((m) => m.id === recommendedMachineId) ?? MACHINE_OPTIONS[0],
+    [recommendedMachineId]
+  )
+
+  useEffect(() => {
+    const nextInterfaces = new Set<InterfaceId>(selectedApplication.interfaces)
+
+    if (selectedIoVolume === 'gt100') {
+      nextInterfaces.add('general-io')
+    }
+
+    const activeMachineId = selectedMachineId ?? primaryRecommendedMachine?.id
+
+    if (activeMachineId === 'performance') {
+      nextInterfaces.add('high-fidelity')
+    }
+
+    if (activeMachineId === 'mobile' || activeMachineId === 'pulse') {
+      nextInterfaces.add('general-io')
+    }
+
+    if (selectedApplicationId === 'measurement') {
+      nextInterfaces.add('high-speed-daq')
+    }
+
+    setSelectedInterfaces(Array.from(nextInterfaces))
+  }, [primaryRecommendedMachine?.id, selectedApplication, selectedApplicationId, selectedIoVolume, selectedMachineId])
 
   const activeMachine = useMemo(
     () => MACHINE_OPTIONS.find((m) => m.id === selectedMachineId) ?? primaryRecommendedMachine,
     [selectedMachineId, primaryRecommendedMachine]
   )
 
-  const alternativeMachines = useMemo(
+  const selectedMachine = useMemo(
+    () => MACHINE_OPTIONS.find((m) => m.id === selectedMachineId) ?? null,
+    [selectedMachineId]
+  )
+
+  const isVer2Route = pathname === '/layout-mock-v2-ver2'
+  const isVer3Route = pathname === '/layout-mock-v2-ver3'
+  const isAltRoute = isVer2Route || isVer3Route
+
+  const machineDisplayCards = useMemo(() => {
+    return MACHINE_OPTIONS
+      .map((machine) => ({
+        ...machine,
+        displayName:
+          machine.id === 'unit'
+            ? 'Unit'
+            : machine.name,
+        _score: scoreMachine(machine, selectedEnvironment, selectedIoVolume, selectedBand),
+      }))
+      .sort((a, b) => {
+        // Testbench stays available, but always at the end of the list.
+        if (a.id === 'testbench' && b.id !== 'testbench') return 1
+        if (b.id === 'testbench' && a.id !== 'testbench') return -1
+        // Recommended machine always first
+        const aRec = a.id === recommendedMachineId ? 1 : 0
+        const bRec = b.id === recommendedMachineId ? 1 : 0
+        if (aRec !== bRec) return bRec - aRec
+        // Then by score descending
+        return b._score - a._score
+      })
+  }, [selectedEnvironment, selectedIoVolume, selectedBand, recommendedMachineId])
+
+  const expandedMachine = useMemo(
+    () => machineDisplayCards.find((machine) => machine.id === expandedMachineId) ?? null,
+    [expandedMachineId, machineDisplayCards]
+  )
+
+  const recommendedDisplayMachine = useMemo(
+    () => machineDisplayCards.find((machine) => machine.id === primaryRecommendedMachine.id) ?? machineDisplayCards[0],
+    [machineDisplayCards, primaryRecommendedMachine.id]
+  )
+
+  const alternativeMachineCards = useMemo(
+    () => machineDisplayCards.filter((machine) => machine.id !== primaryRecommendedMachine.id),
+    [machineDisplayCards, primaryRecommendedMachine.id]
+  )
+
+  const selectedDisplayMachine = useMemo(
+    () => machineDisplayCards.find((machine) => machine.id === selectedMachineId) ?? null,
+    [machineDisplayCards, selectedMachineId]
+  )
+
+  const isRecommendedSelected = selectedMachineId === recommendedDisplayMachine.id
+  const isVer2SelectedHero = isVer2Route && Boolean(selectedMachineId)
+
+  const decisionSummary = useMemo(
     () =>
-      sortedMachines
-        .slice(1)
-        .filter((machine) => machine.score[selectedBand] >= 3)
-        .slice(0, 2),
-    [selectedBand, sortedMachines]
+      getDecisionSummary({
+        recommended: primaryRecommendedMachine,
+        inspecting: expandedMachine,
+        selected: selectedMachine,
+        environment: selectedEnvironment,
+        ioVolume: selectedIoVolume,
+      }),
+    [primaryRecommendedMachine, expandedMachine, selectedMachine, selectedEnvironment, selectedIoVolume]
+  )
+
+  const proposalPreview = useMemo<ProposalGenerateResponse | null>(() => {
+    if (!activeMachine || configuratorRequirements.length === 0) return null
+
+    try {
+      return simulateProposal({
+        machineId: activeMachine.id,
+        machineName: activeMachine.name,
+        version: 'layout-mock-v2-preview',
+        requirements: configuratorRequirements,
+        maxSlots: activeMachine.maxSlots,
+        maxSlotsExpanded: activeMachine.maxSlotsExpanded,
+        closedLoopRate: selectedClosedLoopRate,
+      })
+    } catch {
+      return null
+    }
+  }, [activeMachine, configuratorRequirements, selectedClosedLoopRate])
+
+  const previewMachineContext = useMemo(() => {
+    if (!activeMachine) return null
+    return {
+      id: activeMachine.id,
+      name: activeMachine.name,
+      image: activeMachine.image,
+      maxSlots: activeMachine.maxSlots,
+      maxSlotsExpanded: activeMachine.maxSlotsExpanded,
+    }
+  }, [activeMachine])
+
+  const recommendedModules = proposalPreview?.recommendedModules ?? []
+  const visibleRecommendedModules = recommendedModules.slice(0, 4)
+
+  const configuredCategoryEntries = useMemo(
+    () => Object.entries(configuratorSummary.categoryTotals).filter(([, count]) => count > 0),
+    [configuratorSummary]
   )
 
   const configuredGroupCounts = useMemo(
@@ -987,6 +1336,7 @@ export default function LayoutMockV2Page() {
                 <button
                   key={item.label}
                   type="button"
+                  onClick={() => handleHeaderNavClick(item.label)}
                   className={cn(
                     'inline-flex items-center gap-1.5 transition',
                     isScrolled ? 'hover:text-[rgb(var(--speedgoat-blue))]' : 'hover:text-white/75'
@@ -1009,13 +1359,14 @@ export default function LayoutMockV2Page() {
             <div className="flex items-center gap-2.5">
               <button
                 type="button"
+                onClick={openAdvancedConfigurator}
                 className={cn(
                   'hidden h-10 w-10 items-center justify-center rounded-full transition md:inline-flex',
                   isScrolled
                     ? 'text-slate-700 hover:bg-slate-100 hover:text-[rgb(var(--speedgoat-blue))]'
                     : 'text-white hover:bg-white/10'
                 )}
-                aria-label="Account"
+                aria-label="Open advanced configurator"
               >
                 <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 7.5a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
@@ -1024,13 +1375,14 @@ export default function LayoutMockV2Page() {
               </button>
               <button
                 type="button"
+                onClick={() => scrollToSection('systems-section')}
                 className={cn(
                   'hidden h-10 w-10 items-center justify-center rounded-full transition md:inline-flex',
                   isScrolled
                     ? 'text-slate-700 hover:bg-slate-100 hover:text-[rgb(var(--speedgoat-blue))]'
                     : 'text-white hover:bg-white/10'
                 )}
-                aria-label="Search"
+                aria-label="Jump to target systems"
               >
                 <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
                   <circle cx="11" cy="11" r="6.5" />
@@ -1065,6 +1417,7 @@ export default function LayoutMockV2Page() {
                   <button
                     key={item.label}
                     type="button"
+                    onClick={() => handleHeaderNavClick(item.label)}
                     className="flex w-full items-center justify-between rounded-xl px-3 py-2 text-left text-sm font-semibold text-slate-800 transition hover:bg-slate-100"
                   >
                     <span>{item.label}</span>
@@ -1086,7 +1439,7 @@ export default function LayoutMockV2Page() {
       </header>
 
       <main className="min-h-screen bg-[linear-gradient(180deg,#f4f7fa_0%,#f8fafc_28%,#ffffff_100%)] pb-14">
-        <section className="relative overflow-hidden px-4 pt-20 md:px-8 md:pt-28">
+        <section id="hero-section" className="relative overflow-hidden scroll-mt-28 px-4 pt-20 md:px-8 md:pt-28">
           <div className="absolute inset-0">
             <Image
               src={`${BASE_PATH}/assets/machine-performance.png`}
@@ -1097,427 +1450,1210 @@ export default function LayoutMockV2Page() {
             />
             <div className="absolute inset-0 bg-[linear-gradient(100deg,rgba(7,31,57,0.68)_0%,rgba(7,31,57,0.38)_36%,rgba(7,31,57,0.14)_62%,rgba(255,255,255,0)_100%)]" />
           </div>
-          <div className="relative mx-auto flex h-[140px] max-w-[1520px] items-end pb-6 md:h-[180px] md:pb-8">
+          <div className="relative mx-auto flex h-[100px] max-w-[1520px] items-end pb-4 md:h-[100px] md:pb-4">
             <div className="max-w-3xl">
-              <p className="text-[15px] font-semibold text-white/88 md:text-[18px]">Test System Configurator</p>
-              <h1 className="mt-3 text-3xl font-bold leading-tight text-white md:text-5xl">
+              <h1 className="text-2xl font-bold leading-tight text-white md:text-3xl">
                 Configure your real-time test system
               </h1>
-              <p className="mt-2 max-w-2xl text-sm text-white/82 md:text-base">
-                Define your sample rate, get a recommended target machine, then configure the I/O and protocols you need.
-              </p>
+              <div className="mt-4 flex items-center gap-2">
+                <div className="inline-flex rounded-full border border-white/20 bg-white/10 p-1 backdrop-blur-sm">
+                  {!pathname || pathname === '/layout-mock-v2' ? (
+                    <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-slate-900 shadow-[0_1px_2px_rgba(15,23,42,0.08)]">
+                      Ver 1
+                    </span>
+                  ) : (
+                    <a
+                      href="/layout-mock-v2"
+                      className="rounded-full px-3 py-1 text-xs font-semibold text-white/78 transition hover:text-white"
+                    >
+                      Ver 1
+                    </a>
+                  )}
+                  {isVer2Route ? (
+                    <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-slate-900 shadow-[0_1px_2px_rgba(15,23,42,0.08)]">
+                      Ver 2
+                    </span>
+                  ) : (
+                    <a
+                      href="/layout-mock-v2-ver2"
+                      className="rounded-full px-3 py-1 text-xs font-semibold text-white/78 transition hover:text-white"
+                    >
+                      Ver 2
+                    </a>
+                  )}
+                  {isVer3Route ? (
+                    <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-slate-900 shadow-[0_1px_2px_rgba(15,23,42,0.08)]">
+                      Ver 3
+                    </span>
+                  ) : (
+                    <a
+                      href="/layout-mock-v2-ver3"
+                      className="rounded-full px-3 py-1 text-xs font-semibold text-white/78 transition hover:text-white"
+                    >
+                      Ver 3
+                    </a>
+                  )}
+                </div>
+                <RadixTooltip.Provider delayDuration={120} skipDelayDuration={0}>
+                  <RadixTooltip.Root>
+                    <RadixTooltip.Trigger
+                      aria-label="What differs between versions"
+                      className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white/78 backdrop-blur-sm transition hover:text-white"
+                    >
+                      <svg className="h-4 w-4" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
+                        <circle cx="10" cy="10" r="7.25" />
+                        <path strokeLinecap="round" d="M10 8v4" />
+                        <circle cx="10" cy="5.5" r="0.75" fill="currentColor" stroke="none" />
+                      </svg>
+                    </RadixTooltip.Trigger>
+                    <RadixTooltip.Portal>
+                      <RadixTooltip.Content
+                        side="bottom"
+                        align="start"
+                        sideOffset={10}
+                        className="z-50 w-[320px] rounded-xl border border-slate-200 bg-white p-3 text-left shadow-[0_18px_40px_rgba(15,23,42,0.18)]"
+                      >
+                        <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">Version differences</p>
+                        <div className="mt-2 space-y-2.5">
+                          {VERSION_SELECTOR_NOTES.map((version) => (
+                            <div key={version.label} className="space-y-0.5">
+                              <p className="text-[12px] font-semibold text-slate-900">{version.label}</p>
+                              <p className="text-[12px] leading-relaxed text-slate-600">{version.description}</p>
+                            </div>
+                          ))}
+                        </div>
+                        <RadixTooltip.Arrow className="fill-white" />
+                      </RadixTooltip.Content>
+                    </RadixTooltip.Portal>
+                  </RadixTooltip.Root>
+                </RadixTooltip.Provider>
+              </div>
             </div>
           </div>
         </section>
 
-        <section className="px-4 pb-10 pt-6 md:px-8">
-          <div className="mx-auto max-w-[1520px] space-y-4">
-            <StepTimeline />
-
-            <CompactCard className={cn(PANEL_CLASS, 'overflow-visible p-3.5 md:p-4')}>
-              <div className="relative">
-                <div className="flex items-center gap-x-3">
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">Step 1</p>
-                </div>
-                <div className="mt-1 flex items-start gap-2">
-                  <div className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-[rgb(var(--speedgoat-blue))]/8">
-                    <svg className="h-3.5 w-3.5 text-[rgb(var(--speedgoat-blue))]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h2 className="text-base font-semibold text-slate-900 md:text-lg">
-                      What is your fastest sample rate?
-                      <CompactTooltip
-                        className="ml-1.5"
-                        content={
-                          <div className="space-y-1.5 text-[11px]">
-                            <p>Fastest closed-loop control rate (RCP) or simulation step size (HIL).</p>
-                            <p className="text-slate-500">This drives the recommended target machine and I/O architecture.</p>
-                          </div>
-                        }
-                      />
-                    </h2>
-                    <p className="mt-0.5 text-[12px] text-slate-500">Choose the highest closed-loop speed your application requires.</p>
-                  </div>
-                </div>
-
-                <div className="mt-2.5 grid gap-2.5 lg:grid-cols-[1fr_220px]">
-                  <div className="grid gap-2 sm:grid-cols-3">
-                    {PERFORMANCE_OPTIONS.map((option) => {
-                      const isActive = option.id === selectedBand
-                      return (
-                        <button
-                          key={option.id}
-                          type="button"
-                          onClick={() => setSelectedBand(option.id)}
-                          className={cn(
-                            'group relative flex min-h-[188px] flex-col overflow-hidden rounded-xl border-2 px-3 pb-0 pt-2.5 text-left transition-all duration-200',
-                            isActive
-                              ? 'border-[rgb(var(--speedgoat-blue))] bg-[rgb(var(--speedgoat-blue))]/[0.03] shadow-[0_0_0_3px_rgba(0,105,180,0.08)]'
-                              : 'border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50/50 hover:shadow-[0_2px_8px_rgba(15,23,42,0.05)]'
-                          )}
-                        >
-                          {/* Check icon */}
-                          <div className={cn(
-                            'absolute right-2 top-2 flex h-4.5 w-4.5 items-center justify-center rounded-full transition-all duration-200',
-                            isActive
-                              ? 'bg-[rgb(var(--speedgoat-blue))] text-white scale-100'
-                              : 'border border-slate-200 bg-white scale-90 opacity-60 group-hover:opacity-100 group-hover:scale-100'
-                          )}>
-                            {isActive ? (
-                              <svg className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
-                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                              </svg>
-                            ) : (
-                              <span className="h-1.5 w-1.5 rounded-full bg-slate-300 group-hover:bg-slate-400" />
-                            )}
-                          </div>
-
-                          <div className="min-w-0">
-                            <div className="flex items-start justify-between gap-3">
-                              <div className="min-w-0">
-                                <span className={cn(
-                                  'block text-[17px] font-bold tracking-tight transition',
-                                  isActive ? 'text-[rgb(var(--speedgoat-blue))]' : 'text-slate-900'
-                                )}>
-                                  {option.shortLabel}
-                                </span>
-                                <p className="mt-0.5 text-[11px] leading-snug text-slate-500">{option.title}</p>
-                              </div>
-                            </div>
-
-                            <div className="mt-2 flex flex-wrap items-center gap-1.5">
-                              <span className={cn(
-                                'inline-flex rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider',
-                                option.tierColor
-                              )}>
-                                {option.tierLabel}
-                              </span>
-                              {isActive ? (
-                                <span className="inline-flex rounded-full bg-[rgb(var(--speedgoat-blue))]/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[rgb(var(--speedgoat-blue))]">
-                                  Selected
-                                </span>
-                              ) : null}
-                            </div>
-                          </div>
-
-                          <div
-                            className={cn(
-                              'mt-auto -mx-3 mb-0 rounded-b-[10px] px-2.5 pb-2 pt-2.5',
-                              isActive
-                                ? 'bg-[linear-gradient(180deg,rgba(0,105,180,0)_0%,rgba(0,105,180,0.045)_100%)]'
-                                : 'bg-[linear-gradient(180deg,rgba(248,250,252,0)_0%,rgba(241,245,249,0.8)_100%)]'
-                            )}
-                          >
-                            <PerformanceVisual pulseCount={option.pulseCount} visualMode={option.visualMode} active={isActive} />
-                          </div>
-                        </button>
-                      )
-                    })}
-                  </div>
-
-                  {/* Recommendation panel */}
-                  <div className="flex flex-col rounded-xl border border-slate-200 bg-gradient-to-b from-slate-50 to-white px-3 py-2.5">
-                    <div className="mb-1.5 flex items-center gap-2">
-                      <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-[rgb(var(--speedgoat-blue))]/8">
-                        <svg className="h-3.5 w-3.5 text-[rgb(var(--speedgoat-blue))]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                        </svg>
-                      </div>
-                      <span className="text-[11px] font-medium text-[rgb(var(--speedgoat-blue))]">{selectedPerformance.recommendLabel}</span>
-                    </div>
-                    <p className="text-[13px] font-semibold text-slate-900">{selectedPerformance.detail}</p>
-                    <p className="mt-1 text-[11px] leading-relaxed text-slate-500 line-clamp-2">{selectedPerformance.summary}</p>
-                    <div className="mt-2 border-t border-slate-100 pt-2">
-                      <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-400">Typical use cases</p>
-                      <p className="mt-0.5 text-[11px] leading-relaxed text-slate-600 line-clamp-2">{selectedPerformance.typicalUse}</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </CompactCard>
-
-            <SectionCard
-              eyebrow="Step 2"
-              title="Choose your real-time target machine"
-              description="Based on your sample rate, we recommend the best-fit target machine. Alternatives are shown for comparison."
+        <section className="px-4 pb-10 pt-4 md:px-8">
+          <div className="mx-auto max-w-[1520px] space-y-3">
+            <div
+              className={cn(
+                'rounded-2xl border border-slate-200 bg-white px-5 shadow-[0_2px_6px_rgba(15,23,42,0.04)]',
+                isAltRoute ? 'py-2' : 'py-4'
+              )}
             >
-              <div className="mb-4 flex flex-wrap items-center gap-2.5">
-                <CompactChip className="border border-[rgb(var(--speedgoat-blue))]/15 bg-[rgb(var(--speedgoat-blue))]/6 text-[rgb(var(--speedgoat-blue))]">
-                  {selectedPerformance.shortLabel} sample rate
-                </CompactChip>
-                <CompactChip className="border border-emerald-200 bg-emerald-50 text-emerald-700">
-                  Best fit: {primaryRecommendedMachine?.name}
-                </CompactChip>
+              <h2 className="text-sm font-semibold text-slate-900">Explore Which Speedgoat Test System is Right for You</h2>
+            </div>
+
+            {/* ── Step 1 — Simulink background with glass overlay boxes ── */}
+            <div
+              className={cn(
+                'relative overflow-hidden rounded-2xl shadow-[0_12px_40px_rgba(0,0,0,0.10)]',
+                isAltRoute && 'shadow-[0_10px_28px_rgba(0,0,0,0.08)]'
+              )}
+            >
+              {/* Background — Simulink model, kept visible */}
+              <div className="pointer-events-none absolute inset-0">
+                <Image
+                  src={isAltRoute ? VER2_SIMULINK_BACKGROUND : simulinkBackground}
+                  alt=""
+                  fill
+                  sizes="(min-width: 1280px) 1480px, 100vw"
+                  className={cn(
+                    'object-cover object-center',
+                    isVer3Route
+                      ? 'scale-[1.01] opacity-[0.22] brightness-[1.02] contrast-[1.02] saturate-[0.05]'
+                      : isVer2Route
+                      ? 'scale-[1.02] opacity-[0.38] brightness-[1.08] contrast-[1.1] saturate-[0.08]'
+                      : 'scale-[1.05]'
+                  )}
+                />
+                <div
+                  className={cn(
+                    'absolute inset-0',
+                    isVer3Route
+                      ? 'bg-[linear-gradient(180deg,rgba(248,251,255,0.9),rgba(245,248,252,0.86)_42%,rgba(244,247,251,0.92)_100%)]'
+                      : isVer2Route
+                      ? 'bg-[linear-gradient(180deg,rgba(250,252,255,0.72),rgba(244,248,255,0.58)_40%,rgba(241,245,249,0.64)_100%)]'
+                      : 'bg-gradient-to-br from-slate-950/24 via-slate-950/12 to-slate-950/8'
+                  )}
+                />
               </div>
 
-              <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
-                <div className="overflow-x-auto">
-                  <table className="min-w-[980px] w-full table-fixed border-collapse">
-                    <thead>
-                      <tr>
-                        <th className="w-[200px] border-b border-slate-100 bg-white px-4 py-2.5 text-left text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-400">
-                        </th>
-                        {MACHINE_OPTIONS.map((machine) => {
-                          const isRec = primaryRecommendedMachine?.id === machine.id
-                          const isSel = activeMachine?.id === machine.id
+              <div
+                className={cn(
+                  'relative px-4 md:px-6',
+                  isAltRoute ? 'pb-2 pt-2 md:pb-2.5 md:pt-2.5' : 'pb-3 pt-3 md:pb-4 md:pt-4'
+                )}
+              >
+                {/* Step header — floats above everything */}
+                <div className="mb-2 flex items-center gap-2.5">
+                  <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-[rgb(var(--speedgoat-blue))] text-[11px] font-bold text-white shadow-[0_0_12px_rgba(0,105,180,0.5)]">
+                    1
+                  </div>
+                  <h2 className="text-sm font-semibold text-slate-900 drop-shadow-[0_1px_2px_rgba(255,255,255,0.35)] md:text-base">
+                    Define your application
+                  </h2>
+                </div>
+
+                {/* Two-column: Application (left) | Context + Machines (right) */}
+                <div
+                  className={cn(
+                    'grid gap-4',
+                    (expandedMachine || isVer2SelectedHero) ? 'grid-cols-1' : 'xl:grid-cols-[276px_minmax(0,1fr)] xl:gap-5'
+                  )}
+                >
+
+                  {/* ── LEFT: Application type ── */}
+                  {(!expandedMachine && !isVer2SelectedHero) ? (
+                    <div
+                      id="industries-section"
+                      className={cn(
+                        'scroll-mt-28 rounded-xl',
+                        isAltRoute && '2xl:flex 2xl:h-full 2xl:flex-col',
+                        isVer3Route
+                          ? 'border border-white/70 bg-white/80 p-2.5 shadow-[0_12px_26px_rgba(148,163,184,0.14)]'
+                          : isVer2Route
+                          ? 'border border-white/52 bg-[linear-gradient(180deg,rgba(255,255,255,0.48),rgba(237,245,255,0.38))] p-2.5 shadow-[0_14px_28px_rgba(148,163,184,0.18)] backdrop-blur-md'
+                          : 'border border-white/55 bg-white/72 p-3.5 shadow-[0_10px_36px_rgba(15,23,42,0.14)] backdrop-blur-md'
+                      )}
+                    >
+                      <p className={cn('mb-2.5 text-[11px] font-semibold uppercase tracking-[0.14em]', isAltRoute ? 'text-slate-600' : 'text-slate-600')}>
+                        Application type
+                      </p>
+                      <div className={cn(isAltRoute ? 'space-y-1.5 2xl:grid 2xl:flex-1 2xl:auto-rows-fr 2xl:gap-1.5 2xl:space-y-0' : 'space-y-1.5')}>
+                        {APPLICATION_PROFILES.map((profile) => {
+                          const isActive = profile.id === selectedApplicationId
                           return (
-                            <th
-                              key={machine.id}
+                            <button
+                              key={profile.id}
+                              type="button"
+                              onClick={() => setSelectedApplicationId(profile.id)}
                               className={cn(
-                                'cursor-pointer border-b border-slate-100 px-4 py-2.5 text-center transition',
-                                isSel
-                                  ? 'bg-[rgb(var(--speedgoat-blue))]/[0.045]'
-                                  : isRec
-                                  ? 'bg-[rgb(var(--speedgoat-blue))]/[0.02]'
-                                  : 'bg-white hover:bg-slate-50/80'
+                                'group relative block w-full overflow-hidden rounded-lg border px-2.5 text-left transition-all duration-200',
+                                isAltRoute && '2xl:h-full',
+                                'py-1.5',
+                                isActive
+                                  ? isVer3Route
+                                    ? 'border-[rgb(var(--speedgoat-blue))]/20 bg-white shadow-[0_10px_20px_rgba(148,163,184,0.14)]'
+                                    : isVer2Route
+                                    ? 'border-[rgb(var(--speedgoat-blue))]/28 bg-white/92 shadow-[0_10px_22px_rgba(148,163,184,0.18)]'
+                                    : 'border-[rgb(var(--speedgoat-blue))]/45 bg-white shadow-[0_0_16px_rgba(0,105,180,0.10)]'
+                                  : isVer3Route
+                                  ? 'border-white/60 bg-white/72 shadow-[0_10px_18px_rgba(148,163,184,0.08)] hover:border-slate-200 hover:bg-white'
+                                  : isVer2Route
+                                  ? 'border-white/40 bg-[rgba(255,255,255,0.58)] shadow-[0_10px_20px_rgba(148,163,184,0.12)] hover:border-white/70 hover:bg-white/82'
+                                  : 'border-slate-200/80 bg-white/42 hover:border-slate-300 hover:bg-white/60'
                               )}
-                              style={isSel ? selectedColumnFrame('header') : undefined}
-                              onClick={() => setSelectedMachineId(machine.id)}
                             >
-                              <div className="flex flex-col items-center gap-1">
-                                <span className={cn('text-sm font-semibold', isSel ? 'text-[rgb(var(--speedgoat-blue))]' : 'text-slate-900')}>{machine.name}</span>
-                                <div className="flex items-center gap-1.5">
-                                  {isRec ? (
-                                    <span className="inline-flex rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-emerald-700">
-                                      Best fit
-                                    </span>
-                                  ) : null}
-                                  {isSel ? (
-                                    <span className="inline-flex rounded-full bg-[rgb(var(--speedgoat-blue))]/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[rgb(var(--speedgoat-blue))]">
+                              {isActive && (
+                                <div className="absolute inset-y-0 left-0 w-[2.5px] rounded-full bg-[rgb(var(--speedgoat-blue))]" />
+                              )}
+                              <span
+                                className={cn(
+                                  'inline-block rounded-full px-1.5 py-px text-[10px] font-bold uppercase tracking-[0.12em]',
+                                  isActive
+                                    ? 'bg-[rgb(var(--speedgoat-blue))]/20 text-[rgb(var(--speedgoat-blue))]'
+                                    : isAltRoute
+                                    ? 'bg-slate-200/70 text-slate-600'
+                                    : 'bg-slate-100 text-slate-500'
+                                )}
+                              >
+                                {profile.badge}
+                              </span>
+                              <p className={cn('mt-1 text-[12px] font-semibold leading-snug', isAltRoute ? 'text-slate-900' : isActive ? 'text-slate-900' : 'text-slate-800')}>
+                                {profile.title}
+                              </p>
+                              <p className={cn('mt-0.5 text-[11px] leading-snug', isAltRoute ? 'text-slate-600' : isActive ? 'text-slate-700' : 'text-slate-600')}>
+                                {profile.description}
+                              </p>
+                            </button>
+                          )
+                        })}
+                      </div>
+                    </div>
+                  ) : null}
+
+                  {/* ── RIGHT column ── */}
+                  <div className="flex flex-col gap-2">
+
+                    {/* TOP-RIGHT: Deployment + I/O toggles — hidden when machine selected in ver2 */}
+                    {!isVer2SelectedHero && (
+                    <div
+                      className={cn(
+                        'rounded-xl px-4',
+                        isVer3Route
+                          ? 'border border-white/72 bg-white/82 py-1.5 shadow-[0_10px_22px_rgba(148,163,184,0.12)]'
+                          : isVer2Route
+                          ? 'border border-white/52 bg-[linear-gradient(180deg,rgba(255,255,255,0.56),rgba(240,247,255,0.46))] py-1.5 shadow-[0_14px_28px_rgba(148,163,184,0.16)] backdrop-blur-md'
+                          : 'min-h-[76px] border border-white/55 bg-white/68 py-2 shadow-[0_10px_36px_rgba(15,23,42,0.12)] backdrop-blur-md'
+                      )}
+                    >
+                      <div className="grid gap-2.5 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto] lg:items-center">
+                        <div>
+                          <p className={cn('mb-1.5 text-[11px] font-semibold uppercase tracking-[0.14em]', isAltRoute ? 'text-slate-600' : 'text-slate-600')}>
+                            Deployment
+                          </p>
+                          <div className={cn('inline-flex rounded-lg border p-0.5', isAltRoute ? 'border-slate-200/80 bg-white/90 shadow-sm' : 'border-slate-200/80 bg-white/72')}>
+                            {DEPLOYMENT_OPTIONS.map((opt) => (
+                              <button
+                                key={opt.id}
+                                type="button"
+                                onClick={() => setSelectedEnvironment(opt.id)}
+                                className={cn(
+                                  'rounded-md px-3.5 py-1.5 text-[12px] font-semibold transition-all',
+                                  selectedEnvironment === opt.id
+                                    ? isAltRoute
+                                      ? 'bg-slate-900 text-white shadow-sm'
+                                      : 'bg-white text-slate-900 shadow-sm'
+                                    : isAltRoute
+                                    ? 'text-slate-500 hover:text-slate-900'
+                                    : 'text-slate-500 hover:text-slate-800'
+                                )}
+                              >
+                                {opt.title}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                        <div>
+                          <p className={cn('mb-1.5 text-[11px] font-semibold uppercase tracking-[0.14em]', isAltRoute ? 'text-slate-600' : 'text-slate-600')}>
+                            I/O channels
+                          </p>
+                          <div className={cn('inline-flex rounded-lg border p-0.5', isAltRoute ? 'border-slate-200/80 bg-white/90 shadow-sm' : 'border-slate-200/80 bg-white/72')}>
+                            {IO_VOLUME_OPTIONS.map((opt) => (
+                              <button
+                                key={opt.id}
+                                type="button"
+                                onClick={() => setSelectedIoVolume(opt.id)}
+                                className={cn(
+                                  'rounded-md px-3.5 py-1.5 text-[12px] font-semibold transition-all',
+                                  selectedIoVolume === opt.id
+                                    ? isAltRoute
+                                      ? 'bg-slate-900 text-white shadow-sm'
+                                      : 'bg-white text-slate-900 shadow-sm'
+                                    : isAltRoute
+                                    ? 'text-slate-500 hover:text-slate-900'
+                                    : 'text-slate-500 hover:text-slate-800'
+                                )}
+                              >
+                                {opt.id === 'lt100' ? '< 100' : '> 100'}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                        <div className="justify-self-start lg:justify-self-end">
+                          <p className={cn('mb-1.5 text-[11px] font-semibold uppercase tracking-[0.14em]', isAltRoute ? 'text-slate-600' : 'text-slate-600')}>
+                            Best match
+                          </p>
+                          <span className={cn('inline-flex min-w-[120px] items-center justify-center gap-1.5 rounded-full border px-3 py-1.5 text-[12px] font-semibold', isAltRoute ? 'border-emerald-200 bg-emerald-50 text-emerald-700' : 'border-emerald-300/60 bg-emerald-50 text-emerald-700')}>
+                            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.55)]" />
+                            {machineDisplayCards.find((machine) => machine.id === primaryRecommendedMachine?.id)?.displayName ?? primaryRecommendedMachine?.name}
+                          </span>
+                          {isAltRoute ? (
+                            <p className="mt-1 text-[10px] leading-snug text-slate-500">
+                              {isVer3Route ? 'Recommended platform' : 'Recommended start'}
+                            </p>
+                          ) : null}
+                        </div>
+                      </div>
+                    </div>
+                    )}
+
+                    {/* BOTTOM-RIGHT: Machine recommendation */}
+                    <div
+                      id="systems-section"
+                      className={cn(
+                        'flex-1 scroll-mt-28 rounded-xl',
+                        isVer3Route
+                          ? 'border border-white/68 bg-white/72 p-2.5 shadow-[0_12px_24px_rgba(148,163,184,0.12)]'
+                          : isVer2Route
+                          ? 'border border-white/52 bg-[linear-gradient(180deg,rgba(255,255,255,0.38),rgba(240,247,255,0.32))] p-3 shadow-[0_14px_28px_rgba(148,163,184,0.16)] backdrop-blur-md'
+                          : 'border border-white/55 bg-white/58 p-3.5 shadow-[0_10px_36px_rgba(15,23,42,0.12)] backdrop-blur-md'
+                      )}
+                    >
+                      <div className="mb-2 min-h-[38px] flex items-start justify-between gap-3">
+                        <div>
+                          <p className={cn('text-[11px] font-semibold uppercase tracking-[0.14em]', isAltRoute ? 'text-slate-600' : 'text-slate-600')}>
+                            Target machine
+                          </p>
+                          <p className={cn(
+                            'mt-1 text-[12px] text-slate-600',
+                            isVer2Route && 'inline-flex rounded-md bg-white/78 px-2 py-1 text-slate-600 shadow-[0_8px_18px_rgba(148,163,184,0.16)]'
+                          )}>
+                            {isVer3Route ? 'Recommended first. Compare alternatives only when you need more detail.' : 'Choose manually or keep the recommended target.'}
+                          </p>
+                        </div>
+                        {expandedMachine ? null : (
+                          <p className={cn(
+                            'text-[12px] text-slate-500',
+                            isVer2Route && 'rounded-md bg-white/78 px-2 py-1 text-slate-500 shadow-[0_8px_18px_rgba(148,163,184,0.16)]'
+                          )}>
+                            {isVer3Route ? 'Compare one machine in detail when needed.' : 'Expand a card to view details.'}
+                          </p>
+                        )}
+                      </div>
+
+                      {expandedMachine ? (
+                        isVer3Route ? (
+                          <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-[0_12px_26px_rgba(148,163,184,0.12)]">
+                            <div className="flex items-start justify-between gap-4">
+                              <div className="space-y-2">
+                                <div className="flex flex-wrap items-center gap-2">
+                                  <span className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-600">
+                                    {expandedMachine.id === recommendedMachineId ? 'Recommended platform detail' : 'Compare with recommended option'}
+                                  </span>
+                                  {selectedDisplayMachine?.id === expandedMachine.id ? (
+                                    <span className="inline-flex items-center rounded-full border border-[rgb(var(--speedgoat-blue))]/20 bg-[rgb(var(--speedgoat-blue))]/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-[rgb(var(--speedgoat-blue))]">
                                       Selected
                                     </span>
                                   ) : null}
                                 </div>
+                                <div>
+                                  <p className="text-lg font-semibold text-slate-900">{expandedMachine.displayName}</p>
+                                  <p className="mt-1 text-sm text-slate-600">{getInspectingSummary(expandedMachine, primaryRecommendedMachine)}</p>
+                                </div>
                               </div>
-                            </th>
-                          )
-                        })}
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-100">
-                      <tr>
-                        <td className="bg-white px-4 py-2.5 text-sm font-medium text-slate-600">System</td>
-                        {MACHINE_OPTIONS.map((machine) => {
-                          const isSel = activeMachine?.id === machine.id
+                              <button
+                                type="button"
+                                onClick={() => setExpandedMachineId(null)}
+                                className="inline-flex items-center gap-2 rounded-md border border-slate-200 bg-white px-2.5 py-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-700 shadow-sm transition hover:text-[rgb(var(--speedgoat-blue))]"
+                                aria-label="Return to machine grid"
+                              >
+                                <svg className="h-3.5 w-3.5" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
+                                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 5 8 8m0 0 3 3M8 8l3-3M8 8l-3 3" />
+                                </svg>
+                                Return
+                              </button>
+                            </div>
+
+                            <div className="mt-3 grid gap-4 xl:grid-cols-[minmax(320px,0.92fr)_minmax(0,1.08fr)]">
+                              <div className="space-y-3">
+                                <div className="relative min-h-[190px] overflow-hidden rounded-xl border border-slate-200 bg-[linear-gradient(180deg,rgba(248,250,252,0.98),rgba(241,245,249,0.98))]">
+                                  <Image
+                                    src={expandedMachine.image}
+                                    alt={expandedMachine.displayName}
+                                    fill
+                                    sizes="(min-width: 1280px) 520px, 100vw"
+                                    className={cn(
+                                      'object-contain p-4 transition-transform duration-300',
+                                      expandedMachine.previewImageClassName,
+                                      selectedDisplayMachine?.id === expandedMachine.id && 'scale-[1.05]'
+                                    )}
+                                  />
+                                </div>
+                                <div className="grid gap-2 sm:grid-cols-3">
+                                  <div className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2">
+                                    <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">Recommended</p>
+                                    <p className="mt-1 text-[12px] font-semibold text-slate-900">{recommendedDisplayMachine.displayName}</p>
+                                  </div>
+                                  <div className="rounded-xl border border-slate-200 bg-white px-3 py-2">
+                                    <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">Inspecting</p>
+                                    <p className="mt-1 text-[12px] font-semibold text-slate-900">{expandedMachine.displayName}</p>
+                                  </div>
+                                  <div className="rounded-xl border border-slate-200 bg-white px-3 py-2">
+                                    <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">Selected</p>
+                                    <p className="mt-1 text-[12px] font-semibold text-slate-900">{selectedDisplayMachine?.displayName ?? 'None yet'}</p>
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div className="space-y-3">
+                                <div className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-3">
+                                  <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-600">
+                                    {expandedMachine.id === recommendedMachineId
+                                      ? 'Why it remains recommended'
+                                      : `Why choose ${expandedMachine.displayName} instead of ${recommendedDisplayMachine.displayName}?`}
+                                  </p>
+                                  <ul className="mt-2 space-y-2">
+                                    {getComparisonBullets(expandedMachine, primaryRecommendedMachine, selectedEnvironment, selectedIoVolume).map((bullet) => (
+                                      <li key={bullet} className="flex items-start gap-2 text-[13px] leading-relaxed text-slate-700">
+                                        <span className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-[rgb(var(--speedgoat-blue))]" />
+                                        <span>{bullet}</span>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </div>
+
+                                <div className="grid gap-2 sm:grid-cols-3">
+                                  <div className="rounded-xl border border-slate-200 bg-white px-3 py-2">
+                                    <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">Best for</p>
+                                    <p className="mt-1 text-[12px] font-semibold text-slate-900">{getMachineBestFor(expandedMachine)}</p>
+                                  </div>
+                                  <div className="rounded-xl border border-slate-200 bg-white px-3 py-2">
+                                    <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">I/O capacity</p>
+                                    <p className="mt-1 text-[12px] font-semibold text-slate-900">{getMachineCapacityLabel(expandedMachine)}</p>
+                                  </div>
+                                  <div className="rounded-xl border border-slate-200 bg-white px-3 py-2">
+                                    <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">Expandability</p>
+                                    <p className="mt-1 text-[12px] font-semibold text-slate-900">{expandedMachine.expandability}</p>
+                                  </div>
+                                </div>
+
+                                <div className="flex flex-wrap items-center gap-2">
+                                  <button
+                                    type="button"
+                                    onClick={() => setSelectedMachineId(expandedMachine.id)}
+                                    className="rounded-md bg-[rgb(var(--speedgoat-blue))] px-3 py-2 text-[12px] font-semibold text-white shadow-sm transition hover:brightness-95"
+                                  >
+                                    {selectedDisplayMachine?.id === expandedMachine.id ? `${expandedMachine.displayName} selected` : `Select ${expandedMachine.displayName}`}
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => scrollToSection('contact-section')}
+                                    className="rounded-md border border-slate-300 bg-white px-3 py-2 text-[12px] font-semibold text-slate-700 shadow-sm transition hover:text-[rgb(var(--speedgoat-blue))]"
+                                  >
+                                    Consult expert
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        ) : (
+                          <div
+                            className={cn(
+                              'rounded-xl',
+                              isVer2Route
+                                ? 'border border-white/60 bg-white/88 p-4 shadow-[0_16px_28px_rgba(148,163,184,0.18)] backdrop-blur-md'
+                                : 'border border-[rgb(var(--speedgoat-blue))]/20 bg-white/88 p-4 shadow-[0_12px_30px_rgba(0,105,180,0.08)]'
+                            )}
+                          >
+                            <div className="flex items-start justify-between gap-4">
+                              <div>
+                                <div className="flex items-center gap-2">
+                                  <p className={cn('text-lg font-semibold', isVer2Route ? 'text-slate-900' : 'text-slate-900')}>{expandedMachine.displayName}</p>
+                                </div>
+                                <p className={cn('mt-1 text-sm', isVer2Route ? 'text-slate-600' : 'text-slate-600')}>{expandedMachine.cardDescriptor}</p>
+                              </div>
+                              <button
+                                type="button"
+                                onClick={() => setExpandedMachineId(null)}
+                                className={cn('inline-flex items-center gap-2 rounded-md border px-2.5 py-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] shadow-sm transition', isVer2Route ? 'border-slate-200 bg-white text-slate-700 hover:text-[rgb(var(--speedgoat-blue))]' : 'border-slate-300 bg-white text-slate-700 hover:text-[rgb(var(--speedgoat-blue))]')}
+                                aria-label="Return to machine grid"
+                              >
+                                <svg className="h-3.5 w-3.5" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
+                                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 5 8 8m0 0 3 3M8 8l3-3M8 8l-3 3" />
+                                </svg>
+                                Return
+                              </button>
+                            </div>
+
+                            <div className="mt-3 grid gap-4 xl:grid-cols-[minmax(320px,0.95fr)_minmax(0,1.05fr)] xl:items-center">
+                              <div className={cn('relative overflow-hidden rounded-xl border border-slate-200 bg-[linear-gradient(180deg,rgba(248,250,252,0.98),rgba(241,245,249,0.98))]', isVer2Route ? 'min-h-[150px]' : 'min-h-[220px]')}>
+                                <Image
+                                  src={expandedMachine.image}
+                                  alt={expandedMachine.displayName}
+                                  fill
+                                  sizes="(min-width: 1280px) 520px, 100vw"
+                                  className={cn('object-contain p-2.5 transition-transform duration-300', expandedMachine.previewImageClassName)}
+                                />
+                              </div>
+                              <div className="space-y-3">
+                                <div className={cn('rounded-xl border p-3', isVer2Route ? 'border-slate-200 bg-slate-50/92' : 'border-slate-200 bg-slate-50/80')}>
+                                  <p className={cn('text-[12px] font-semibold uppercase tracking-[0.14em]', isVer2Route ? 'text-slate-600' : 'text-slate-600')}>
+                                    Why this machine
+                                  </p>
+                                  <p className={cn('mt-2 text-sm leading-relaxed', isVer2Route ? 'text-slate-700' : 'text-slate-700')}>
+                                    {getMachineReason(expandedMachine, selectedApplication, selectedEnvironment, selectedIoVolume)}
+                                  </p>
+                                </div>
+                                <div className="grid gap-3 sm:grid-cols-3">
+                                  <div className={cn('rounded-xl border p-3', isVer2Route ? 'border-slate-200 bg-white/92' : 'border-slate-200 bg-white')}>
+                                    <p className={cn('text-[12px] font-semibold uppercase tracking-[0.14em]', isVer2Route ? 'text-slate-600' : 'text-slate-600')}>Machine type</p>
+                                    <p className={cn('mt-1 text-sm font-semibold', isVer2Route ? 'text-slate-900' : 'text-slate-900')}>{expandedMachine.cardDescriptor}</p>
+                                  </div>
+                                  <div className={cn('rounded-xl border p-3', isVer2Route ? 'border-slate-200 bg-white/92' : 'border-slate-200 bg-white')}>
+                                    <p className={cn('text-[12px] font-semibold uppercase tracking-[0.14em]', isVer2Route ? 'text-slate-600' : 'text-slate-600')}>Expandability</p>
+                                    <p className={cn('mt-1 text-sm font-semibold', isVer2Route ? 'text-slate-900' : 'text-slate-900')}>{expandedMachine.expandability}</p>
+                                  </div>
+                                  <div className={cn('rounded-xl border p-3', isVer2Route ? 'border-slate-200 bg-white/92' : 'border-slate-200 bg-white')}>
+                                    <p className={cn('text-[12px] font-semibold uppercase tracking-[0.14em]', isVer2Route ? 'text-slate-600' : 'text-slate-600')}>Upgradeability</p>
+                                    <p className={cn('mt-1 text-sm font-semibold', isVer2Route ? 'text-slate-900' : 'text-slate-900')}>{expandedMachine.upgradeability}</p>
+                                  </div>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <button
+                                    type="button"
+                                    onClick={() => setSelectedMachineId(expandedMachine.id)}
+                                    className="rounded-md bg-[rgb(var(--speedgoat-blue))] px-3 py-2 text-[12px] font-semibold text-white shadow-sm transition hover:brightness-95"
+                                  >
+                                    Use this machine
+                                  </button>
+                                  {!isVer2Route && (
+                                  <button
+                                    type="button"
+                                    onClick={() => scrollToSection('contact-section')}
+                                    className="rounded-md border border-slate-300 bg-white px-3 py-2 text-[12px] font-semibold text-slate-700 shadow-sm transition hover:text-[rgb(var(--speedgoat-blue))]"
+                                  >
+                                    Consult expert
+                                  </button>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        )
+                      ) : isVer2Route && selectedMachineId ? (
+                        /* ── Ver2: Selected machine — image-focused confirmation ── */
+                        (() => {
+                          const selMachine = machineDisplayCards.find((m) => m.id === selectedMachineId) ?? recommendedDisplayMachine
+                          const isRec = selMachine.id === recommendedMachineId
                           return (
-                            <td
-                              key={machine.id}
-                              className={cn('px-3 py-2', isSel ? 'bg-[rgb(var(--speedgoat-blue))]/[0.02]' : 'bg-white')}
-                              style={isSel ? selectedColumnFrame('body') : undefined}
-                            >
+                            <div className="relative overflow-hidden rounded-xl border border-sky-200/70 bg-[linear-gradient(135deg,rgba(248,250,252,0.96),rgba(241,245,249,0.92))] shadow-[0_16px_30px_rgba(148,163,184,0.18)] backdrop-blur-md">
+                              {/* Large hero image — fills the card */}
+                              <div className="relative min-h-[160px] w-full xl:min-h-[180px]">
+                                <Image
+                                  src={selMachine.image}
+                                  alt={selMachine.displayName}
+                                  fill
+                                  sizes="(min-width: 1280px) 900px, 100vw"
+                                  className={cn('object-contain p-6 transition-transform duration-500', selMachine.previewImageClassName)}
+                                />
+                                {/* Gradient overlay at bottom for text legibility */}
+                                <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-white/90 to-transparent" />
+                              </div>
+
+                              {/* Compact info bar at the bottom */}
+                              <div className="relative -mt-4 flex flex-wrap items-center justify-between gap-3 px-4 pb-3">
+                                <div className="flex items-center gap-3">
+                                  <span className="inline-flex items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-emerald-700">
+                                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                                    {isRec ? 'Best match' : 'Selected'}
+                                  </span>
+                                  <p className="text-[17px] font-semibold text-slate-900">{selMachine.displayName}</p>
+                                  <span className="hidden text-[12px] text-slate-500 sm:inline">{selMachine.cardDescriptor}</span>
+                                  <span className="hidden rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-medium text-slate-600 sm:inline">{selMachine.expandability} expansion</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <button
+                                    type="button"
+                                    onClick={() => setExpandedMachineId(selMachine.id)}
+                                    className="rounded-md border border-slate-300 bg-white px-2.5 py-1.5 text-[11px] font-semibold text-slate-700 shadow-sm transition hover:text-[rgb(var(--speedgoat-blue))]"
+                                  >
+                                    Details
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => setSelectedMachineId(null)}
+                                    className="rounded-md border border-slate-200 bg-white px-2.5 py-1.5 text-[11px] font-semibold text-slate-700 shadow-sm transition hover:text-[rgb(var(--speedgoat-blue))]"
+                                  >
+                                    Change
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          )
+                        })()
+                      ) : isVer3Route ? (
+                        <div className="grid gap-2.5 xl:grid-cols-[minmax(0,1.14fr)_minmax(300px,0.86fr)]">
+                          <div className="rounded-xl border border-sky-200/60 bg-white p-2.5 shadow-[0_12px_24px_rgba(148,163,184,0.12)]">
+                            <div className="flex items-start justify-between gap-3">
+                              <div>
+                                <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Recommended platform</p>
+                                <p className="mt-1 text-[16px] font-semibold text-slate-900">{recommendedDisplayMachine.displayName}</p>
+                              </div>
+                              <span className="inline-flex items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-emerald-700">
+                                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                                Best match
+                              </span>
+                            </div>
+
+                            <div className="mt-2 grid gap-2.5 lg:grid-cols-[minmax(148px,0.72fr)_minmax(0,1.28fr)] lg:items-center">
+                              <button
+                                type="button"
+                                onClick={() => setSelectedMachineId(recommendedDisplayMachine.id)}
+                                className="relative min-h-[104px] overflow-hidden rounded-xl border border-slate-200 bg-[linear-gradient(180deg,rgba(248,250,252,0.98),rgba(241,245,249,0.98))]"
+                                aria-label={`Select ${recommendedDisplayMachine.displayName}`}
+                              >
+                                <Image
+                                  src={recommendedDisplayMachine.image}
+                                  alt={recommendedDisplayMachine.displayName}
+                                  fill
+                                  sizes="(min-width: 1280px) 340px, 100vw"
+                                  className={cn(
+                                    'object-contain p-2.5 transition-transform duration-300',
+                                    recommendedDisplayMachine.previewImageClassName,
+                                    isRecommendedSelected && 'scale-[1.08]'
+                                  )}
+                                />
+                              </button>
+
+                              <div className="space-y-2">
+                                <div>
+                                  <p className="mt-0.5 text-[12px] font-medium text-slate-600">{recommendedDisplayMachine.cardDescriptor}</p>
+                                </div>
+
+                                <div className="rounded-xl border border-slate-200 bg-slate-50 px-2.5 py-1.5">
+                                  <p className="text-[11px] leading-relaxed text-slate-700">
+                                    {getRecommendationRationale(primaryRecommendedMachine, selectedApplication, selectedEnvironment, selectedIoVolume)}
+                                  </p>
+                                </div>
+
+                                <div className="flex flex-wrap gap-1.5">
+                                  <span className="inline-flex items-center rounded-full border border-slate-200 bg-white px-2 py-1 text-[10px] font-semibold text-slate-700">
+                                    Best for: {getMachineBestForCompact(recommendedDisplayMachine)}
+                                  </span>
+                                  <span className="inline-flex items-center rounded-full border border-slate-200 bg-white px-2 py-1 text-[10px] font-semibold text-slate-700">
+                                    I/O: {getMachineCapacityLabel(recommendedDisplayMachine)}
+                                  </span>
+                                </div>
+
+                                <div className="flex flex-wrap items-center gap-2">
+                                  <button
+                                    type="button"
+                                    onClick={() => setSelectedMachineId(recommendedDisplayMachine.id)}
+                                    className="rounded-md bg-[rgb(var(--speedgoat-blue))] px-3 py-1.5 text-[10px] font-semibold text-white shadow-sm transition hover:brightness-95"
+                                  >
+                                    {isRecommendedSelected ? `${recommendedDisplayMachine.displayName} selected` : `Select ${recommendedDisplayMachine.displayName}`}
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => setExpandedMachineId(recommendedDisplayMachine.id)}
+                                    className="rounded-md border border-slate-300 bg-white px-2.5 py-1.5 text-[10px] font-semibold text-slate-700 shadow-sm transition hover:text-[rgb(var(--speedgoat-blue))]"
+                                  >
+                                    Compare
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="rounded-xl border border-slate-200 bg-white/90 p-2 shadow-[0_12px_22px_rgba(148,163,184,0.1)]">
+                            <div className="mb-1.5 flex items-center justify-between gap-3">
+                              <p className="text-[12px] font-semibold uppercase tracking-[0.14em] text-slate-500">Alternative platforms</p>
+                              <span className="text-[11px] font-medium text-slate-500">{alternativeMachineCards.length} options</span>
+                            </div>
+
+                            <div className="space-y-1">
+                              {alternativeMachineCards.map((machine) => {
+                                const isSelected = selectedMachineId === machine.id
+
+                                return (
+                                  <div
+                                    key={machine.id}
+                                    className={cn(
+                                      'rounded-xl border px-2 py-1.5 transition-all',
+                                      isSelected
+                                        ? 'border-[rgb(var(--speedgoat-blue))]/30 bg-[rgb(var(--speedgoat-blue))]/5 shadow-[0_10px_20px_rgba(0,105,180,0.08)]'
+                                        : 'border-slate-200 bg-white'
+                                    )}
+                                  >
+                                    <div className="flex items-center gap-2">
+                                      <button
+                                        type="button"
+                                        onClick={() => setSelectedMachineId(machine.id)}
+                                        className="flex min-w-0 flex-1 items-center gap-2 text-left"
+                                        aria-label={`Select ${machine.displayName}`}
+                                      >
+                                        <span className="relative h-[36px] w-[58px] shrink-0 overflow-hidden rounded-lg border border-slate-200 bg-slate-50">
+                                          <Image
+                                            src={machine.image}
+                                            alt={machine.displayName}
+                                            fill
+                                            sizes="58px"
+                                            className={cn(
+                                              'object-contain object-center p-1 transition-transform duration-300',
+                                              isSelected && 'scale-[1.14]'
+                                            )}
+                                          />
+                                        </span>
+
+                                        <span className="min-w-0 flex-1">
+                                          <span className="flex flex-wrap items-center gap-1.5">
+                                            <span className="truncate text-[11px] font-semibold text-slate-900">{machine.displayName}</span>
+                                            <span className="rounded-full bg-slate-100 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-600">
+                                              {getCompactMachineStatusLabel(machine.id, recommendedMachineId)}
+                                            </span>
+                                          </span>
+                                          <span className="mt-0.5 block truncate text-[10px] text-slate-600">{getMachineBestForCompact(machine)}</span>
+                                        </span>
+                                      </button>
+
+                                      <div className="flex shrink-0 items-center gap-1.5">
+                                        {isSelected ? (
+                                          <span className="rounded-md bg-[rgb(var(--speedgoat-blue))]/10 px-1.5 py-1 text-[9px] font-semibold text-[rgb(var(--speedgoat-blue))]">
+                                            Selected
+                                          </span>
+                                        ) : null}
+                                        <button
+                                          type="button"
+                                          onClick={() => setExpandedMachineId(machine.id)}
+                                          className="rounded-md border border-slate-300 bg-white px-2 py-1 text-[9px] font-semibold text-slate-700 shadow-sm transition hover:text-[rgb(var(--speedgoat-blue))]"
+                                        >
+                                          Compare
+                                        </button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                )
+                              })}
+                            </div>
+                          </div>
+                        </div>
+                      ) : isVer2Route ? (
+                        <div className="grid gap-2.5 xl:grid-cols-[minmax(0,1.12fr)_minmax(300px,0.88fr)]">
+                          <div className="rounded-xl border border-sky-200/70 bg-white/88 p-3 shadow-[0_16px_30px_rgba(148,163,184,0.18)] backdrop-blur-md">
+                            <div className="flex items-start justify-between gap-3">
+                              <div>
+                                <p className="text-[12px] font-semibold uppercase tracking-[0.14em] text-slate-500">Recommended platform</p>
+                                <p className="mt-1 text-[16px] font-semibold text-slate-900">{recommendedDisplayMachine.displayName}</p>
+                              </div>
+                              <span className="inline-flex items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-emerald-700">
+                                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                                Best match
+                              </span>
+                            </div>
+                            <div className="mt-2 grid gap-3 lg:grid-cols-[minmax(160px,0.76fr)_minmax(0,1.12fr)] lg:items-center">
+                              <div className="relative min-h-[110px] overflow-hidden rounded-xl border border-slate-200 bg-[linear-gradient(180deg,rgba(248,250,252,0.98),rgba(241,245,249,0.98))]">
+                                <Image
+                                  src={recommendedDisplayMachine.image}
+                                  alt={recommendedDisplayMachine.displayName}
+                                  fill
+                                  sizes="(min-width: 1280px) 360px, 100vw"
+                                  className={cn(
+                                    'object-contain p-2 transition-transform duration-300',
+                                    recommendedDisplayMachine.previewImageClassName,
+                                    isRecommendedSelected && 'scale-[1.1]'
+                                  )}
+                                />
+                              </div>
+                              <div className="space-y-2">
+                                <div>
+                                  <p className="text-[17px] font-semibold text-slate-900">{recommendedDisplayMachine.displayName}</p>
+                                  <p className="mt-0.5 text-[12px] font-medium text-slate-600">{recommendedDisplayMachine.cardDescriptor}</p>
+                                </div>
+                                <div className="rounded-xl border border-slate-200 bg-slate-50/90 px-3 py-2">
+                                  <p className="text-[11px] leading-relaxed text-slate-700">
+                                    {getRecommendationRationale(primaryRecommendedMachine, selectedApplication, selectedEnvironment, selectedIoVolume)}
+                                  </p>
+                                </div>
+                                <div className="grid gap-2 sm:grid-cols-2">
+                                  <div className="rounded-xl border border-slate-200 bg-white px-3 py-1.5">
+                                    <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">Footprint</p>
+                                    <p className="mt-1 text-[11px] font-semibold text-slate-900">{recommendedDisplayMachine.cardDescriptor}</p>
+                                  </div>
+                                  <div className="rounded-xl border border-slate-200 bg-white px-3 py-1.5">
+                                    <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">I/O capacity</p>
+                                    <p className="mt-1 text-[11px] font-semibold text-slate-900">{getMachineCapacityLabel(recommendedDisplayMachine)}</p>
+                                  </div>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <button
+                                    type="button"
+                                    onClick={() => setSelectedMachineId(recommendedDisplayMachine.id)}
+                                    className="rounded-md bg-[rgb(var(--speedgoat-blue))] px-3 py-1.5 text-[11px] font-semibold text-white shadow-sm transition hover:brightness-95"
+                                  >
+                                    {isRecommendedSelected ? `${recommendedDisplayMachine.displayName} selected` : `Select ${recommendedDisplayMachine.displayName}`}
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => setExpandedMachineId(recommendedDisplayMachine.id)}
+                                    className="rounded-md border border-slate-300 bg-white px-2.5 py-1.5 text-[11px] font-semibold text-slate-700 shadow-sm transition hover:text-[rgb(var(--speedgoat-blue))]"
+                                  >
+                                    Details
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="flex flex-col rounded-xl border border-white/60 bg-white/82 p-2.5 shadow-[0_16px_28px_rgba(148,163,184,0.16)] backdrop-blur-md">
+                            <div className="mb-2 flex items-center justify-between gap-3">
+                              <p className="text-[12px] font-semibold uppercase tracking-[0.14em] text-slate-500">Alternative platforms</p>
+                              <span className="text-[11px] font-medium text-slate-500">{alternativeMachineCards.length} options</span>
+                            </div>
+                            <div className="grid flex-1 auto-rows-fr gap-1">
+                              {alternativeMachineCards.map((machine) => {
+                                const isSelected = selectedMachineId === machine.id
+                                return (
+                                  <div
+                                    key={machine.id}
+                                    className={cn(
+                                      'h-full rounded-xl border bg-white/92 px-2 py-1.5 shadow-[0_8px_16px_rgba(148,163,184,0.12)] transition-all',
+                                      isSelected ? 'border-[rgb(var(--speedgoat-blue))]/30 shadow-[0_12px_24px_rgba(0,105,180,0.12)]' : 'border-slate-200'
+                                    )}
+                                  >
+                                    <div className="flex h-full items-center gap-2">
+                                      <button
+                                        type="button"
+                                        onClick={() => setSelectedMachineId(machine.id)}
+                                        className="flex min-w-0 flex-1 items-center gap-2 text-left"
+                                        aria-label={`Select ${machine.displayName}`}
+                                      >
+                                        <span className="relative h-[40px] w-[68px] shrink-0 overflow-hidden rounded-lg border border-slate-200 bg-slate-50">
+                                          <Image
+                                            src={machine.image}
+                                            alt={machine.displayName}
+                                            fill
+                                            sizes="68px"
+                                            className={cn(
+                                              'object-contain object-center p-1.5 transition-transform duration-300',
+                                              isSelected && 'scale-[1.16]'
+                                            )}
+                                          />
+                                        </span>
+                                        <div className="min-w-0 flex-1">
+                                          <div className="flex items-center gap-1.5">
+                                            <p className="truncate text-[11px] font-semibold text-slate-900">{machine.displayName}</p>
+                                            <span className="shrink-0 rounded-full bg-slate-100 px-1.5 py-0.5 text-[8px] font-semibold uppercase tracking-[0.12em] text-slate-600">
+                                              {getCompactMachineStatusLabel(machine.id, recommendedMachineId)}
+                                            </span>
+                                          </div>
+                                          <p className="mt-0.5 truncate text-[9px] text-slate-500">{getMachineBestForCompact(machine)}</p>
+                                        </div>
+                                      </button>
+                                      <div className="flex shrink-0 items-center gap-1">
+                                        {isSelected ? (
+                                          <span className="rounded-md bg-[rgb(var(--speedgoat-blue))]/10 px-1.5 py-1 text-[9px] font-semibold text-[rgb(var(--speedgoat-blue))]">
+                                            Selected
+                                          </span>
+                                        ) : null}
+                                        <button
+                                          type="button"
+                                          onClick={() => {
+                                            setSelectedMachineId(machine.id)
+                                            setExpandedMachineId(machine.id)
+                                          }}
+                                          className="rounded-md border border-slate-300 bg-white px-1.5 py-1 text-[9px] font-semibold text-slate-700 shadow-sm transition hover:text-[rgb(var(--speedgoat-blue))]"
+                                        >
+                                          Details
+                                        </button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                )
+                              })}
+                            </div>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className={cn('grid auto-rows-fr grid-cols-3 gap-2', isVer2Route && 'gap-1.5')}>
+                          {machineDisplayCards.map((machine) => {
+                            const isActive = activeMachine?.id === machine.id
+                            const isBestFit = primaryRecommendedMachine?.id === machine.id
+                            return (
                               <div
+                                key={machine.id}
                                 className={cn(
-                                  'flex h-14 items-center justify-center overflow-hidden rounded-md border bg-[linear-gradient(180deg,#fbfcfd_0%,#f6f8fa_100%)]',
-                                  isSel ? 'border-[rgb(var(--speedgoat-blue))]/20' : 'border-slate-100'
+                                  'group relative flex flex-col overflow-hidden rounded-lg border px-2.5 text-left transition-all duration-200',
+                                  'min-h-[108px] pb-1.5 pt-1.5',
+                                  isActive
+                                    ? isVer2Route
+                                      ? 'border-[rgb(var(--speedgoat-blue))]/44 bg-[rgba(255,255,255,0.1)] shadow-[0_0_14px_rgba(0,105,180,0.12)]'
+                                      : 'border-[rgb(var(--speedgoat-blue))]/45 bg-white/92 shadow-[0_0_16px_rgba(0,105,180,0.10)]'
+                                    : isVer2Route
+                                    ? 'border-white/10 bg-[linear-gradient(180deg,rgba(7,18,34,0.52),rgba(7,18,34,0.28))] shadow-[0_10px_18px_rgba(2,6,23,0.14)] hover:border-white/16 hover:bg-[linear-gradient(180deg,rgba(7,18,34,0.62),rgba(7,18,34,0.36))]'
+                                    : 'border-slate-200/80 bg-white/55 hover:border-slate-300 hover:bg-white/72'
                                 )}
                               >
-                                <Image src={machine.image} alt="" width={320} height={160} className="h-[42px] w-auto max-w-[85%] object-contain" />
+                                <div className="absolute right-2 top-2 z-10 flex items-center gap-1">
+                                  {isBestFit ? (
+                                    <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-1.5 py-0.5 text-[10px] font-semibold text-emerald-700">
+                                      <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.5)]" />
+                                      Fit
+                                    </span>
+                                  ) : null}
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      setSelectedMachineId(machine.id)
+                                      setExpandedMachineId(machine.id)
+                                    }}
+                                    className={cn('inline-flex h-7 w-7 items-center justify-center rounded-md border shadow-sm transition', isVer2Route ? 'border-white/12 bg-white/10 text-white/72 hover:text-white' : 'border-slate-300/80 bg-white/90 text-slate-600 hover:text-[rgb(var(--speedgoat-blue))]')}
+                                    aria-label={`Expand ${machine.displayName}`}
+                                  >
+                                    <svg className="h-3.5 w-3.5" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
+                                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 6 3 3M10 6l3-3M6 10l-3 3M10 10l3 3" />
+                                      <path strokeLinecap="round" strokeLinejoin="round" d="M5.5 3H3v2.5M10.5 3H13v2.5M5.5 13H3v-2.5M10.5 13H13v-2.5" />
+                                    </svg>
+                                  </button>
+                                </div>
+                                <button
+                                  type="button"
+                                  onClick={() => setSelectedMachineId((prev) => (prev === machine.id ? null : machine.id))}
+                                  className="flex h-full w-full flex-col text-left"
+                                >
+                                  <div className="relative mx-auto h-[48px] w-full overflow-hidden">
+                                    <Image
+                                      src={machine.image}
+                                      alt={machine.displayName}
+                                      fill
+                                      sizes="180px"
+                                      className={cn(
+                                        'object-contain transition duration-200',
+                                        machine.selectorImageClassName,
+                                        isActive ? 'brightness-[1.06]' : 'opacity-80 group-hover:opacity-100'
+                                      )}
+                                    />
+                                  </div>
+                                  <div className="mt-1.5 min-h-[20px]">
+                                    <p className={cn('text-[13px] font-semibold', isVer2Route ? (isActive ? 'text-white' : 'text-white/88') : isActive ? 'text-slate-900' : 'text-slate-800')}>
+                                      {machine.displayName}
+                                    </p>
+                                  </div>
+                                  <p className={cn('mt-1 min-h-[34px] text-[12px] leading-relaxed', isVer2Route ? (isActive ? 'text-white/78' : 'text-white/68') : isActive ? 'text-slate-700' : 'text-slate-600')}>
+                                    {machine.cardDescriptor}
+                                  </p>
+                                </button>
                               </div>
-                            </td>
-                          )
-                        })}
-                      </tr>
-                      <tr>
-                        <td className="bg-white px-4 py-2.5 text-sm font-medium text-slate-600">Fit score</td>
-                        {MACHINE_OPTIONS.map((machine) => {
-                          const isSel = activeMachine?.id === machine.id
-                          return (
-                            <td
-                              key={machine.id}
-                              className={cn('px-4 py-2.5 text-center', isSel ? 'bg-[rgb(var(--speedgoat-blue))]/[0.03]' : 'bg-white')}
-                              style={isSel ? selectedColumnFrame('body') : undefined}
-                            >
-                              <div className="inline-flex items-center gap-0.5">{renderStars(machine.score[selectedBand])}</div>
-                            </td>
-                          )
-                        })}
-                      </tr>
-                      {([
-                        { label: 'Office / lab', key: 'officeLab' },
-                        { label: 'Rack-mountable', key: 'rackMount' },
-                        { label: 'Field-deployable', key: 'field' },
-                      ] as const).map((row) => (
-                        <tr key={row.key}>
-                          <td className="bg-white px-4 py-2 text-sm font-medium text-slate-600">
-                            {row.label}
-                          </td>
-                          {MACHINE_OPTIONS.map((machine) => {
-                            const isSel = activeMachine?.id === machine.id
-                            return (
-                              <td
-                                key={machine.id}
-                                className={cn('px-4 py-2 text-center', isSel ? 'bg-[rgb(var(--speedgoat-blue))]/[0.02]' : 'bg-white')}
-                                style={isSel ? selectedColumnFrame('body') : undefined}
-                              >
-                                <BooleanCell value={machine[row.key]} />
-                              </td>
                             )
                           })}
-                        </tr>
-                      ))}
-                      <tr>
-                        <td className="bg-white px-4 py-2 text-sm font-medium text-slate-600">I/O expandability</td>
-                        {MACHINE_OPTIONS.map((machine) => {
-                          const isSel = activeMachine?.id === machine.id
-                          return (
-                            <td
-                              key={machine.id}
-                              className={cn('px-4 py-2.5 text-center', isSel ? 'bg-[rgb(var(--speedgoat-blue))]/[0.02]' : 'bg-white')}
-                              style={isSel ? selectedColumnFrame('body') : undefined}
-                            >
-                              <ExpandabilityCell level={machine.expandability} />
-                            </td>
-                          )
-                        })}
-                      </tr>
-                      <tr>
-                        <td className="bg-white px-4 py-2 text-sm font-medium text-slate-600">Field-upgradeable</td>
-                        {MACHINE_OPTIONS.map((machine) => {
-                          const isSel = activeMachine?.id === machine.id
-                          return (
-                            <td
-                              key={machine.id}
-                              className={cn('px-4 py-2 text-center', isSel ? 'bg-[rgb(var(--speedgoat-blue))]/[0.03]' : 'bg-white')}
-                              style={isSel ? selectedColumnFrame('footer') : undefined}
-                            >
-                              <BooleanCell value={machine.upgradeability === 'Yes'} />
-                            </td>
-                          )
-                        })}
-                      </tr>
-                    </tbody>
-                  </table>
+                        </div>
+                      )}
+
+                      {/* Fit note */}
+                      <div className={cn('mt-1.5 flex min-h-[36px] items-center justify-between gap-3 rounded-lg border px-3 py-1', isAltRoute ? 'border-white/60 bg-white/76' : 'border-slate-200/60 bg-white/50 backdrop-blur-sm')}>
+                        <p className={cn('min-w-0 text-[12px] leading-relaxed', isAltRoute ? 'text-slate-700' : 'text-slate-700')}>
+                          {isVer3Route
+                            ? decisionSummary
+                            : activeMachine
+                            ? getMachineReason(activeMachine, selectedApplication, selectedEnvironment, selectedIoVolume)
+                            : null}
+                        </p>
+                        {!isAltRoute && (
+                        <button
+                          type="button"
+                          onClick={() => scrollToSection('contact-section')}
+                          className="shrink-0 rounded-md border border-slate-300 bg-white/80 px-3 py-1.5 text-[11px] font-semibold text-slate-700 shadow-sm transition hover:bg-white hover:text-[rgb(var(--speedgoat-blue))]"
+                        >
+                          Consult expert
+                        </button>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Consult expert — bottom-right of step 1 (compact alt variants) */}
+                    {isAltRoute && (
+                      <div className="mt-2 flex justify-end">
+                        <button
+                          type="button"
+                          onClick={() => scrollToSection('contact-section')}
+                          className={cn(
+                            'rounded-md px-3 py-1.5 text-[11px] font-semibold shadow-sm transition hover:text-[rgb(var(--speedgoat-blue))]',
+                            isVer3Route
+                              ? 'border border-slate-200 bg-white text-slate-600 hover:bg-slate-50'
+                              : 'border border-white/60 bg-white/72 text-slate-600 backdrop-blur-md hover:bg-white'
+                          )}
+                        >
+                          Consult expert
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
-
-              <p className="mt-3 text-[13px] text-slate-500">
-                {activeMachine?.fitNote[selectedBand]}
-                {activeMachine?.id !== primaryRecommendedMachine?.id ? (
-                  <span className="ml-1 text-amber-600">You overrode the recommended machine ({primaryRecommendedMachine?.name}).</span>
-                ) : null}
-              </p>
-            </SectionCard>
+            </div>
 
             <SectionCard
-              eyebrow="Step 3"
+              sectionId="resources-section"
+              eyebrow="Step 2"
               title="Configure your I/O"
             >
               <div className="space-y-4">
-                <div className="grid gap-4 xl:grid-cols-[minmax(0,1.95fr)_minmax(200px,0.58fr)]">
-                  <div className="min-w-0 md:pr-2">
-                    <div className="grid gap-x-8 md:grid-cols-2">
-                      {INTERFACE_BOARD_COLUMNS.map((column, columnIndex) => (
-                        <div
-                          key={`interface-column-${columnIndex}`}
-                          className={cn(columnIndex === 1 ? 'md:border-l md:border-slate-200 md:pl-8' : '')}
-                        >
-                          <div>
-                            {column.map((group, rowIndex) => {
-                              const count = (boardDisplayCounts as Record<string, number>)[group.id] ?? 0
-                              const isConfiguredInteractive = INTERACTIVE_GROUPS.includes(group.id as InteractiveGroupId)
-                              const isAvailable = ((activeBoardCounts as Record<string, number>)[group.id] ?? 0) > 0 || isConfiguredInteractive
-                              const isActive = activeGroupId === group.id
-                              return (
-                                <div
-                                  key={group.id}
-                                  className={cn(rowIndex !== column.length - 1 ? 'border-b border-slate-200' : '')}
-                                >
-                                  <button
-                                    type="button"
-                                    onClick={() => setActiveGroupId((prev) => (prev === group.id ? null : group.id))}
-                                    className={cn(
-                                      'flex w-full items-center justify-between gap-4 px-0 py-3 text-left transition-colors',
-                                      isActive
-                                        ? 'text-slate-900'
-                                        : isAvailable
-                                        ? 'text-slate-900 hover:text-[rgb(var(--speedgoat-blue))]'
-                                        : 'text-slate-400'
-                                    )}
-                                  >
-                                    <span className="flex min-w-0 items-center gap-3">
-                                      <span
-                                        className={cn(
-                                          'text-sm',
-                                          isActive
-                                            ? 'text-[rgb(var(--speedgoat-blue))]'
-                                            : isAvailable
-                                            ? 'text-slate-400'
-                                            : 'text-slate-300'
-                                        )}
-                                      >
-                                        {isActive ? '⌄' : '›'}
-                                      </span>
-                                      <span className="truncate text-[13px] font-semibold uppercase tracking-[0.15em]">
-                                        {group.label}
-                                      </span>
-                                    </span>
-                                    <span
-                                      className={cn(
-                                        'inline-flex min-w-7 items-center justify-end text-[12px] font-semibold tabular-nums',
-                                        count > 0
-                                          ? 'text-[rgb(var(--speedgoat-blue))]'
-                                          : 'text-slate-300'
-                                      )}
-                                    >
-                                      {count > 0 ? count : '—'}
-                                    </span>
-                                  </button>
-                                  {isActive ? renderInlineGroupEditor(group.id) : null}
-                                </div>
-                              )
-                            })}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
+                <div className="grid gap-5 xl:grid-cols-[minmax(0,1.72fr)_minmax(240px,0.7fr)]">
+                  <div className="min-w-0">
+                    <ConfiguratorWIP
+                      onSummaryChange={setConfiguratorSummary}
+                      onRequirementsChange={({ rows }) => setConfiguratorRequirements(rows)}
+                      closedLoopRate={selectedClosedLoopRate}
+                      visualVariant="layout-mock-v2"
+                    />
                   </div>
 
                   <div className="xl:border-l xl:border-slate-200 xl:pl-4">
                     <div className="space-y-3">
                       <div>
-                        <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">Selected target machine</p>
-                        <p className="mt-1 text-sm font-semibold text-slate-900">
+                        <p className="text-[12px] font-semibold uppercase tracking-[0.14em] text-slate-600">Selected target machine</p>
+                        <p className="mt-1 min-h-[24px] text-sm font-semibold text-slate-900">
                           {activeMachine?.name}
                           {activeMachine?.id !== primaryRecommendedMachine?.id ? (
-                            <span className="ml-1.5 text-[11px] font-medium text-amber-600">(override)</span>
+                            <span className="ml-1.5 text-[12px] font-medium text-amber-600">(override)</span>
                           ) : null}
+                        </p>
+                        <p className="mt-1 min-h-[72px] text-[12px] leading-relaxed text-slate-500">
+                          {activeMachine ? getMachineReason(activeMachine, selectedApplication, selectedEnvironment, selectedIoVolume) : null}
                         </p>
                       </div>
 
-                      <div className="relative aspect-[16/10] overflow-hidden rounded-md bg-[linear-gradient(180deg,rgba(244,247,250,1),rgba(233,239,245,1))]">
+                      <div className="min-h-[138px] rounded-xl border border-slate-200 bg-slate-50/70 p-3">
+                        <p className="text-[12px] font-semibold uppercase tracking-[0.14em] text-slate-600">Proposed I/O emphasis</p>
+                        <div className="mt-2 min-h-[34px] flex flex-wrap gap-1.5">
+                          {selectedInterfaces.map((interfaceId) => {
+                            const interfaceOption = INTERFACE_OPTIONS.find((option) => option.id === interfaceId)
+                            if (!interfaceOption) return null
+                            return (
+                              <span
+                                key={interfaceId}
+                                className="inline-flex rounded-full bg-white px-2 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-700"
+                              >
+                                {interfaceOption.subtitle}
+                              </span>
+                            )
+                          })}
+                        </div>
+                        <p className="mt-2 min-h-[54px] text-[12px] leading-relaxed text-slate-500">
+                          This is the preselection bias for the I/O proposal. It changes when you change application, environment, I/O volume, or machine.
+                        </p>
+                      </div>
+
+                      <div className="relative aspect-[16/10] overflow-hidden rounded-md border border-[rgb(var(--speedgoat-blue))]/12 bg-[linear-gradient(180deg,rgba(244,247,250,1),rgba(233,239,245,1))]">
+                        <div className="pointer-events-none absolute inset-x-6 top-4 h-10 rounded-full bg-[rgb(var(--speedgoat-blue))]/10 blur-2xl" />
                         {activeMachine ? (
                           <Image
+                            key={activeMachine.id}
                             src={activeMachine.image}
                             alt={activeMachine.name}
                             fill
-                            sizes="220px"
-                            className="object-contain p-2.5"
+                            sizes="320px"
+                            className={cn(
+                              'object-contain p-1.5 transition-transform duration-500 ease-out',
+                              activeMachine.previewImageClassName
+                            )}
                           />
                         ) : null}
                       </div>
 
+                      <div className="min-h-[240px] rounded-xl border border-slate-200 bg-slate-50/70 p-3">
+                        <div className="flex items-center justify-between gap-3">
+                          <p className="text-[12px] font-semibold uppercase tracking-[0.14em] text-slate-600">Suggested modules</p>
+                          {proposalPreview ? (
+                            <span className="text-[12px] font-medium text-slate-600">
+                              {recommendedModules.length} item{recommendedModules.length === 1 ? '' : 's'}
+                            </span>
+                          ) : null}
+                        </div>
+
+                        {proposalPreview && visibleRecommendedModules.length > 0 ? (
+                          <div className="mt-2 min-h-[150px] space-y-2">
+                            {visibleRecommendedModules.map((module) => (
+                              <div
+                                key={`${module.moduleId}-${module.interfaceForModule ?? 'base'}`}
+                                className="flex items-start justify-between gap-3 rounded-lg border border-slate-200 bg-white px-3 py-2"
+                              >
+                                <div className="min-w-0">
+                                  <p className="text-[12px] font-semibold text-slate-900">{module.moduleId}</p>
+                                  <p className="mt-0.5 text-[12px] leading-relaxed text-slate-600">
+                                    {module.friendlyName}
+                                  </p>
+                                </div>
+                                <span className="inline-flex shrink-0 rounded-full bg-[rgb(var(--speedgoat-blue))]/10 px-2 py-0.5 text-[11px] font-bold uppercase tracking-[0.12em] text-[rgb(var(--speedgoat-blue))]">
+                                  x{module.quantity}
+                                </span>
+                              </div>
+                            ))}
+                            {recommendedModules.length > visibleRecommendedModules.length ? (
+                              <p className="text-[12px] text-slate-600">
+                                +{recommendedModules.length - visibleRecommendedModules.length} more recommended module
+                                {recommendedModules.length - visibleRecommendedModules.length === 1 ? '' : 's'}
+                              </p>
+                            ) : null}
+                          </div>
+                        ) : (
+                          <p className="mt-2 min-h-[150px] text-[12px] leading-relaxed text-slate-500">
+                            Add I/O requirements on the left to see suggested hardware modules.
+                          </p>
+                        )}
+                      </div>
+
+                      {activeMachine?.id === 'performance' && proposalPreview && previewMachineContext ? (
+                        <div className="rounded-xl border border-slate-200 bg-white p-3">
+                          <p className="text-[12px] font-semibold uppercase tracking-[0.14em] text-slate-600">Performance slot preview</p>
+                          <p className="mt-1 text-[12px] leading-relaxed text-slate-500">
+                            Compact visual placement of the currently suggested I/O modules for the Performance machine.
+                          </p>
+                          <div className="mt-2">
+                            <MachineSlotMapImage
+                              machine={previewMachineContext}
+                              modules={proposalPreview.recommendedModules}
+                              rowDiffs={proposalPreview.rowDiffs}
+                              showDetails={false}
+                            />
+                          </div>
+                        </div>
+                      ) : null}
+
+                      {proposalPreview?.unresolved.length ? (
+                        <div className="rounded-xl border border-amber-200 bg-amber-50/80 p-3">
+                          <p className="text-[12px] font-semibold uppercase tracking-[0.14em] text-amber-800">Unresolved requirements</p>
+                          <p className="mt-1 text-[12px] leading-relaxed text-amber-800">
+                            {proposalPreview.unresolved.length} requirement
+                            {proposalPreview.unresolved.length === 1 ? '' : 's'} could not be mapped cleanly to hardware.
+                          </p>
+                        </div>
+                      ) : null}
+
                       <div className="divide-y divide-slate-100 text-sm">
                         <div className="flex items-center justify-between gap-3 py-1.5">
-                          <span className="text-slate-600">Active I/O sections</span>
-                          <span className="font-semibold text-slate-900">{activeBoardGroupCount}</span>
+                          <span className="text-slate-600">Configured signals</span>
+                          <span className="font-semibold text-slate-900">{configuratorSummary.totalSignals}</span>
                         </div>
                         <div className="flex items-center justify-between gap-3 py-1.5">
-                          <span className="text-slate-600">Performance band</span>
-                          <span className="font-semibold text-slate-900">{selectedPerformance.shortLabel}</span>
+                          <span className="text-slate-600">Configured rows</span>
+                          <span className="font-semibold text-slate-900">{configuratorSummary.rowCount}</span>
                         </div>
                         <div className="flex items-center justify-between gap-3 py-1.5">
-                          <span className="text-slate-600">Next step</span>
-                          <span className="font-semibold text-slate-900">Refine I/O below</span>
+                          <span className="text-slate-600">Timing proxy</span>
+                          <span className="font-semibold text-slate-900">{selectedPerformance.title}</span>
                         </div>
                       </div>
+
+                      {configuredCategoryEntries.length > 0 ? (
+                        <div className="rounded-xl border border-slate-200 bg-slate-50/70 p-3">
+                          <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">Configured categories</p>
+                          <div className="mt-2 space-y-1.5">
+                            {configuredCategoryEntries.map(([category, count]) => (
+                              <div key={category} className="flex items-center justify-between gap-3 text-sm">
+                                <span className="text-slate-600">{category}</span>
+                                <span className="font-semibold text-slate-900">{count}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      ) : null}
                     </div>
                   </div>
                 </div>
 
               </div>
             </SectionCard>
+
+            <div id="contact-section" className="scroll-mt-28">
+              <CompactCard className={cn(PANEL_CLASS, 'p-4 md:p-5')}>
+                <div className="relative">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">Let us help you</p>
+                  <h2 className="mt-1.5 text-lg font-semibold text-slate-900 md:text-xl">
+                    Find the right solution for your project
+                  </h2>
+                    <div className="mt-3 grid gap-3 sm:grid-cols-3">
+                    <div className="rounded-xl border border-slate-200 bg-slate-50/70 p-3">
+                      <p className="text-[13px] font-semibold text-slate-900">Request configuration example</p>
+                      <p className="mt-1.5 text-[12px] leading-relaxed text-slate-600">
+                        Get a proposal for a real-time target machine configured to your needs.
+                      </p>
+                      <CompactButton type="button" className="mt-3" onClick={openAdvancedConfigurator}>
+                        Request example
+                      </CompactButton>
+                    </div>
+                    <div className="rounded-xl border border-slate-200 bg-slate-50/70 p-3">
+                      <p className="text-[13px] font-semibold text-slate-900">Review system choice</p>
+                      <p className="mt-1.5 text-[12px] leading-relaxed text-slate-600">
+                        Jump back to the system recommendation and refine the application context.
+                      </p>
+                      <CompactButton type="button" variant="ghost" className="mt-3" onClick={() => scrollToSection('systems-section')}>
+                        Review
+                      </CompactButton>
+                    </div>
+                    <div className="rounded-xl border border-slate-200 bg-slate-50/70 p-3">
+                      <p className="text-[13px] font-semibold text-slate-900">Have questions?</p>
+                      <p className="mt-1.5 text-[12px] leading-relaxed text-slate-600">
+                        Talk to our experts about your project and application requirements.
+                      </p>
+                      <CompactButton type="button" variant="ghost" className="mt-3" onClick={() => scrollToSection('contact-section')}>
+                        Contact us
+                      </CompactButton>
+                    </div>
+                  </div>
+                </div>
+              </CompactCard>
+            </div>
           </div>
         </section>
       </main>

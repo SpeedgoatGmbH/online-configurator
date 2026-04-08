@@ -90,9 +90,12 @@ const ADDITIONAL_DISPLAY_GROUPS: [DisplayGroup, DisplayGroup | null][] = (() => 
   return rows
 })()
 
-/** IDs of groups that start collapsed (additional categories) */
+/** IDs of groups that start collapsed */
 const INITIALLY_COLLAPSED = new Set(
-  ADDITIONAL_DISPLAY_GROUPS.flat().filter(Boolean).map((g) => g!.id)
+  [
+    ...DISPLAY_GROUPS.flat().map((g) => g.id),
+    ...ADDITIONAL_DISPLAY_GROUPS.flat().filter(Boolean).map((g) => g!.id),
+  ]
 )
 
 type ConfiguratorWIPProps = ConfiguratorHookProps & {
@@ -102,6 +105,8 @@ type ConfiguratorWIPProps = ConfiguratorHookProps & {
   onSignalRowsChange?: (rows: Record<string, Record<string, SignalRow[]>>) => void
   /** Global closed-loop rate selection — filters analog speed options */
   closedLoopRate?: ClosedLoopRate
+  /** Optional surface variant when embedded in higher-level shells */
+  visualVariant?: 'default' | 'layout-mock-v2'
 }
 
 /** Minimum speed threshold (in Hz) for each closed-loop rate tier */
@@ -148,7 +153,14 @@ function splitTooltipSentences(tooltip: string): string[] {
     .filter(Boolean)
 }
 
-function ConfiguratorWIP({ onSummaryChange, onRequirementsChange, onLoadTemplate, onSignalRowsChange, closedLoopRate = '10k' }: ConfiguratorWIPProps = {}) {
+function ConfiguratorWIP({
+  onSummaryChange,
+  onRequirementsChange,
+  onLoadTemplate,
+  onSignalRowsChange,
+  closedLoopRate = '10k',
+  visualVariant = 'default',
+}: ConfiguratorWIPProps = {}) {
   const {
     signalRows,
     setSignalRows,
@@ -182,6 +194,8 @@ function ConfiguratorWIP({ onSummaryChange, onRequirementsChange, onLoadTemplate
     onSummaryChange,
     onRequirementsChange,
   })
+
+  const isMockVariant = visualVariant === 'layout-mock-v2'
 
   // Track which category is showing the "pick subcategory" inline chooser
   const [addingForCategory, setAddingForCategory] = useState<string | null>(null)
@@ -570,12 +584,12 @@ function ConfiguratorWIP({ onSummaryChange, onRequirementsChange, onLoadTemplate
     const tooltipText = showInlineAnalogTooltip && field?.tooltip ? field.tooltip : undefined
 
     return (
-      <span key={fieldKey} className="inline-flex max-w-full items-center gap-0">
-        <span className="relative inline-flex min-w-[68px] min-w-0 flex-1 items-center">
+      <span key={fieldKey} className="inline-flex min-w-0 max-w-full items-center">
+        <span className="relative inline-flex min-w-0 max-w-[120px] flex-1 items-center">
           <select
             value={currentValue}
             onChange={(e) => updateRowSpec(categoryId, sub.id, row.id, fieldKey, e.target.value)}
-            className="h-5 w-full cursor-pointer appearance-none border-0 bg-transparent py-0 pl-1 pr-3.5 text-[11px] text-slate-500 transition hover:bg-slate-100/80 hover:text-[rgb(var(--speedgoat-blue))] focus:outline-none"
+            className="h-6 w-full cursor-pointer appearance-none rounded-[6px] border border-transparent bg-slate-100/80 py-0 pl-1.5 pr-4 text-[11px] text-slate-700 transition hover:border-slate-200 hover:bg-slate-100 hover:text-[rgb(var(--speedgoat-blue))] focus:outline-none focus:ring-1 focus:ring-[rgb(var(--speedgoat-blue))]/25"
             aria-label={fieldLabel}
             title={tooltipText ?? fieldLabel}
           >
@@ -662,8 +676,8 @@ function ConfiguratorWIP({ onSummaryChange, onRequirementsChange, onLoadTemplate
                   if (e.key === 'Enter') (e.target as HTMLInputElement).blur()
                 }}
                 className={cn(
-                  'h-6 w-full border-0 bg-transparent pl-1 pr-5 text-right text-[13px] font-medium tabular-nums transition focus:outline-none focus:ring-1 focus:ring-[rgb(var(--speedgoat-blue))]/40 rounded [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none',
-                  hasQuantity ? 'text-slate-700' : 'text-slate-400'
+                  'h-6 w-full rounded-[6px] border border-transparent bg-slate-50/90 pl-1 pr-5 text-right text-[13px] font-medium tabular-nums transition focus:outline-none focus:ring-1 focus:ring-[rgb(var(--speedgoat-blue))]/40 hover:border-slate-200 hover:bg-slate-100 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none',
+                  hasQuantity ? 'text-slate-700' : 'text-slate-500'
                 )}
                 aria-label={`${sub.label} channels (custom)`}
               />
@@ -687,8 +701,8 @@ function ConfiguratorWIP({ onSummaryChange, onRequirementsChange, onLoadTemplate
                   }
                 }}
                 className={cn(
-                  'h-6 w-full cursor-pointer appearance-none border-0 bg-transparent pl-1 pr-3.5 text-right text-[13px] font-medium tabular-nums transition hover:bg-slate-100/80 focus:outline-none',
-                  hasQuantity ? 'text-slate-700' : 'text-slate-400'
+                  'h-6 w-full cursor-pointer appearance-none rounded-[6px] border border-transparent bg-slate-50/90 pl-1 pr-3.5 text-right text-[13px] font-medium tabular-nums transition hover:border-slate-200 hover:bg-slate-100 focus:outline-none',
+                  hasQuantity ? 'text-slate-700' : 'text-slate-500'
                 )}
                 aria-label={`${sub.label} channels`}
               >
@@ -705,10 +719,10 @@ function ConfiguratorWIP({ onSummaryChange, onRequirementsChange, onLoadTemplate
         </div>
 
         {/* Cell 3 — Unit (metadata tier) */}
-        <span className="py-[5px] text-[11px] text-slate-400">ch</span>
+        <span className="py-[5px] text-[11px] text-slate-500">ch</span>
 
         {/* Cell 4 — Specs cluster (metadata tier) */}
-        <div className="flex min-w-0 items-center gap-0.5 py-[5px]">
+        <div className="flex min-w-0 flex-wrap items-center gap-1 overflow-visible py-[5px]">
           {hasQuantity && inlineFields.map((fieldKey) => {
             const field = sub.fields.find((f) => f.key === fieldKey)
             if (!field) return null
@@ -717,7 +731,7 @@ function ConfiguratorWIP({ onSummaryChange, onRequirementsChange, onLoadTemplate
             const options = filterSpeedOptions(categoryId, fieldKey, rawOpts)
             if (options.length === 0) return null
             return (
-              <span key={fieldKey} className="inline-flex items-center">
+              <span key={fieldKey} className="inline-flex min-w-0 max-w-full items-center">
                 {renderInlineSpecSelect(categoryId, sub, row, fieldKey, field.label)}
               </span>
             )
@@ -842,32 +856,181 @@ function ConfiguratorWIP({ onSummaryChange, onRequirementsChange, onLoadTemplate
 
     // Total signals across all slots in this group
     const totalSignals = resolvedSlots.reduce((sum, { categoryId, sub }) => sum + getSubTotal(categoryId, sub.id), 0)
+    const configuredRows = allRows.filter(({ row }) => row.quantity > 0).length
     const groupLabel = group.label.toLowerCase()
     const hasManySlots = resolvedSlots.length > 1
     const isCollapsed = collapsedGroups.has(group.id)
+    const renderQuickAddIcon = (categoryId: string, subId: string) => {
+      if (categoryId === 'communication' && subId === 'protocols') {
+        return (
+          <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="6" cy="12" r="2.2" className="fill-[rgb(var(--speedgoat-blue))]/18" />
+            <circle cx="18" cy="7" r="2.2" className="fill-[rgb(var(--speedgoat-blue))]/18" />
+            <circle cx="18" cy="17" r="2.2" className="fill-[rgb(var(--speedgoat-blue))]/18" />
+            <path d="M8.1 11.4 15.7 7.7M8.1 12.6l7.6 3.7" className="stroke-[rgb(var(--speedgoat-blue))]" strokeWidth="1.5" strokeLinecap="round" />
+          </svg>
+        )
+      }
+
+      if (subId === 'encoder' || subId === 'resolver') {
+        return (
+          <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="12" cy="12" r="6.5" className="stroke-[rgb(var(--speedgoat-blue))]/35" strokeWidth="1.5" />
+            <path d="M12 12 16.5 9.5" className="stroke-[rgb(var(--speedgoat-blue))]" strokeWidth="1.7" strokeLinecap="round" />
+            <circle cx="12" cy="12" r="1.5" className="fill-[rgb(var(--speedgoat-blue))]" />
+          </svg>
+        )
+      }
+
+      if (subId === 'pwm' || subId === 'capture' || categoryId === 'digital') {
+        return (
+          <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path
+              d="M3 15V9h4v6h5V7h4v8h5"
+              className="stroke-[rgb(var(--speedgoat-blue))]"
+              strokeWidth="1.7"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        )
+      }
+
+      return (
+        <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path
+            d="M3 12c1.6 0 2.4-5 4.2-5s2.4 10 4.2 10 2.6-8 4.2-8 2.2 3 5.4 3"
+            className="stroke-[rgb(var(--speedgoat-blue))]"
+            strokeWidth="1.7"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      )
+    }
+
+    const renderQuickAddButtons = () => (
+      <div
+        className={cn(
+          'mt-2 grid gap-2',
+          resolvedSlots.length === 1 ? 'grid-cols-1' : 'grid-cols-1 min-[440px]:grid-cols-2'
+        )}
+      >
+        {resolvedSlots.map(({ categoryId, sub }) => {
+          const isProtocolPicker = group.id === 'communication' && sub.id === 'protocols'
+          const isProtocolPickerOpen = isProtocolPicker && inlineProtocolPicker?.mode === 'add'
+          const configuredSignals = getSubTotal(categoryId, sub.id)
+          const configuredVariants = (signalRows[categoryId]?.[sub.id] || []).filter((row) => row.quantity > 0).length
+          const singularLabel = sub.label.toLowerCase().endsWith('s')
+            ? sub.label.toLowerCase().slice(0, -1)
+            : sub.label.toLowerCase()
+          const metaLabel = isProtocolPicker
+            ? configuredVariants > 0
+              ? `${configuredVariants} protocol ${configuredVariants === 1 ? 'row' : 'rows'}`
+              : 'Choose protocol type'
+            : configuredSignals > 0
+            ? `${configuredSignals} ch configured`
+            : `Add ${singularLabel} module`
+
+          return (
+            <button
+              key={`${group.id}-${categoryId}-${sub.id}`}
+              type="button"
+              onClick={() => {
+                if (isProtocolPicker) {
+                  setInlineProtocolPicker((prev) => (prev?.mode === 'add' ? null : { mode: 'add' }))
+                  return
+                }
+                handleAddVariant(categoryId, sub.id)
+              }}
+              className={cn(
+                'group/quick relative flex min-h-[58px] items-center gap-3 rounded-[12px] border px-3 py-2.5 text-left transition',
+                isProtocolPickerOpen
+                  ? 'border-[rgb(var(--speedgoat-blue))]/45 bg-[rgb(var(--speedgoat-blue))]/[0.05] shadow-[0_0_0_2px_rgba(0,105,180,0.06)]'
+                  : 'border-slate-200 bg-white hover:border-[rgb(var(--speedgoat-blue))]/35 hover:bg-[rgb(var(--speedgoat-blue))]/[0.03] hover:shadow-[0_4px_14px_rgba(15,23,42,0.04)]'
+              )}
+              aria-label={isProtocolPicker ? 'Add protocol row' : `Add ${sub.label} module`}
+            >
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[10px] bg-[rgb(var(--speedgoat-blue))]/8 text-[rgb(var(--speedgoat-blue))] ring-1 ring-inset ring-[rgb(var(--speedgoat-blue))]/10">
+                {renderQuickAddIcon(categoryId, sub.id)}
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block truncate text-[12px] font-semibold text-slate-800">
+                  {isProtocolPicker ? 'Protocol' : sub.label}
+                </span>
+                <span className="mt-0.5 block truncate text-[10px] font-medium uppercase tracking-[0.12em] text-slate-400">
+                  {metaLabel}
+                </span>
+              </span>
+              <span
+                className={cn(
+                  'flex h-6 w-6 shrink-0 items-center justify-center rounded-full border text-sm font-semibold transition',
+                  isProtocolPickerOpen
+                    ? 'border-[rgb(var(--speedgoat-blue))]/30 bg-[rgb(var(--speedgoat-blue))]/10 text-[rgb(var(--speedgoat-blue))]'
+                    : 'border-slate-200 bg-slate-50 text-slate-500 group-hover/quick:border-[rgb(var(--speedgoat-blue))]/20 group-hover/quick:bg-[rgb(var(--speedgoat-blue))]/8 group-hover/quick:text-[rgb(var(--speedgoat-blue))]'
+                )}
+                aria-hidden="true"
+              >
+                +
+              </span>
+            </button>
+          )
+        })}
+      </div>
+    )
 
     return (
-      <div key={group.id} className="py-2 first:pt-0">
+      <div
+        key={group.id}
+        className={cn(
+          'min-w-0',
+          isMockVariant
+            ? 'px-0 py-0'
+            : 'rounded-[10px] border border-slate-100 bg-white/95 px-2.5 py-2.5 shadow-[0_1px_2px_rgba(15,23,42,0.03)]'
+        )}
+      >
         {/* Clickable section header — quiet structural divider */}
         <button
           type="button"
           onClick={() => toggleGroup(group.id)}
-          className="mb-1 flex w-full items-center justify-between"
+          className={cn(
+            'flex w-full items-center justify-between',
+            isMockVariant
+              ? 'mb-1.5 border-b border-slate-200 px-0 py-2'
+              : 'mb-2 rounded-[8px] bg-slate-50 px-2 py-1.5'
+          )}
         >
           <span className="flex items-center gap-1">
             <svg
-              className={cn('h-2 w-2 text-slate-400 transition-transform', !isCollapsed && 'rotate-90')}
+              className={cn('h-2 w-2 text-slate-500 transition-transform', !isCollapsed && 'rotate-90')}
               fill="none" stroke="currentColor" viewBox="0 0 24 24"
             >
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
             </svg>
-            <span className="text-[11px] font-medium uppercase tracking-[0.08em] text-slate-400">
+            <span className={cn(
+              'text-[11px] font-semibold uppercase tracking-[0.12em]',
+              isMockVariant ? 'text-slate-500' : 'text-slate-600'
+            )}>
               {group.label}
             </span>
           </span>
-          {totalSignals > 0 && (
-            <span className="text-[11px] tabular-nums text-slate-400">
-              {totalSignals}
+          {(totalSignals > 0 || configuredRows > 1) && (
+            <span className="flex items-center gap-2">
+              {configuredRows > 1 && (
+                <span className={cn(
+                  'text-[10px] font-semibold uppercase tracking-[0.08em]',
+                  isMockVariant
+                    ? 'text-slate-400'
+                    : 'rounded-full border border-slate-200 bg-white px-1.5 py-0.5 text-slate-600'
+                )}>
+                  {configuredRows}x
+                </span>
+              )}
+              {totalSignals > 0 && (
+                <span className="text-[11px] font-medium tabular-nums text-slate-500">
+                  {totalSignals}
+                </span>
+              )}
             </span>
           )}
         </button>
@@ -875,15 +1038,23 @@ function ConfiguratorWIP({ onSummaryChange, onRequirementsChange, onLoadTemplate
         {!isCollapsed && (
           <>
             {/* Signal rows — strict grid: label | qty | unit | specs | remove */}
-            <div className="grid items-center gap-y-0 grid-cols-[140px_48px_24px_1fr_20px]">
+            <div
+              className={cn(
+                'grid grid-cols-[140px_48px_24px_1fr_20px] items-center gap-y-0.5',
+                isMockVariant ? 'px-0 py-0' : 'rounded-[8px] bg-white px-2 py-1'
+              )}
+            >
               {allRows.map(({ categoryId, sub, row, index }) => renderSignalRow(categoryId, sub, row, index))}
             </div>
 
             {/* Inline protocol picker (only for Communication group) */}
             {group.id === 'communication' && renderInlineProtocolPicker()}
 
-            {/* Add link — aligned to label column start */}
-            <div className="mt-1">
+            {/* Visual quick-add row in the mock shell */}
+            {isMockVariant ? (
+              renderQuickAddButtons()
+            ) : (
+            <div className={cn(isMockVariant ? 'mt-1' : 'mt-1.5')}>
           {addingForCategory === group.id && hasManySlots ? (
             <div className="flex flex-wrap items-center gap-1">
               <span className="text-[11px] text-slate-400">Add:</span>
@@ -925,12 +1096,13 @@ function ConfiguratorWIP({ onSummaryChange, onRequirementsChange, onLoadTemplate
                   if (first) handleAddVariant(first.categoryId, first.sub.id)
                 }
               }}
-              className="h-5 px-0 text-[12px] text-slate-400 hover:text-[rgb(var(--speedgoat-blue))]"
+              className="h-5 px-0 text-[12px] text-slate-500 hover:text-[rgb(var(--speedgoat-blue))]"
             >
               + Add {groupLabel}
             </CompactAddLink>
           )}
             </div>
+            )}
           </>
         )}
       </div>
@@ -941,18 +1113,29 @@ function ConfiguratorWIP({ onSummaryChange, onRequirementsChange, onLoadTemplate
     <>
       <CompactCard
         variant="default"
-        className="overflow-visible border-slate-200 bg-gradient-to-b from-white to-slate-50/50 p-3 shadow-[0_8px_24px_rgba(15,23,42,0.04)]"
+        className={cn(
+          'relative overflow-visible',
+          isMockVariant
+            ? 'border-0 bg-transparent p-0 shadow-none'
+            : 'border-slate-200 bg-[linear-gradient(180deg,rgba(255,255,255,1),rgba(249,251,253,0.98))] p-3 shadow-[0_12px_24px_rgba(15,23,42,0.07)]'
+        )}
       >
+        {!isMockVariant ? (
+          <>
+            <div className="pointer-events-none absolute inset-0 rounded-[var(--ui-radius-lg)] bg-[linear-gradient(180deg,rgba(255,255,255,1),rgba(250,252,254,0.98))]" />
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-20 rounded-t-[var(--ui-radius-lg)] bg-[linear-gradient(180deg,rgba(0,105,180,0.06),rgba(0,105,180,0))]" />
+          </>
+        ) : null}
         {/* All display groups — core + additional, single 2-column flow */}
-        <div className="space-y-0 divide-y divide-slate-100">
+        <div className={cn('relative', isMockVariant ? 'space-y-4' : 'space-y-3')}>
           {DISPLAY_GROUPS.map(([left, right], rowIdx) => (
-            <div key={rowIdx} className="grid grid-cols-1 items-start gap-x-4 min-[640px]:grid-cols-2">
+            <div key={rowIdx} className="grid grid-cols-1 items-start gap-x-4 min-[640px]:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
               {renderDisplayGroup(left)}
               {renderDisplayGroup(right)}
             </div>
           ))}
           {ADDITIONAL_DISPLAY_GROUPS.map(([left, right], rowIdx) => (
-            <div key={`add-${rowIdx}`} className="grid grid-cols-1 items-start gap-x-4 min-[640px]:grid-cols-2">
+            <div key={`add-${rowIdx}`} className="grid grid-cols-1 items-start gap-x-4 min-[640px]:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
               {renderDisplayGroup(left)}
               {right && renderDisplayGroup(right)}
             </div>
