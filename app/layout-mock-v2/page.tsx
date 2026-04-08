@@ -1,10 +1,9 @@
 'use client'
 
-import * as RadixTooltip from '@radix-ui/react-tooltip'
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import MachineSlotMapImage from '@/components/MachineSlotMapImage'
 import ConfiguratorWIP from '@/components/ConfiguratorWIP'
 import simulinkBackground from '@/assets/Gemini_Generated_Image_c6c1uec6c1uec6c1.png'
@@ -806,6 +805,9 @@ export default function LayoutMockV2Page() {
   }, [selectedApplicationId, selectedEnvironment, selectedIoVolume])
   const [configuratorSummary, setConfiguratorSummary] = useState<ConfiguratorSummary>(EMPTY_CONFIGURATOR_SUMMARY)
   const [configuratorRequirements, setConfiguratorRequirements] = useState<RequirementRow[]>([])
+  const handleRequirementsChange = useCallback(({ rows }: { rows: RequirementRow[] }) => {
+    setConfiguratorRequirements(rows)
+  }, [])
   const [selectedInterfaces, setSelectedInterfaces] = useState<InterfaceId[]>(['high-fidelity'])
   const [activeGroupId, setActiveGroupId] = useState<string | null>(null)
   const [groupConfig, setGroupConfig] = useState({
@@ -1494,39 +1496,29 @@ export default function LayoutMockV2Page() {
                     </a>
                   )}
                 </div>
-                <RadixTooltip.Provider delayDuration={120} skipDelayDuration={0}>
-                  <RadixTooltip.Root>
-                    <RadixTooltip.Trigger
-                      aria-label="What differs between versions"
-                      className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white/78 backdrop-blur-sm transition hover:text-white"
-                    >
-                      <svg className="h-4 w-4" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
-                        <circle cx="10" cy="10" r="7.25" />
-                        <path strokeLinecap="round" d="M10 8v4" />
-                        <circle cx="10" cy="5.5" r="0.75" fill="currentColor" stroke="none" />
-                      </svg>
-                    </RadixTooltip.Trigger>
-                    <RadixTooltip.Portal>
-                      <RadixTooltip.Content
-                        side="bottom"
-                        align="start"
-                        sideOffset={10}
-                        className="z-50 w-[320px] rounded-xl border border-slate-200 bg-white p-3 text-left shadow-[0_18px_40px_rgba(15,23,42,0.18)]"
-                      >
-                        <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">Version differences</p>
-                        <div className="mt-2 space-y-2.5">
-                          {VERSION_SELECTOR_NOTES.map((version) => (
-                            <div key={version.label} className="space-y-0.5">
-                              <p className="text-[12px] font-semibold text-slate-900">{version.label}</p>
-                              <p className="text-[12px] leading-relaxed text-slate-600">{version.description}</p>
-                            </div>
-                          ))}
+                <details className="group relative">
+                  <summary
+                    aria-label="What differs between versions"
+                    className="inline-flex h-8 w-8 cursor-pointer list-none items-center justify-center rounded-full border border-white/20 bg-white/10 text-white/78 backdrop-blur-sm transition hover:text-white [&::-webkit-details-marker]:hidden"
+                  >
+                    <svg className="h-4 w-4" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
+                      <circle cx="10" cy="10" r="7.25" />
+                      <path strokeLinecap="round" d="M10 8v4" />
+                      <circle cx="10" cy="5.5" r="0.75" fill="currentColor" stroke="none" />
+                    </svg>
+                  </summary>
+                  <div className="absolute right-0 top-full z-50 mt-2 w-[320px] rounded-xl border border-slate-200 bg-white p-3 text-left shadow-[0_18px_40px_rgba(15,23,42,0.18)]">
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">Version differences</p>
+                    <div className="mt-2 space-y-2.5">
+                      {VERSION_SELECTOR_NOTES.map((version) => (
+                        <div key={version.label} className="space-y-0.5">
+                          <p className="text-[12px] font-semibold text-slate-900">{version.label}</p>
+                          <p className="text-[12px] leading-relaxed text-slate-600">{version.description}</p>
                         </div>
-                        <RadixTooltip.Arrow className="fill-white" />
-                      </RadixTooltip.Content>
-                    </RadixTooltip.Portal>
-                  </RadixTooltip.Root>
-                </RadixTooltip.Provider>
+                      ))}
+                    </div>
+                  </div>
+                </details>
               </div>
             </div>
           </div>
@@ -2452,7 +2444,7 @@ export default function LayoutMockV2Page() {
                   <div className="min-w-0">
                     <ConfiguratorWIP
                       onSummaryChange={setConfiguratorSummary}
-                      onRequirementsChange={({ rows }) => setConfiguratorRequirements(rows)}
+                      onRequirementsChange={handleRequirementsChange}
                       closedLoopRate={selectedClosedLoopRate}
                       visualVariant="layout-mock-v2"
                     />
