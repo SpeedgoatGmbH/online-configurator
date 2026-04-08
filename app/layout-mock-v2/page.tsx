@@ -1463,7 +1463,7 @@ export default function LayoutMockV2Page() {
                     </span>
                   ) : (
                     <a
-                      href="/layout-mock-v2"
+                      href={`${BASE_PATH}/layout-mock-v2`}
                       className="rounded-full px-3 py-1 text-xs font-semibold text-white/78 transition hover:text-white"
                     >
                       Ver 1
@@ -1475,7 +1475,7 @@ export default function LayoutMockV2Page() {
                     </span>
                   ) : (
                     <a
-                      href="/layout-mock-v2-ver2"
+                      href={`${BASE_PATH}/layout-mock-v2-ver2`}
                       className="rounded-full px-3 py-1 text-xs font-semibold text-white/78 transition hover:text-white"
                     >
                       Ver 2
@@ -1487,7 +1487,7 @@ export default function LayoutMockV2Page() {
                     </span>
                   ) : (
                     <a
-                      href="/layout-mock-v2-ver3"
+                      href={`${BASE_PATH}/layout-mock-v2-ver3`}
                       className="rounded-full px-3 py-1 text-xs font-semibold text-white/78 transition hover:text-white"
                     >
                       Ver 3
