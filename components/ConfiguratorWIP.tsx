@@ -33,6 +33,11 @@ import { memo, useCallback, useEffect, useMemo, useState } from 'react'
 
 const TIER1_IDS = ['analog', 'digital', 'communication', 'motion']
 const TIER1_ORDER = ['analog', 'digital', 'communication', 'motion'] as const
+const LIGHT_NATIVE_SELECT_STYLE = { colorScheme: 'light' } as const
+const LIGHT_NATIVE_OPTION_STYLE = {
+  backgroundColor: '#ffffff',
+  color: '#334155',
+} as const
 
 /**
  * Visual display groups override the default category rendering.
@@ -217,6 +222,11 @@ function ConfiguratorWIP({
   useEffect(() => {
     if (onSignalRowsChange) onSignalRowsChange(signalRows)
   }, [signalRows, onSignalRowsChange])
+
+  useEffect(() => {
+    if (!isMockVariant || typeof window === 'undefined') return
+    setCollapsedGroups(new Set(INITIALLY_COLLAPSED))
+  }, [isMockVariant])
 
   // Keep analog speed values compliant with the selected closed-loop rate tier.
   // Runs on both tier changes and row changes (e.g., imports/new variants).
@@ -419,7 +429,14 @@ function ConfiguratorWIP({
     }
 
     return (
-      <div className="mt-1 rounded-[var(--ui-radius-sm)] border border-slate-200 bg-slate-50/80 px-2 py-1.5">
+      <div
+        className={cn(
+          'mt-1',
+          isMockVariant
+            ? 'border-y border-slate-200 px-0 py-2'
+            : 'rounded-[var(--ui-radius-sm)] border border-slate-200 bg-slate-50/80 px-2 py-1.5'
+        )}
+      >
         <div className="mb-1 flex items-center justify-between">
           <span className="text-[10px] font-medium uppercase tracking-[0.08em] text-slate-400">
             {inlineProtocolPicker.mode === 'add' ? 'Add protocol' : 'Change protocol'}
@@ -450,6 +467,8 @@ function ConfiguratorWIP({
                         'inline-flex h-[22px] items-center rounded-[var(--ui-radius-sm)] border px-1.5 text-[11px] font-medium transition',
                         isSelected
                           ? 'border-[rgb(var(--speedgoat-blue))] bg-[rgb(var(--speedgoat-blue))]/10 text-[rgb(var(--speedgoat-blue))]'
+                          : isMockVariant
+                          ? 'border-slate-200 bg-white text-slate-600 hover:border-[rgb(var(--speedgoat-blue))]/35 hover:text-[rgb(var(--speedgoat-blue))]'
                           : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-100'
                       )}
                     >
@@ -589,12 +608,18 @@ function ConfiguratorWIP({
           <select
             value={currentValue}
             onChange={(e) => updateRowSpec(categoryId, sub.id, row.id, fieldKey, e.target.value)}
-            className="h-6 w-full cursor-pointer appearance-none rounded-[6px] border border-transparent bg-slate-100/80 py-0 pl-1.5 pr-4 text-[11px] text-slate-700 transition hover:border-slate-200 hover:bg-slate-100 hover:text-[rgb(var(--speedgoat-blue))] focus:outline-none focus:ring-1 focus:ring-[rgb(var(--speedgoat-blue))]/25"
+            style={LIGHT_NATIVE_SELECT_STYLE}
+            className={cn(
+              'w-full cursor-pointer appearance-none py-0 text-[10px] text-slate-700 transition focus:outline-none',
+              isMockVariant
+                ? 'h-6 rounded-md border border-slate-200 bg-white pl-1.5 pr-4 hover:border-[rgb(var(--speedgoat-blue))]/35 hover:text-[rgb(var(--speedgoat-blue))] focus:ring-1 focus:ring-[rgb(var(--speedgoat-blue))]/25'
+                : 'h-5 rounded-[6px] border border-transparent bg-slate-100/80 pl-1.5 pr-4 hover:border-slate-200 hover:bg-slate-100 hover:text-[rgb(var(--speedgoat-blue))] focus:ring-1 focus:ring-[rgb(var(--speedgoat-blue))]/25'
+            )}
             aria-label={fieldLabel}
             title={tooltipText ?? fieldLabel}
           >
             {filteredOptions.map((opt) => (
-              <option key={opt} value={opt}>
+              <option key={opt} value={opt} style={LIGHT_NATIVE_OPTION_STYLE}>
                 {compactValue(opt)}
               </option>
             ))}
@@ -620,7 +645,7 @@ function ConfiguratorWIP({
       .map((f) => f.key)
   }
 
-  /* ── Signal row: grid cells via display:contents ── */
+  /* ── Signal row: flat row block within each display group ── */
   const renderSignalRow = (categoryId: string, sub: SubCategory, row: SignalRow, rowIndex: number) => {
     const isBaseRow = row.id.endsWith('-base')
     const channelOptions = CHANNEL_PRESET_COUNTS.includes(row.quantity)
@@ -630,7 +655,14 @@ function ConfiguratorWIP({
     const hasQuantity = row.quantity > 0
 
     return (
-      <div key={row.id} className={cn('group contents', !hasQuantity && 'opacity-40')}>
+      <div
+        key={row.id}
+        className={cn(
+          'group grid grid-cols-[128px_42px_22px_1fr_18px] items-center gap-x-2 border-b border-slate-100 last:border-b-0',
+          isMockVariant ? 'min-h-[34px] py-1' : 'py-1.5',
+          !hasQuantity && 'opacity-40'
+        )}
+      >
         {/* Cell 1 — Label (strongest in the row) */}
         {categoryId === 'communication' && sub.id === 'protocols' ? (
           <button
@@ -640,7 +672,7 @@ function ConfiguratorWIP({
               setInlineProtocolPicker(isActive ? null : { mode: 'edit', rowId: row.id })
             }}
             className={cn(
-              'truncate py-[5px] text-left text-[13px] font-semibold leading-5 transition',
+              'truncate py-0.5 text-left text-[12px] font-semibold leading-5 transition',
               inlineProtocolPicker?.mode === 'edit' && inlineProtocolPicker.rowId === row.id
                 ? 'text-[rgb(var(--speedgoat-blue))]'
                 : row.specs.range
@@ -652,13 +684,13 @@ function ConfiguratorWIP({
             {row.specs.range || 'Select…'}
           </button>
         ) : (
-          <span className="truncate py-[5px] text-[13px] font-semibold leading-5 text-slate-900">
+          <span className="truncate py-0.5 text-[12px] font-semibold leading-5 text-slate-900">
             {sub.label}
           </span>
         )}
 
         {/* Cell 2 — Quantity (second strongest) */}
-        <div className="relative py-[5px]">
+        <div className="relative py-0.5">
           {customQuantityRows.has(row.id) ? (
             /* ── Custom numeric input mode ── */
             <>
@@ -676,7 +708,10 @@ function ConfiguratorWIP({
                   if (e.key === 'Enter') (e.target as HTMLInputElement).blur()
                 }}
                 className={cn(
-                  'h-6 w-full rounded-[6px] border border-transparent bg-slate-50/90 pl-1 pr-5 text-right text-[13px] font-medium tabular-nums transition focus:outline-none focus:ring-1 focus:ring-[rgb(var(--speedgoat-blue))]/40 hover:border-slate-200 hover:bg-slate-100 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none',
+                  'w-full text-right text-[12px] font-medium tabular-nums transition focus:outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none',
+                  isMockVariant
+                    ? 'h-6 rounded-md border border-slate-200 bg-white pl-1 pr-5 focus:ring-1 focus:ring-[rgb(var(--speedgoat-blue))]/40 hover:border-[rgb(var(--speedgoat-blue))]/35'
+                    : 'h-5 rounded-[6px] border border-transparent bg-slate-50/90 pl-1 pr-5 focus:ring-1 focus:ring-[rgb(var(--speedgoat-blue))]/40 hover:border-slate-200 hover:bg-slate-100',
                   hasQuantity ? 'text-slate-700' : 'text-slate-500'
                 )}
                 aria-label={`${sub.label} channels (custom)`}
@@ -700,18 +735,22 @@ function ConfiguratorWIP({
                     updateRowQuantity(categoryId, sub.id, row.id, parseInt(e.target.value, 10) || 0)
                   }
                 }}
+                style={LIGHT_NATIVE_SELECT_STYLE}
                 className={cn(
-                  'h-6 w-full cursor-pointer appearance-none rounded-[6px] border border-transparent bg-slate-50/90 pl-1 pr-3.5 text-right text-[13px] font-medium tabular-nums transition hover:border-slate-200 hover:bg-slate-100 focus:outline-none',
+                  'w-full cursor-pointer appearance-none text-right text-[12px] font-medium tabular-nums transition focus:outline-none',
+                  isMockVariant
+                    ? 'h-6 rounded-md border border-slate-200 bg-white pl-1 pr-3.5 hover:border-[rgb(var(--speedgoat-blue))]/35'
+                    : 'h-5 rounded-[6px] border border-transparent bg-slate-50/90 pl-1 pr-3.5 hover:border-slate-200 hover:bg-slate-100',
                   hasQuantity ? 'text-slate-700' : 'text-slate-500'
                 )}
                 aria-label={`${sub.label} channels`}
               >
                 {channelOptions.map((count) => (
-                  <option key={count} value={count}>
+                  <option key={count} value={count} style={LIGHT_NATIVE_OPTION_STYLE}>
                     {count}
                   </option>
                 ))}
-                <option value="custom">Custom…</option>
+                <option value="custom" style={LIGHT_NATIVE_OPTION_STYLE}>Custom…</option>
               </select>
               <span className="pointer-events-none absolute right-0.5 top-1/2 -translate-y-1/2 text-[7px] text-slate-400">▾</span>
             </>
@@ -719,10 +758,10 @@ function ConfiguratorWIP({
         </div>
 
         {/* Cell 3 — Unit (metadata tier) */}
-        <span className="py-[5px] text-[11px] text-slate-500">ch</span>
+        <span className="py-0.5 text-[10px] text-slate-500">ch</span>
 
         {/* Cell 4 — Specs cluster (metadata tier) */}
-        <div className="flex min-w-0 flex-wrap items-center gap-1 overflow-visible py-[5px]">
+        <div className="flex min-w-0 flex-wrap items-center gap-1 overflow-visible py-0.5">
           {hasQuantity && inlineFields.map((fieldKey) => {
             const field = sub.fields.find((f) => f.key === fieldKey)
             if (!field) return null
@@ -739,12 +778,12 @@ function ConfiguratorWIP({
         </div>
 
         {/* Cell 5 — Remove */}
-        <div className="flex items-center justify-center py-[5px]">
+        <div className="flex items-center justify-center py-0.5">
           {!isBaseRow ? (
             <button
               type="button"
               onClick={() => removeSignalRow(categoryId, sub.id, row.id)}
-              className="flex h-4 w-4 items-center justify-center rounded text-[9px] font-bold text-slate-400 opacity-0 transition hover:bg-red-50 hover:text-red-500 group-hover:opacity-100"
+              className="flex h-3.5 w-3.5 items-center justify-center rounded text-[9px] font-bold text-slate-400 opacity-0 transition hover:bg-red-50 hover:text-red-500 group-hover:opacity-100"
               aria-label={`Remove ${sub.label} variant ${rowIndex + 1}`}
               title="Remove variant"
             >
@@ -912,7 +951,7 @@ function ConfiguratorWIP({
     const renderQuickAddButtons = () => (
       <div
         className={cn(
-          'mt-2 grid gap-2',
+          'mt-1 grid gap-1',
           resolvedSlots.length === 1 ? 'grid-cols-1' : 'grid-cols-1 min-[440px]:grid-cols-2'
         )}
       >
@@ -944,34 +983,34 @@ function ConfiguratorWIP({
                 handleAddVariant(categoryId, sub.id)
               }}
               className={cn(
-                'group/quick relative flex min-h-[58px] items-center gap-3 rounded-[12px] border px-3 py-2.5 text-left transition',
+                'group/quick relative flex min-h-[32px] items-center gap-1.5 rounded-md border px-2 py-1 text-left transition',
                 isProtocolPickerOpen
-                  ? 'border-[rgb(var(--speedgoat-blue))]/45 bg-[rgb(var(--speedgoat-blue))]/[0.05] shadow-[0_0_0_2px_rgba(0,105,180,0.06)]'
-                  : 'border-slate-200 bg-white hover:border-[rgb(var(--speedgoat-blue))]/35 hover:bg-[rgb(var(--speedgoat-blue))]/[0.03] hover:shadow-[0_4px_14px_rgba(15,23,42,0.04)]'
+                  ? 'border-[rgb(var(--speedgoat-blue))]/35 bg-[rgb(var(--speedgoat-blue))]/[0.025]'
+                  : 'border-slate-200/80 bg-white/72 hover:border-[rgb(var(--speedgoat-blue))]/20 hover:bg-slate-50/70'
               )}
               aria-label={isProtocolPicker ? 'Add protocol row' : `Add ${sub.label} module`}
             >
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[10px] bg-[rgb(var(--speedgoat-blue))]/8 text-[rgb(var(--speedgoat-blue))] ring-1 ring-inset ring-[rgb(var(--speedgoat-blue))]/10">
+              <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-md border border-slate-200/80 bg-slate-50/85 text-[rgb(var(--speedgoat-blue))]">
                 {renderQuickAddIcon(categoryId, sub.id)}
               </span>
               <span className="min-w-0 flex-1">
-                <span className="block truncate text-[12px] font-semibold text-slate-800">
+                <span className="block truncate text-[10px] font-semibold text-slate-800">
                   {isProtocolPicker ? 'Protocol' : sub.label}
                 </span>
-                <span className="mt-0.5 block truncate text-[10px] font-medium uppercase tracking-[0.12em] text-slate-400">
+                <span className="mt-0.5 block truncate text-[8px] font-medium uppercase tracking-[0.08em] text-slate-400">
                   {metaLabel}
                 </span>
               </span>
               <span
                 className={cn(
-                  'flex h-6 w-6 shrink-0 items-center justify-center rounded-full border text-sm font-semibold transition',
+                  'shrink-0 text-[9px] font-medium uppercase tracking-[0.08em] transition',
                   isProtocolPickerOpen
-                    ? 'border-[rgb(var(--speedgoat-blue))]/30 bg-[rgb(var(--speedgoat-blue))]/10 text-[rgb(var(--speedgoat-blue))]'
-                    : 'border-slate-200 bg-slate-50 text-slate-500 group-hover/quick:border-[rgb(var(--speedgoat-blue))]/20 group-hover/quick:bg-[rgb(var(--speedgoat-blue))]/8 group-hover/quick:text-[rgb(var(--speedgoat-blue))]'
+                    ? 'text-[rgb(var(--speedgoat-blue))]'
+                    : 'text-slate-400 group-hover/quick:text-[rgb(var(--speedgoat-blue))]'
                 )}
                 aria-hidden="true"
               >
-                +
+                Add
               </span>
             </button>
           )
@@ -996,7 +1035,7 @@ function ConfiguratorWIP({
           className={cn(
             'flex w-full items-center justify-between',
             isMockVariant
-              ? 'mb-1.5 border-b border-slate-200 px-0 py-2'
+              ? 'mb-2 border-b border-slate-200 px-0 py-2'
               : 'mb-2 rounded-[8px] bg-slate-50 px-2 py-1.5'
           )}
         >
@@ -1018,12 +1057,12 @@ function ConfiguratorWIP({
             <span className="flex items-center gap-2">
               {configuredRows > 1 && (
                 <span className={cn(
-                  'text-[10px] font-semibold uppercase tracking-[0.08em]',
+                  'text-[10px] font-medium',
                   isMockVariant
                     ? 'text-slate-400'
                     : 'rounded-full border border-slate-200 bg-white px-1.5 py-0.5 text-slate-600'
                 )}>
-                  {configuredRows}x
+                  {configuredRows} rows
                 </span>
               )}
               {totalSignals > 0 && (
@@ -1040,7 +1079,7 @@ function ConfiguratorWIP({
             {/* Signal rows — strict grid: label | qty | unit | specs | remove */}
             <div
               className={cn(
-                'grid grid-cols-[140px_48px_24px_1fr_20px] items-center gap-y-0.5',
+                'space-y-0',
                 isMockVariant ? 'px-0 py-0' : 'rounded-[8px] bg-white px-2 py-1'
               )}
             >
@@ -1129,13 +1168,13 @@ function ConfiguratorWIP({
         {/* All display groups — core + additional, single 2-column flow */}
         <div className={cn('relative', isMockVariant ? 'space-y-4' : 'space-y-3')}>
           {DISPLAY_GROUPS.map(([left, right], rowIdx) => (
-            <div key={rowIdx} className="grid grid-cols-1 items-start gap-x-4 min-[640px]:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+            <div key={rowIdx} className="grid grid-cols-1 items-start gap-x-4 gap-y-3 min-[640px]:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
               {renderDisplayGroup(left)}
               {renderDisplayGroup(right)}
             </div>
           ))}
           {ADDITIONAL_DISPLAY_GROUPS.map(([left, right], rowIdx) => (
-            <div key={`add-${rowIdx}`} className="grid grid-cols-1 items-start gap-x-4 min-[640px]:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+            <div key={`add-${rowIdx}`} className="grid grid-cols-1 items-start gap-x-4 gap-y-3 min-[640px]:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
               {renderDisplayGroup(left)}
               {right && renderDisplayGroup(right)}
             </div>

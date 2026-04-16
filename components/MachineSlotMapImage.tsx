@@ -37,12 +37,15 @@ type MachineSlotMapImageProps = {
   modules: ProposalRecommendedModule[] | null
   rowDiffs: ProposalRowDiff[] | null
   showDetails?: boolean
+  fullImage?: boolean
 }
 
 type PerformanceSlotPreset = {
   slotCount: number
   topPx: number
   heightPx: number
+  visualTopPx: number
+  visualHeightPx: number
   leftPx: number
   slotPitchPx: number
   slotBoxWidthPx: number
@@ -52,30 +55,54 @@ type PerformanceSlotPreset = {
   jumpMarkerOffsetPx: number
 }
 
+type GenericMachineImageMeta = {
+  width: number
+  height: number
+  zone: {
+    left: number
+    top: number
+    width: number
+    height: number
+  }
+  columns?: number
+  imageScale?: number
+  imageTranslateX?: number
+  imageTranslateY?: number
+  fullStageWidth?: number
+  fullStageScale?: number
+  fullStageTranslateX?: number
+  fullStageTranslateY?: number
+}
+
 const PERFORMANCE_SLOT_PRESET: PerformanceSlotPreset = {
   slotCount: 12,
-  // Geometry anchored to machine-performance.png (3585 x 2115).
+  // Geometry anchored to machine-performance.png (2437 x 1059).
+  // Slot #0 starts at the first bay after the main chassis panel.
+  // Tuned against the current machine-performance.png asset so the visible
+  // slot shells sit on the actual bay faces instead of spanning the full bay.
   // Slot #8 starts after an extra spacer (jump) following slot #7.
-  topPx: 862,
-  heightPx: 622,
-  leftPx: 1606,
+  topPx: 319,
+  heightPx: 616,
+  visualTopPx: 338,
+  visualHeightPx: 584,
+  leftPx: 924,
   slotPitchPx: 105,
-  slotBoxWidthPx: 96,
-  slotInsetPx: 4,
+  slotBoxWidthPx: 72,
+  slotInsetPx: 0,
   jumpBeforeSlot: 8,
   jumpPx: 48,
   // Fine-tune only the visual jump marker so slot placement stays untouched.
   jumpMarkerOffsetPx: -37,
 }
 
-const PERF_IMAGE_WIDTH = 3585
-const PERF_IMAGE_HEIGHT = 2115
+const PERF_IMAGE_WIDTH = 2437
+const PERF_IMAGE_HEIGHT = 1059
 const EASTER_HOTSPOT = {
   // Tuned to sit on the front-panel power button.
-  leftPx: 907,
-  topPx: 1118,
-  widthPx: 76,
-  heightPx: 76,
+  leftPx: 617,
+  topPx: 560,
+  widthPx: 52,
+  heightPx: 38,
 }
 const EASTER_TRIGGER_CLICKS = 3
 const EASTER_CLICK_WINDOW_MS = 900
@@ -90,6 +117,116 @@ const EASTER_SPARKS = [
   { x: -24, y: 10, delay: 250, hue: 200 },
   { x: -26, y: -4, delay: 290, hue: 255 },
 ] as const
+
+const DEFAULT_GENERIC_IMAGE_META: GenericMachineImageMeta = {
+  width: 1600,
+  height: 1000,
+  zone: { left: 0.2, top: 0.18, width: 0.62, height: 0.56 },
+  columns: 4,
+  imageScale: 0.92,
+  fullStageWidth: 0.84,
+  fullStageScale: 0.92,
+}
+
+const GENERIC_MACHINE_IMAGE_META: Record<string, GenericMachineImageMeta> = {
+  pulse: {
+    width: 2667,
+    height: 1833,
+    zone: { left: 0.23, top: 0.2, width: 0.54, height: 0.48 },
+    columns: 4,
+    imageScale: 0.78,
+    imageTranslateX: -0.02,
+    imageTranslateY: 0.01,
+    fullStageWidth: 0.66,
+    fullStageScale: 0.82,
+    fullStageTranslateY: 0.02,
+  },
+  mobile: {
+    width: 2000,
+    height: 1150,
+    zone: { left: 0.16, top: 0.18, width: 0.66, height: 0.54 },
+    columns: 4,
+    imageScale: 0.88,
+    fullStageWidth: 0.78,
+    fullStageScale: 0.9,
+  },
+  baseline: {
+    width: 1945,
+    height: 1264,
+    zone: { left: 0.18, top: 0.2, width: 0.6, height: 0.52 },
+    columns: 4,
+    imageScale: 0.86,
+    fullStageWidth: 0.76,
+    fullStageScale: 0.9,
+  },
+  unit: {
+    width: 2022,
+    height: 1215,
+    zone: { left: 0.28, top: 0.26, width: 0.42, height: 0.36 },
+    columns: 3,
+    imageScale: 0.84,
+    fullStageWidth: 0.72,
+    fullStageScale: 0.9,
+  },
+  testbench: {
+    width: 259,
+    height: 195,
+    zone: { left: 0.16, top: 0.2, width: 0.7, height: 0.5 },
+    columns: 5,
+    imageScale: 0.9,
+    fullStageWidth: 0.82,
+    fullStageScale: 0.94,
+  },
+}
+
+type OverlayRect = {
+  left: number
+  top: number
+  width: number
+  height: number
+}
+
+function toPct(value: number): string {
+  return `${value * 100}%`
+}
+
+function clamp(value: number, min: number, max: number): number {
+  return Math.max(min, Math.min(max, value))
+}
+
+function createSeededRandom(seed: string) {
+  let state = 0
+  for (let index = 0; index < seed.length; index += 1) {
+    state = (state * 31 + seed.charCodeAt(index)) >>> 0
+  }
+  return () => {
+    state = (state * 1664525 + 1013904223) >>> 0
+    return state / 0x100000000
+  }
+}
+
+function getGenericSlotRects(machineId: string, slotCount: number): OverlayRect[] {
+  const meta = GENERIC_MACHINE_IMAGE_META[machineId] ?? DEFAULT_GENERIC_IMAGE_META
+  const cols = meta.columns ?? Math.min(4, Math.max(2, Math.ceil(Math.sqrt(slotCount))))
+  const rows = Math.max(1, Math.ceil(slotCount / cols))
+  const cellWidth = meta.zone.width / cols
+  const cellHeight = meta.zone.height / rows
+  const random = createSeededRandom(`${machineId}:${slotCount}`)
+
+  return Array.from({ length: slotCount }, (_, index) => {
+    const column = index % cols
+    const row = Math.floor(index / cols)
+    const width = clamp(cellWidth * (0.29 + random() * 0.08), 0.045, 0.098)
+    const height = clamp(cellHeight * (0.8 + random() * 0.16), 0.22, 0.38)
+    const baseLeft = meta.zone.left + column * cellWidth + cellWidth * 0.1
+    const baseTop = meta.zone.top + row * cellHeight + cellHeight * 0.06
+    const jitterX = (random() - 0.5) * cellWidth * 0.14
+    const jitterY = (random() - 0.5) * cellHeight * 0.1
+    const left = clamp(baseLeft + jitterX, meta.zone.left, meta.zone.left + meta.zone.width - width)
+    const top = clamp(baseTop + jitterY, meta.zone.top, meta.zone.top + meta.zone.height - height)
+    return { left, top, width, height }
+  })
+}
 
 function toXPct(px: number): string {
   return `${(px / PERF_IMAGE_WIDTH) * 100}%`
@@ -256,6 +393,7 @@ export default function MachineSlotMapImage({
   modules,
   rowDiffs,
   showDetails = true,
+  fullImage = false,
 }: MachineSlotMapImageProps) {
   const [hoveredSlot, setHoveredSlot] = useState<number | null>(null)
   const [mounted, setMounted] = useState(false)
@@ -288,7 +426,15 @@ export default function MachineSlotMapImage({
     }
   }, [])
 
-  if (machine.id !== 'performance') {
+  const genericSlotCount = Math.min(12, Math.max(machine.maxSlots, expandedSlots.length, 1))
+  const genericVisibleSlots = expandedSlots.slice(0, genericSlotCount)
+  const genericOverflowCount = Math.max(0, expandedSlots.length - genericSlotCount)
+  const genericCategoryCounts = new Map<string, number>()
+  for (const slot of genericVisibleSlots) {
+    genericCategoryCounts.set(slot.categoryId, (genericCategoryCounts.get(slot.categoryId) ?? 0) + 1)
+  }
+
+  if (machine.id !== 'performance' && !machine.image?.trim()) {
     return (
       <MachineChassisStrip
         maxSlots={machine.maxSlots}
@@ -299,6 +445,191 @@ export default function MachineSlotMapImage({
         variants={machine.variants}
         showDetails={showDetails}
       />
+    )
+  }
+
+  if (machine.id !== 'performance') {
+    const imageMeta = GENERIC_MACHINE_IMAGE_META[machine.id] ?? DEFAULT_GENERIC_IMAGE_META
+    const overlayRects = getGenericSlotRects(machine.id, genericSlotCount)
+    const useFullStageTransform = fullImage && !showDetails
+    const stageWidth = useFullStageTransform ? `${(imageMeta.fullStageWidth ?? 1) * 100}%` : '100%'
+    const stageTransform = useFullStageTransform
+      ? `translate(${(imageMeta.fullStageTranslateX ?? 0) * 100}%, ${(imageMeta.fullStageTranslateY ?? 0) * 100}%) scale(${imageMeta.fullStageScale ?? 1})`
+      : undefined
+
+    return (
+      <RadixTooltip.Provider delayDuration={120} skipDelayDuration={0}>
+        <div className={showDetails ? 'space-y-3' : undefined}>
+          <div className="overflow-hidden rounded-xl border border-slate-200 bg-white p-2 sm:p-3">
+            <div
+              className="relative mx-auto"
+              style={{ aspectRatio: `${imageMeta.width} / ${imageMeta.height}`, width: stageWidth }}
+            >
+              <div
+                className="absolute inset-0"
+                style={stageTransform ? { transform: stageTransform, transformOrigin: '50% 50%' } : undefined}
+              >
+                <div
+                  className="absolute inset-0"
+                  style={{
+                    transform: `translate(${(imageMeta.imageTranslateX ?? 0) * 100}%, ${(imageMeta.imageTranslateY ?? 0) * 100}%) scale(${imageMeta.imageScale ?? 1})`,
+                    transformOrigin: '50% 50%',
+                  }}
+                >
+                  <Image
+                    src={machine.image}
+                    alt={`${machine.name} slot map preview`}
+                    fill
+                    className="object-contain"
+                    sizes="(max-width: 1200px) 100vw, 1200px"
+                    priority
+                  />
+                </div>
+
+                {overlayRects.map((rect, index) => {
+                  const slot = genericVisibleSlots[index]
+                  const colors = slot ? (CATEGORY_COLORS[slot.categoryId] ?? FALLBACK_COLOR) : null
+                  const isHovered = hoveredSlot === index
+
+                  return (
+                    <RadixTooltip.Root key={`generic-slot-${machine.id}-${index}`}>
+                      <RadixTooltip.Trigger asChild>
+                        <div
+                          className={cn(
+                            'absolute z-10 min-h-0 cursor-pointer overflow-visible rounded-[3px] border p-[1px] shadow-sm transition-all duration-150',
+                            slot
+                              ? `${colors?.bg} ${colors?.border} backdrop-blur-[1px] shadow-[inset_0_0_0_1px_rgba(255,255,255,0.45),0_2px_8px_rgba(15,23,42,0.10)]`
+                              : 'border-slate-300/70 bg-white/55 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.35)]',
+                            isHovered && slot && `ring-2 ring-offset-[1px] ${colors?.ring} z-10 shadow-lg`,
+                            isHovered && !slot && 'ring-1 ring-slate-300/90 ring-offset-[1px]',
+                            mounted ? 'opacity-100' : 'opacity-0',
+                          )}
+                          style={{
+                            left: toPct(rect.left),
+                            top: toPct(rect.top),
+                            width: toPct(rect.width),
+                            height: toPct(rect.height),
+                            transitionDelay: `${index * 30}ms`,
+                          }}
+                          onMouseEnter={() => setHoveredSlot(index)}
+                          onMouseLeave={() => setHoveredSlot(null)}
+                        >
+                          <span className="absolute left-[3px] top-[3px] rounded-sm border border-white/80 bg-white/92 px-0.5 py-px text-[5.5px] font-bold leading-none text-slate-500 shadow-[0_1px_2px_rgba(15,23,42,0.12)]">
+                            #{index}
+                          </span>
+                          {slot ? (
+                            <>
+                              <span className={cn('absolute left-[3px] right-[3px] top-[14px] h-[3px] rounded-full opacity-90', colors?.dot)} />
+                              <span className={cn('absolute bottom-[12px] left-[3px] top-[18px] w-[3px] rounded-full opacity-90', colors?.dot)} />
+                              <div className="pointer-events-none absolute left-1/2 top-1/2 flex min-h-[56%] min-w-[18px] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-[4px] border border-white/90 bg-white/98 px-1 py-2 shadow-[0_3px_8px_rgba(15,23,42,0.18)]">
+                                <p className={cn('whitespace-nowrap text-[10px] font-black leading-none tracking-[-0.03em] rotate-90 sm:text-[11px]', colors?.text)}>
+                                  {slot.moduleId}
+                                </p>
+                              </div>
+                              <span className={cn('absolute bottom-[4px] left-1/2 h-[7px] w-[7px] -translate-x-1/2 rounded-full shadow-[0_0_0_1px_rgba(255,255,255,0.84)]', colors?.dot)} />
+                            </>
+                          ) : (
+                            <span className="absolute bottom-[3px] left-1/2 h-[3px] w-3 -translate-x-1/2 rounded-full bg-slate-300/80" />
+                          )}
+                        </div>
+                      </RadixTooltip.Trigger>
+
+                      <RadixTooltip.Portal>
+                        <RadixTooltip.Content
+                          side="top"
+                          sideOffset={6}
+                          className="z-50 rounded-xl border border-slate-200 bg-white shadow-xl ring-1 ring-black/5 animate-in fade-in-0 zoom-in-95"
+                        >
+                          <SlotTooltipContent
+                            index={index}
+                            slot={slot}
+                            rowDiffs={rowDiffs}
+                            moduleRowsMap={moduleRowsMap}
+                          />
+                          <RadixTooltip.Arrow className="fill-white drop-shadow-sm" />
+                        </RadixTooltip.Content>
+                      </RadixTooltip.Portal>
+                    </RadixTooltip.Root>
+                  )
+                })}
+              </div>
+            </div>
+          </div>
+
+          {showDetails && (
+            <>
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="inline-flex items-center gap-1 rounded-full border border-slate-300 bg-white px-2 py-0.5 text-[10px] font-semibold text-slate-700">
+                  Slots: {genericVisibleSlots.length}/{genericSlotCount}
+                </span>
+                {CATEGORY_LEGEND_ORDER.map((categoryId) => {
+                  const count = genericCategoryCounts.get(categoryId) ?? 0
+                  const colors = CATEGORY_COLORS[categoryId] ?? FALLBACK_COLOR
+                  return (
+                    <span
+                      key={`${machine.id}-${categoryId}`}
+                      className={cn('inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-semibold', colors.chip)}
+                    >
+                      <span className={cn('h-1.5 w-1.5 rounded-full', colors.dot)} />
+                      {colors.label}: {count}
+                    </span>
+                  )
+                })}
+                {genericOverflowCount > 0 && (
+                  <span className="inline-flex items-center rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 text-[10px] font-semibold text-amber-800">
+                    +{genericOverflowCount} modules not shown in image slots
+                  </span>
+                )}
+              </div>
+
+              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 xl:grid-cols-3">
+                {Array.from({ length: genericSlotCount }).map((_, index) => {
+                  const slot = genericVisibleSlots[index]
+                  const colors = slot ? (CATEGORY_COLORS[slot.categoryId] ?? FALLBACK_COLOR) : null
+                  const isHovered = hoveredSlot === index
+                  const coveredRows = slot ? (moduleRowsMap.get(slot.moduleId) ?? []) : []
+
+                  return (
+                    <div
+                      key={`legend-${machine.id}-${index}`}
+                      ref={(el) => { legendRefs.current[index] = el }}
+                      className={cn(
+                        'cursor-default rounded-md border px-2 py-1.5 transition-all duration-150',
+                        slot ? `${colors?.bg} ${colors?.border}` : 'border-slate-300/80 bg-[#F4F1F1]',
+                        isHovered && slot && `ring-2 ring-offset-1 ${colors?.ring} shadow-sm`,
+                      )}
+                      onMouseEnter={() => setHoveredSlot(index)}
+                      onMouseLeave={() => setHoveredSlot(null)}
+                    >
+                      <div className="flex items-center justify-between gap-1">
+                        <p className="text-[9px] font-semibold text-slate-500">Slot {index}</p>
+                        {slot && (
+                          <span className={cn('rounded-full border px-1 py-px text-[8px] font-semibold', colors?.chip)}>
+                            {colors?.label}
+                          </span>
+                        )}
+                      </div>
+                      {slot ? (
+                        <>
+                          <p className={cn('mt-0.5 text-[11px] font-bold leading-tight', colors?.text)}>{slot.moduleId}</p>
+                          <p className="mt-0.5 text-[10px] leading-snug text-slate-600">{slot.friendlyName}</p>
+                          {coveredRows.length > 0 && (
+                            <p className="mt-0.5 text-[9px] text-slate-400">
+                              {coveredRows.length} row{coveredRows.length > 1 ? 's' : ''} covered
+                            </p>
+                          )}
+                        </>
+                      ) : (
+                        <p className="mt-0.5 text-[10px] text-slate-400">Empty</p>
+                      )}
+                    </div>
+                  )
+                })}
+              </div>
+            </>
+          )}
+        </div>
+      </RadixTooltip.Provider>
     )
   }
 
@@ -318,7 +649,7 @@ export default function MachineSlotMapImage({
     ? getSlotLeftPx(PERFORMANCE_SLOT_PRESET.jumpBeforeSlot) - (PERFORMANCE_SLOT_PRESET.jumpPx / 2) + PERFORMANCE_SLOT_PRESET.jumpMarkerOffsetPx
     : 0
   const performanceImageSrc = machine.image?.trim() || `${BASE_PATH}/assets/machine-performance.png`
-  const cropPerformanceForCompactPreview = !showDetails
+  const cropPerformanceForCompactPreview = !showDetails && !fullImage
   const compactPreviewScale = 1.43
   const compactPreviewShiftX = '-2.6%'
   const triggerEasterEgg = () => {
@@ -360,7 +691,10 @@ export default function MachineSlotMapImage({
               : undefined,
           }}
         >
-          <div className={cn('relative aspect-[3585/2115] w-full', cropPerformanceForCompactPreview && 'overflow-hidden')}>
+          <div
+            className={cn('relative w-full', cropPerformanceForCompactPreview && 'overflow-hidden')}
+            style={{ aspectRatio: `${PERF_IMAGE_WIDTH} / ${PERF_IMAGE_HEIGHT}` }}
+          >
             <div
               className="relative h-full w-full"
               style={
@@ -486,9 +820,9 @@ export default function MachineSlotMapImage({
                     className="absolute z-0 rounded-[4px] border border-slate-300/80 bg-[#F4F1F1] shadow-[inset_0_1px_0_rgba(255,255,255,0.72)]"
                     style={{
                       left: toXPct(leftPx),
-                      top: toYPct(PERFORMANCE_SLOT_PRESET.topPx),
+                      top: toYPct(PERFORMANCE_SLOT_PRESET.visualTopPx),
                       width: toXPct(PERFORMANCE_SLOT_PRESET.slotBoxWidthPx),
-                      height: toYPct(PERFORMANCE_SLOT_PRESET.heightPx),
+                      height: toYPct(PERFORMANCE_SLOT_PRESET.visualHeightPx),
                     }}
                   />
                 )
@@ -501,8 +835,8 @@ export default function MachineSlotMapImage({
                 className="pointer-events-none absolute z-[5] border-l border-dashed border-slate-500/60"
                 style={{
                   left: toXPct(jumpMarkerLeftPx),
-                  top: toYPct(PERFORMANCE_SLOT_PRESET.topPx),
-                  height: toYPct(PERFORMANCE_SLOT_PRESET.heightPx),
+                  top: toYPct(PERFORMANCE_SLOT_PRESET.visualTopPx),
+                  height: toYPct(PERFORMANCE_SLOT_PRESET.visualHeightPx),
                 }}
               />
             )}
@@ -519,7 +853,7 @@ export default function MachineSlotMapImage({
                       {/* eslint-disable-next-line react/forbid-dom-props */}
                       <div
                         className={cn(
-                          'absolute z-10 flex min-h-0 cursor-pointer flex-col overflow-visible rounded-[3px] border p-[2px] shadow-sm transition-all duration-150',
+                          'absolute z-10 min-h-0 cursor-pointer overflow-visible rounded-[3px] border p-[1px] shadow-sm transition-all duration-150',
                           slot
                             ? `${colors?.bg} ${colors?.border} backdrop-blur-[1px] shadow-[inset_0_0_0_1px_rgba(255,255,255,0.35)]`
                             : 'border-slate-300/70 bg-transparent shadow-[inset_0_0_0_1px_rgba(255,255,255,0.35)]',
@@ -529,9 +863,9 @@ export default function MachineSlotMapImage({
                         )}
                         style={{
                           left: toXPct(leftPx),
-                          top: toYPct(PERFORMANCE_SLOT_PRESET.topPx),
+                          top: toYPct(PERFORMANCE_SLOT_PRESET.visualTopPx),
                           width: toXPct(PERFORMANCE_SLOT_PRESET.slotBoxWidthPx),
-                          height: toYPct(PERFORMANCE_SLOT_PRESET.heightPx),
+                          height: toYPct(PERFORMANCE_SLOT_PRESET.visualHeightPx),
                           transitionDelay: `${index * 35}ms`,
                           animation: easterActive
                             ? `sgEggSlotFlash 640ms cubic-bezier(0.2,0.9,0.25,1) ${index * 26 + (easterBurst % 2)}ms 1 both, sgEggSlotWobble 560ms ease-out ${index * 18}ms 1, sgIoDance 760ms cubic-bezier(0.16,0.9,0.24,1) ${index * 28}ms 2`
@@ -540,23 +874,22 @@ export default function MachineSlotMapImage({
                         onMouseEnter={() => setHoveredSlot(index)}
                         onMouseLeave={() => setHoveredSlot(null)}
                       >
-                        <span className="w-fit rounded-sm bg-white/80 px-0.5 py-px text-[6px] font-bold leading-none text-slate-500">#{index}</span>
+                        <span className="absolute left-[3px] top-[3px] rounded-sm border border-white/80 bg-white/92 px-0.5 py-px text-[5.5px] font-bold leading-none text-slate-500 shadow-[0_1px_2px_rgba(15,23,42,0.12)]">
+                          #{index}
+                        </span>
                         {slot ? (
                           <>
-                            <p
-                              className={cn('mt-0.5 text-[8px] font-bold leading-none', colors?.text)}
-                              style={{
-                                writingMode: 'vertical-rl',
-                                textOrientation: 'mixed',
-                                whiteSpace: 'nowrap',
-                              }}
-                            >
-                              {slot.moduleId}
-                            </p>
-                            <span className={cn('mt-auto h-1 w-1 rounded-full', colors?.dot)} />
+                            <span className={cn('absolute left-[3px] right-[3px] top-[14px] h-[3px] rounded-full opacity-90', colors?.dot)} />
+                            <span className={cn('absolute bottom-[12px] left-[3px] top-[18px] w-[3px] rounded-full opacity-90', colors?.dot)} />
+                            <div className="pointer-events-none absolute left-1/2 top-1/2 flex min-h-[56%] min-w-[18px] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-[4px] border border-white/90 bg-white/98 px-1 py-2 shadow-[0_3px_8px_rgba(15,23,42,0.18)]">
+                              <p className={cn('whitespace-nowrap text-[10px] font-black leading-none tracking-[-0.03em] rotate-90 sm:text-[11px]', colors?.text)}>
+                                {slot.moduleId}
+                              </p>
+                            </div>
+                            <span className={cn('absolute bottom-[4px] left-1/2 h-[7px] w-[7px] -translate-x-1/2 rounded-full shadow-[0_0_0_1px_rgba(255,255,255,0.84)]', colors?.dot)} />
                           </>
                         ) : (
-                          <span className="mt-auto h-1 w-4 rounded-full bg-slate-300/80" />
+                          <span className="absolute bottom-[3px] left-1/2 h-[3px] w-3 -translate-x-1/2 rounded-full bg-slate-300/80" />
                         )}
                       </div>
                     </RadixTooltip.Trigger>

@@ -1,5 +1,5 @@
 const exportBasePath = process.env.PAGES_BASE_PATH || ''
-const isExportBuild = process.env.NODE_ENV === 'production'
+const isExportBuild = process.env.NEXT_EXPORT === '1' || exportBasePath !== ''
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {

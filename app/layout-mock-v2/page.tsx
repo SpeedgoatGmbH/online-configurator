@@ -15,6 +15,32 @@ import { simulateProposal } from '@/lib/proposal/simulator'
 
 const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH || ''
 const VER2_SIMULINK_BACKGROUND = `${BASE_PATH}/assets/Gemini_Generated_Image_4qdl7x4qdl7x4qdl.png`
+const LIGHT_NATIVE_SELECT_STYLE = { colorScheme: 'light' } as const
+const LIGHT_NATIVE_OPTION_STYLE = {
+  backgroundColor: '#ffffff',
+  color: '#334155',
+} as const
+type PageButtonVariant = 'primary' | 'secondary' | 'ghost'
+type PageButtonSize = 'md' | 'sm' | 'xs'
+
+function pageButtonClass(variant: PageButtonVariant = 'secondary', size: PageButtonSize = 'sm') {
+  return cn(
+    'inline-flex items-center justify-center rounded-lg border font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 disabled:cursor-not-allowed disabled:opacity-60',
+    size === 'md'
+      ? 'h-9 px-4 text-[11px]'
+      : size === 'sm'
+        ? 'h-[32px] px-3.5 text-[11px]'
+        : 'h-[30px] px-3 text-[10px]',
+    variant === 'primary'
+      ? 'border-[rgb(var(--speedgoat-blue))] bg-[rgb(var(--speedgoat-blue))] text-white shadow-[0_8px_18px_rgba(0,105,180,0.14)] hover:border-blue-700 hover:bg-blue-700'
+      : variant === 'secondary'
+        ? 'border-slate-300 bg-white text-slate-700 shadow-[0_1px_2px_rgba(15,23,42,0.04)] hover:border-slate-400 hover:bg-slate-50 hover:text-[rgb(var(--speedgoat-blue))]'
+        : 'border-slate-200 bg-white/85 text-slate-600 shadow-[0_1px_2px_rgba(15,23,42,0.03)] hover:border-slate-300 hover:bg-white hover:text-slate-900'
+  )
+}
+
+const PAGE_ICON_BUTTON_CLASS =
+  'inline-flex h-7 w-7 items-center justify-center rounded-md border border-slate-300 bg-white text-slate-600 shadow-[0_1px_2px_rgba(15,23,42,0.04)] transition hover:border-slate-400 hover:bg-slate-50 hover:text-[rgb(var(--speedgoat-blue))]'
 
 const HEADER_NAV_ITEMS = [
   { label: 'Testing Workflows', hasMenu: true },
@@ -118,7 +144,7 @@ const MACHINE_OPTIONS = [
     id: 'performance',
     name: 'Performance',
     image: `${BASE_PATH}/assets/machine-performance.png`,
-    cardDescriptor: 'For office and lab use. Enormous expansion possibilities.',
+    cardDescriptor: 'Scalable high-performance test system for office and lab use.',
     selectorImageClassName: 'scale-[1.55] translate-y-[1px]',
     previewImageClassName: 'scale-[1.18] translate-y-[4px]',
     maxSlots: 7,
@@ -160,7 +186,7 @@ const MACHINE_OPTIONS = [
     id: 'pulse',
     name: 'Pulse',
     image: `${BASE_PATH}/assets/machine-pulse.png`,
-    cardDescriptor: 'Scalable desktop system for control design and controller testing.',
+    cardDescriptor: 'Scalable desktop test system for control design and controller testing.',
     selectorImageClassName: 'scale-[1.42] translate-y-[2px]',
     previewImageClassName: 'scale-[1.12] translate-y-[6px]',
     maxSlots: 3,
@@ -181,7 +207,7 @@ const MACHINE_OPTIONS = [
     id: 'mobile',
     name: 'Mobile',
     image: `${BASE_PATH}/assets/machine-mobile.png`,
-    cardDescriptor: 'For field and harsh environments. Withstands shock and vibration.',
+    cardDescriptor: 'Rugged, scalable test system for in-vehicle and field use.',
     selectorImageClassName: 'scale-[1.32] translate-y-[1px]',
     previewImageClassName: 'scale-[1.1] translate-y-[3px]',
     maxSlots: 5,
@@ -202,7 +228,7 @@ const MACHINE_OPTIONS = [
     id: 'baseline',
     name: 'Baseline',
     image: `${BASE_PATH}/assets/machine-baseline.png`,
-    cardDescriptor: 'Entry-level solution for office to in-vehicle operation.',
+    cardDescriptor: 'Compact, rugged test system for lab, field, and in-vehicle use.',
     selectorImageClassName: 'scale-[1.38] translate-y-[2px]',
     previewImageClassName: 'scale-[1.14] translate-y-[4px]',
     maxSlots: 4,
@@ -223,7 +249,7 @@ const MACHINE_OPTIONS = [
     id: 'unit',
     name: 'Unit',
     image: `${BASE_PATH}/assets/machine-unit.png`,
-    cardDescriptor: 'Small form factor for field, in-vehicle, and confined areas.',
+    cardDescriptor: 'Compact test system for field, in-vehicle, and confined spaces.',
     selectorImageClassName: 'scale-[1.44] translate-y-[2px]',
     previewImageClassName: 'scale-[1.16] translate-y-[4px]',
     maxSlots: 1,
@@ -494,10 +520,11 @@ function InlineConfigRow({
           value={String(quantity)}
           onChange={(e) => onQuantityChange(Number(e.target.value))}
           aria-label={`${label} quantity`}
+          style={LIGHT_NATIVE_SELECT_STYLE}
           className="h-6 w-full cursor-pointer appearance-none rounded-[6px] border border-transparent bg-slate-50/90 py-0 pl-1 pr-3.5 text-right text-[13px] font-medium tabular-nums text-slate-700 transition hover:border-slate-200 hover:bg-slate-100 focus:outline-none"
         >
           {quantityOptions.map((option) => (
-            <option key={option} value={option}>
+            <option key={option} value={option} style={LIGHT_NATIVE_OPTION_STYLE}>
               {option}
             </option>
           ))}
@@ -516,10 +543,11 @@ function InlineConfigRow({
                 aria-label={spec.ariaLabel}
                 value={spec.value}
                 onChange={(e) => spec.onChange(e.target.value)}
+                style={LIGHT_NATIVE_SELECT_STYLE}
                 className="h-6 w-full cursor-pointer appearance-none rounded-[6px] border border-transparent bg-slate-50/90 py-0 pl-1.5 pr-4 text-[11px] text-slate-700 transition hover:border-slate-200 hover:bg-slate-100 hover:text-[rgb(var(--speedgoat-blue))] focus:outline-none"
               >
                 {spec.options.map((option) => (
-                  <option key={option} value={option}>
+                  <option key={option} value={option} style={LIGHT_NATIVE_OPTION_STYLE}>
                     {option}
                   </option>
                 ))}
@@ -645,7 +673,7 @@ function getMachineBestFor(machine: (typeof MACHINE_OPTIONS)[number]) {
       return 'Comprehensive rack test setups'
     case 'pulse':
     default:
-      return 'Prototyping and entry-level HIL'
+      return 'Desktop prototyping and component-level HIL'
   }
 }
 
@@ -663,7 +691,7 @@ function getMachineBestForCompact(machine: (typeof MACHINE_OPTIONS)[number]) {
       return 'Rack systems'
     case 'pulse':
     default:
-      return 'Entry HIL'
+      return 'Desktop HIL'
   }
 }
 
@@ -793,6 +821,7 @@ export default function LayoutMockV2Page() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const [expandedMachineId, setExpandedMachineId] = useState<string | null>(null)
+  const [isStep1MappedModulesOpen, setIsStep1MappedModulesOpen] = useState(false)
   const [selectedApplicationId, setSelectedApplicationId] = useState<ApplicationProfileId>('high-fidelity')
   const [selectedEnvironment, setSelectedEnvironment] = useState<DeploymentEnvironment>('office-lab')
   const [selectedIoVolume, setSelectedIoVolume] = useState<IoVolume>('lt100')
@@ -928,6 +957,15 @@ export default function LayoutMockV2Page() {
   const isVer2Route = pathname === '/layout-mock-v2-ver2'
   const isVer3Route = pathname === '/layout-mock-v2-ver3'
   const isAltRoute = isVer2Route || isVer3Route
+  const handleVer2MachineSelection = useCallback((machineId: string) => {
+    setSelectedMachineId(machineId)
+    setExpandedMachineId(machineId)
+    setIsStep1MappedModulesOpen(false)
+  }, [])
+  const handleVer2ChangePlatform = useCallback(() => {
+    setExpandedMachineId(null)
+    setIsStep1MappedModulesOpen(false)
+  }, [])
 
   const machineDisplayCards = useMemo(() => {
     return MACHINE_OPTIONS
@@ -956,6 +994,7 @@ export default function LayoutMockV2Page() {
     () => machineDisplayCards.find((machine) => machine.id === expandedMachineId) ?? null,
     [expandedMachineId, machineDisplayCards]
   )
+  const isVer2ExpandedStage = isVer2Route && Boolean(expandedMachine)
 
   const recommendedDisplayMachine = useMemo(
     () => machineDisplayCards.find((machine) => machine.id === primaryRecommendedMachine.id) ?? machineDisplayCards[0],
@@ -973,7 +1012,6 @@ export default function LayoutMockV2Page() {
   )
 
   const isRecommendedSelected = selectedMachineId === recommendedDisplayMachine.id
-  const isVer2SelectedHero = isVer2Route && Boolean(selectedMachineId)
 
   const decisionSummary = useMemo(
     () =>
@@ -1016,8 +1054,71 @@ export default function LayoutMockV2Page() {
     }
   }, [activeMachine])
 
+  const expandedStageMachineContext = useMemo(() => {
+    if (!expandedMachine) return null
+    return {
+      id: expandedMachine.id,
+      name: expandedMachine.displayName,
+      image: expandedMachine.image,
+      maxSlots: expandedMachine.maxSlots,
+      maxSlotsExpanded: expandedMachine.maxSlotsExpanded,
+    }
+  }, [expandedMachine])
+
   const recommendedModules = proposalPreview?.recommendedModules ?? []
   const visibleRecommendedModules = recommendedModules.slice(0, 4)
+  const expandedVisibleRecommendedModules = recommendedModules.slice(0, 5)
+  const expandedStageModulePreview = useMemo(
+    () => recommendedModules.slice(0, 3).map((module) => module.moduleId),
+    [recommendedModules]
+  )
+  const stageModuleCount = proposalPreview?.summary.moduleCount ?? 0
+  const stageUnresolvedCount = proposalPreview?.summary.unresolvedCount ?? 0
+  const stageNeedsExpansion = Boolean(
+    proposalPreview &&
+      activeMachine &&
+      stageModuleCount > activeMachine.maxSlots &&
+      stageModuleCount <= activeMachine.maxSlotsExpanded
+  )
+  const stageOverCapacity = Boolean(
+    proposalPreview && activeMachine && stageModuleCount > activeMachine.maxSlotsExpanded
+  )
+  const stageMachineWarnings = proposalPreview?.machineWarnings ?? []
+  const expandedStageStatusItems = useMemo(() => {
+    const items: Array<{ label: string; tone: 'neutral' | 'warning' | 'danger' }> = []
+
+    if (!proposalPreview) {
+      return [{ label: 'Waiting for Step 2 requirements', tone: 'neutral' as const }]
+    }
+
+    items.push({
+      label: `${stageModuleCount} module${stageModuleCount === 1 ? '' : 's'} mapped`,
+      tone: 'neutral',
+    })
+
+    if (stageUnresolvedCount > 0) {
+      items.push({
+        label: `${stageUnresolvedCount} unresolved`,
+        tone: 'warning',
+      })
+    }
+
+    if (stageNeedsExpansion) {
+      items.push({
+        label: 'Expansion required',
+        tone: 'warning',
+      })
+    }
+
+    if (stageOverCapacity) {
+      items.push({
+        label: 'Over expanded capacity',
+        tone: 'danger',
+      })
+    }
+
+    return items
+  }, [proposalPreview, stageModuleCount, stageNeedsExpansion, stageOverCapacity, stageUnresolvedCount])
 
   const configuredCategoryEntries = useMemo(
     () => Object.entries(configuratorSummary.categoryTotals).filter(([, count]) => count > 0),
@@ -1308,20 +1409,20 @@ export default function LayoutMockV2Page() {
           'fixed inset-x-0 top-0 z-50 border-b transition-all duration-300',
           isScrolled
             ? 'border-slate-200 bg-white shadow-[0_12px_30px_rgba(2,23,48,0.08)]'
-            : 'border-white/10 bg-[linear-gradient(180deg,rgba(7,27,52,0.54),rgba(7,27,52,0.18))] backdrop-blur-[1px]'
+            : 'border-slate-200/15 bg-[linear-gradient(180deg,rgba(7,27,52,0.44),rgba(7,27,52,0.12))] backdrop-blur-[1px]'
         )}
       >
         <div className="mx-auto w-full max-w-[1520px] px-4 md:px-8 lg:px-12">
           <div
             className={cn(
               'flex items-center justify-between transition-all duration-300',
-              isScrolled ? 'py-4' : 'py-6'
+              isScrolled ? 'py-3' : 'py-4'
             )}
           >
             <Link
               href="/layout-mock-v2"
               className={cn(
-                'shrink-0 text-xl font-black uppercase tracking-[0.12em] transition md:text-[2rem]',
+                'shrink-0 text-lg font-black uppercase tracking-[0.12em] transition md:text-[1.7rem]',
                 isScrolled ? 'text-[rgb(var(--speedgoat-blue))]' : 'text-white'
               )}
             >
@@ -1330,7 +1431,7 @@ export default function LayoutMockV2Page() {
 
             <nav
               className={cn(
-                'hidden items-center gap-8 text-[13px] font-semibold lg:flex',
+                'hidden items-center gap-6 text-[12px] font-semibold lg:flex',
                 isScrolled ? 'text-slate-800' : 'text-white'
               )}
             >
@@ -1363,7 +1464,7 @@ export default function LayoutMockV2Page() {
                 type="button"
                 onClick={openAdvancedConfigurator}
                 className={cn(
-                  'hidden h-10 w-10 items-center justify-center rounded-full transition md:inline-flex',
+                  'hidden h-9 w-9 items-center justify-center rounded-full transition md:inline-flex',
                   isScrolled
                     ? 'text-slate-700 hover:bg-slate-100 hover:text-[rgb(var(--speedgoat-blue))]'
                     : 'text-white hover:bg-white/10'
@@ -1379,7 +1480,7 @@ export default function LayoutMockV2Page() {
                 type="button"
                 onClick={() => scrollToSection('systems-section')}
                 className={cn(
-                  'hidden h-10 w-10 items-center justify-center rounded-full transition md:inline-flex',
+                  'hidden h-9 w-9 items-center justify-center rounded-full transition md:inline-flex',
                   isScrolled
                     ? 'text-slate-700 hover:bg-slate-100 hover:text-[rgb(var(--speedgoat-blue))]'
                     : 'text-white hover:bg-white/10'
@@ -1440,57 +1541,58 @@ export default function LayoutMockV2Page() {
         ) : null}
       </header>
 
-      <main className="min-h-screen bg-[linear-gradient(180deg,#f4f7fa_0%,#f8fafc_28%,#ffffff_100%)] pb-14">
-        <section id="hero-section" className="relative overflow-visible scroll-mt-28 px-4 pt-20 md:px-8 md:pt-28">
+      <main className="min-h-screen bg-[linear-gradient(180deg,#f5f7fb_0%,#f8fafc_24%,#ffffff_100%)] pb-14">
+        <section id="hero-section" className="relative overflow-visible scroll-mt-28 px-4 pt-16 md:px-8 md:pt-20">
           <div className="absolute inset-0">
             <Image
               src={`${BASE_PATH}/assets/machine-performance.png`}
               alt=""
               fill
               priority
-              className="scale-105 object-cover object-center opacity-[0.56]"
+              className="scale-[1.02] object-cover object-center opacity-[0.3]"
             />
-            <div className="absolute inset-0 bg-[linear-gradient(100deg,rgba(7,31,57,0.68)_0%,rgba(7,31,57,0.38)_36%,rgba(7,31,57,0.14)_62%,rgba(255,255,255,0)_100%)]" />
+            <div className="absolute inset-0 bg-[linear-gradient(100deg,rgba(7,31,57,0.58)_0%,rgba(7,31,57,0.24)_34%,rgba(245,248,252,0.82)_72%,rgba(245,248,252,0.96)_100%)]" />
           </div>
-          <div className="relative mx-auto flex h-[100px] max-w-[1520px] items-end pb-4 md:h-[100px] md:pb-4">
+          <div className="relative mx-auto flex h-[86px] max-w-[1520px] items-end pb-3 md:h-[92px] md:pb-3">
             <div className="max-w-3xl">
-              <h1 className="text-2xl font-bold leading-tight text-white md:text-3xl">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-white/72">Real-time test system configurator</p>
+              <h1 className="mt-1 text-[26px] font-bold leading-tight text-white md:text-[30px]">
                 Configure your real-time test system
               </h1>
-              <div className="mt-4 flex items-center gap-2">
-                <div className="inline-flex rounded-full border border-white/20 bg-white/10 p-1 backdrop-blur-sm">
+              <div className="mt-3 flex items-center gap-2">
+                <div className="inline-flex rounded-full border border-white/20 bg-white/12 p-1 backdrop-blur-sm">
                   {!pathname || pathname === '/layout-mock-v2' ? (
-                    <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-slate-900 shadow-[0_1px_2px_rgba(15,23,42,0.08)]">
+                    <span className="rounded-full bg-white px-3 py-1 text-[11px] font-semibold text-slate-900 shadow-[0_1px_2px_rgba(15,23,42,0.08)]">
                       Ver 1
                     </span>
                   ) : (
                     <a
                       href={`${BASE_PATH}/layout-mock-v2`}
-                      className="rounded-full px-3 py-1 text-xs font-semibold text-white/78 transition hover:text-white"
+                      className="rounded-full px-3 py-1 text-[11px] font-semibold text-white/78 transition hover:text-white"
                     >
                       Ver 1
                     </a>
                   )}
                   {isVer2Route ? (
-                    <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-slate-900 shadow-[0_1px_2px_rgba(15,23,42,0.08)]">
+                    <span className="rounded-full bg-white px-3 py-1 text-[11px] font-semibold text-slate-900 shadow-[0_1px_2px_rgba(15,23,42,0.08)]">
                       Ver 2
                     </span>
                   ) : (
                     <a
                       href={`${BASE_PATH}/layout-mock-v2-ver2`}
-                      className="rounded-full px-3 py-1 text-xs font-semibold text-white/78 transition hover:text-white"
+                      className="rounded-full px-3 py-1 text-[11px] font-semibold text-white/78 transition hover:text-white"
                     >
                       Ver 2
                     </a>
                   )}
                   {isVer3Route ? (
-                    <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-slate-900 shadow-[0_1px_2px_rgba(15,23,42,0.08)]">
+                    <span className="rounded-full bg-white px-3 py-1 text-[11px] font-semibold text-slate-900 shadow-[0_1px_2px_rgba(15,23,42,0.08)]">
                       Ver 3
                     </span>
                   ) : (
                     <a
                       href={`${BASE_PATH}/layout-mock-v2-ver3`}
-                      className="rounded-full px-3 py-1 text-xs font-semibold text-white/78 transition hover:text-white"
+                      className="rounded-full px-3 py-1 text-[11px] font-semibold text-white/78 transition hover:text-white"
                     >
                       Ver 3
                     </a>
@@ -1526,20 +1628,14 @@ export default function LayoutMockV2Page() {
 
         <section className="px-4 pb-10 pt-4 md:px-8">
           <div className="mx-auto max-w-[1520px] space-y-3">
+            {/* ── Step 1 — unified section shell with subtle background plane ── */}
             <div
               className={cn(
-                'rounded-2xl border border-slate-200 bg-white px-5 shadow-[0_2px_6px_rgba(15,23,42,0.04)]',
-                isAltRoute ? 'py-2' : 'py-4'
-              )}
-            >
-              <h2 className="text-sm font-semibold text-slate-900">Explore Which Speedgoat Test System is Right for You</h2>
-            </div>
-
-            {/* ── Step 1 — Simulink background with glass overlay boxes ── */}
-            <div
-              className={cn(
-                'relative overflow-hidden rounded-2xl shadow-[0_12px_40px_rgba(0,0,0,0.10)]',
-                isAltRoute && 'shadow-[0_10px_28px_rgba(0,0,0,0.08)]'
+                'relative',
+                isVer2Route
+                  ? 'overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_2px_8px_rgba(15,23,42,0.04)]'
+                  : 'overflow-hidden rounded-2xl shadow-[0_12px_40px_rgba(0,0,0,0.10)]',
+                isAltRoute && !isVer2Route && 'shadow-[0_10px_28px_rgba(0,0,0,0.08)]'
               )}
             >
               {/* Background — Simulink model, kept visible */}
@@ -1554,7 +1650,7 @@ export default function LayoutMockV2Page() {
                     isVer3Route
                       ? 'scale-[1.01] opacity-[0.22] brightness-[1.02] contrast-[1.02] saturate-[0.05]'
                       : isVer2Route
-                      ? 'scale-[1.02] opacity-[0.38] brightness-[1.08] contrast-[1.1] saturate-[0.08]'
+                      ? 'opacity-0'
                       : 'scale-[1.05]'
                   )}
                 />
@@ -1564,7 +1660,7 @@ export default function LayoutMockV2Page() {
                     isVer3Route
                       ? 'bg-[linear-gradient(180deg,rgba(248,251,255,0.9),rgba(245,248,252,0.86)_42%,rgba(244,247,251,0.92)_100%)]'
                       : isVer2Route
-                      ? 'bg-[linear-gradient(180deg,rgba(250,252,255,0.72),rgba(244,248,255,0.58)_40%,rgba(241,245,249,0.64)_100%)]'
+                      ? 'bg-white'
                       : 'bg-gradient-to-br from-slate-950/24 via-slate-950/12 to-slate-950/8'
                   )}
                 />
@@ -1572,17 +1668,21 @@ export default function LayoutMockV2Page() {
 
               <div
                 className={cn(
-                  'relative px-4 md:px-6',
-                  isAltRoute ? 'pb-2 pt-2 md:pb-2.5 md:pt-2.5' : 'pb-3 pt-3 md:pb-4 md:pt-4'
+                  'relative',
+                  isVer2Route
+                    ? 'px-4 pb-3 pt-3 md:px-5 md:pb-4 md:pt-4'
+                    : isAltRoute
+                      ? 'px-4 pb-2 pt-2 md:px-6 md:pb-2.5 md:pt-2.5'
+                      : 'px-4 pb-3 pt-3 md:px-6 md:pb-4 md:pt-4'
                 )}
               >
                 {/* Step header — floats above everything */}
-                <div className="mb-2 flex items-center gap-2.5">
-                  <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-[rgb(var(--speedgoat-blue))] text-[11px] font-bold text-white shadow-[0_0_12px_rgba(0,105,180,0.5)]">
-                    1
-                  </div>
-                  <h2 className="text-sm font-semibold text-slate-900 drop-shadow-[0_1px_2px_rgba(255,255,255,0.35)] md:text-base">
-                    Define your application
+                <div className={cn('mb-2', isVer2Route && 'mb-3')}>
+                  <p className={cn('text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500', isVer2Route && 'text-[11px] text-slate-500')}>
+                    Step 1
+                  </p>
+                  <h2 className={cn('mt-1.5 text-lg font-semibold text-slate-900 md:text-xl', isVer2Route && 'text-[20px] leading-[1.2] md:text-[20px]')}>
+                    Define your application and choose a target platform
                   </h2>
                 </div>
 
@@ -1590,28 +1690,47 @@ export default function LayoutMockV2Page() {
                 <div
                   className={cn(
                     'grid gap-4',
-                    (expandedMachine || isVer2SelectedHero) ? 'grid-cols-1' : 'xl:grid-cols-[276px_minmax(0,1fr)] xl:gap-5'
+                    isVer2ExpandedStage
+                      ? 'grid-cols-1'
+                      : expandedMachine && !isVer2Route
+                      ? 'grid-cols-1'
+                      : isVer2Route
+                        ? 'xl:grid-cols-[224px_minmax(0,1fr)] xl:gap-0'
+                        : 'xl:grid-cols-[276px_minmax(0,1fr)] xl:gap-5'
                   )}
                 >
 
                   {/* ── LEFT: Application type ── */}
-                  {(!expandedMachine && !isVer2SelectedHero) ? (
+                  {!expandedMachine ? (
                     <div
                       id="industries-section"
                       className={cn(
                         'scroll-mt-28 rounded-xl',
-                        isAltRoute && '2xl:flex 2xl:h-full 2xl:flex-col',
+                        isVer3Route && '2xl:flex 2xl:h-full 2xl:flex-col',
                         isVer3Route
                           ? 'border border-white/70 bg-white/80 p-2.5 shadow-[0_12px_26px_rgba(148,163,184,0.14)]'
-                          : isVer2Route
-                          ? 'border border-white/52 bg-[linear-gradient(180deg,rgba(255,255,255,0.48),rgba(237,245,255,0.38))] p-2.5 shadow-[0_14px_28px_rgba(148,163,184,0.18)] backdrop-blur-md'
+                        : isVer2Route
+                          ? 'p-0 xl:border-r xl:border-slate-200 xl:pr-2.5'
                           : 'border border-white/55 bg-white/72 p-3.5 shadow-[0_10px_36px_rgba(15,23,42,0.14)] backdrop-blur-md'
                       )}
                     >
-                      <p className={cn('mb-2.5 text-[11px] font-semibold uppercase tracking-[0.14em]', isAltRoute ? 'text-slate-600' : 'text-slate-600')}>
+                      <p
+                        className={cn(
+                          'text-[10px] font-semibold uppercase tracking-[0.12em]',
+                          isVer2Route ? 'mb-1.5 px-1 text-[11px] tracking-[0.1em] text-slate-500' : isAltRoute ? 'mb-1 text-slate-500' : 'mb-1 text-slate-600'
+                        )}
+                      >
                         Application type
                       </p>
-                      <div className={cn(isAltRoute ? 'space-y-1.5 2xl:grid 2xl:flex-1 2xl:auto-rows-fr 2xl:gap-1.5 2xl:space-y-0' : 'space-y-1.5')}>
+                      <div
+                        className={cn(
+                          isVer2Route
+                            ? 'divide-y divide-slate-200'
+                            : isAltRoute
+                              ? 'space-y-1 2xl:grid 2xl:flex-1 2xl:auto-rows-fr 2xl:gap-1 2xl:space-y-0'
+                              : 'space-y-1'
+                        )}
+                      >
                         {APPLICATION_PROFILES.map((profile) => {
                           const isActive = profile.id === selectedApplicationId
                           return (
@@ -1620,28 +1739,29 @@ export default function LayoutMockV2Page() {
                               type="button"
                               onClick={() => setSelectedApplicationId(profile.id)}
                               className={cn(
-                                'group relative block w-full overflow-hidden rounded-lg border px-2.5 text-left transition-all duration-200',
-                                isAltRoute && '2xl:h-full',
-                                'py-1.5',
+                                'group relative block w-full overflow-hidden text-left transition-all duration-200',
+                                isVer3Route && '2xl:h-full',
+                                isVer2Route ? 'rounded-none border-0 px-2 py-2 shadow-none' : 'rounded-lg border px-2.5 py-1.5',
                                 isActive
                                   ? isVer3Route
                                     ? 'border-[rgb(var(--speedgoat-blue))]/20 bg-white shadow-[0_10px_20px_rgba(148,163,184,0.14)]'
                                     : isVer2Route
-                                    ? 'border-[rgb(var(--speedgoat-blue))]/28 bg-white/92 shadow-[0_10px_22px_rgba(148,163,184,0.18)]'
+                                     ? 'bg-[rgb(var(--speedgoat-blue))]/[0.035]'
                                     : 'border-[rgb(var(--speedgoat-blue))]/45 bg-white shadow-[0_0_16px_rgba(0,105,180,0.10)]'
                                   : isVer3Route
                                   ? 'border-white/60 bg-white/72 shadow-[0_10px_18px_rgba(148,163,184,0.08)] hover:border-slate-200 hover:bg-white'
                                   : isVer2Route
-                                  ? 'border-white/40 bg-[rgba(255,255,255,0.58)] shadow-[0_10px_20px_rgba(148,163,184,0.12)] hover:border-white/70 hover:bg-white/82'
+                                   ? 'hover:bg-slate-50/70'
                                   : 'border-slate-200/80 bg-white/42 hover:border-slate-300 hover:bg-white/60'
                               )}
                             >
-                              {isActive && (
-                                <div className="absolute inset-y-0 left-0 w-[2.5px] rounded-full bg-[rgb(var(--speedgoat-blue))]" />
-                              )}
+                                {isActive && (
+                                  <div className="absolute inset-y-1 left-0 w-0.5 rounded-full bg-[rgb(var(--speedgoat-blue))]" />
+                                )}
                               <span
                                 className={cn(
-                                  'inline-block rounded-full px-1.5 py-px text-[10px] font-bold uppercase tracking-[0.12em]',
+                                  'inline-block rounded-full px-1.5 py-px text-[9px] font-bold uppercase tracking-[0.12em]',
+                                  isVer2Route && 'text-[10px] tracking-[0.1em]',
                                   isActive
                                     ? 'bg-[rgb(var(--speedgoat-blue))]/20 text-[rgb(var(--speedgoat-blue))]'
                                     : isAltRoute
@@ -1651,10 +1771,17 @@ export default function LayoutMockV2Page() {
                               >
                                 {profile.badge}
                               </span>
-                              <p className={cn('mt-1 text-[12px] font-semibold leading-snug', isAltRoute ? 'text-slate-900' : isActive ? 'text-slate-900' : 'text-slate-800')}>
+                              <p className={cn('mt-0.5 text-[11px] font-semibold leading-snug', isVer2Route && 'text-[13px] leading-[1.3]', isAltRoute ? 'text-slate-900' : isActive ? 'text-slate-900' : 'text-slate-800')}>
                                 {profile.title}
                               </p>
-                              <p className={cn('mt-0.5 text-[11px] leading-snug', isAltRoute ? 'text-slate-600' : isActive ? 'text-slate-700' : 'text-slate-600')}>
+                              <p
+                                className={cn('mt-0.5 text-[9px] leading-snug', isVer2Route && 'text-[11px] leading-[1.45]', isAltRoute ? 'text-slate-600' : isActive ? 'text-slate-700' : 'text-slate-600')}
+                                style={
+                                  isVer2Route
+                                    ? undefined
+                                    : undefined
+                                }
+                              >
                                 {profile.description}
                               </p>
                             </button>
@@ -1665,10 +1792,10 @@ export default function LayoutMockV2Page() {
                   ) : null}
 
                   {/* ── RIGHT column ── */}
-                  <div className="flex flex-col gap-2">
+                  <div className={cn('flex flex-col gap-2', isVer2Route && !expandedMachine && 'xl:pl-2.5')}>
 
                     {/* TOP-RIGHT: Deployment + I/O toggles — hidden when machine selected in ver2 */}
-                    {!isVer2SelectedHero && (
+                    {!isVer2Route && (
                     <div
                       className={cn(
                         'rounded-xl px-4',
@@ -1754,37 +1881,43 @@ export default function LayoutMockV2Page() {
                     <div
                       id="systems-section"
                       className={cn(
-                        'flex-1 scroll-mt-28 rounded-xl',
+                        'flex-1 scroll-mt-28',
                         isVer3Route
-                          ? 'border border-white/68 bg-white/72 p-2.5 shadow-[0_12px_24px_rgba(148,163,184,0.12)]'
-                          : isVer2Route
-                          ? 'border border-white/52 bg-[linear-gradient(180deg,rgba(255,255,255,0.38),rgba(240,247,255,0.32))] p-3 shadow-[0_14px_28px_rgba(148,163,184,0.16)] backdrop-blur-md'
-                          : 'border border-white/55 bg-white/58 p-3.5 shadow-[0_10px_36px_rgba(15,23,42,0.12)] backdrop-blur-md'
+                          ? 'rounded-xl border border-white/68 bg-white/72 p-2.5 shadow-[0_12px_24px_rgba(148,163,184,0.12)]'
+                        : isVer2Route
+                          ? 'p-0'
+                          : 'rounded-xl border border-white/55 bg-white/58 p-3.5 shadow-[0_10px_36px_rgba(15,23,42,0.12)] backdrop-blur-md'
                       )}
                     >
-                      <div className="mb-2 min-h-[38px] flex items-start justify-between gap-3">
-                        <div>
-                          <p className={cn('text-[11px] font-semibold uppercase tracking-[0.14em]', isAltRoute ? 'text-slate-600' : 'text-slate-600')}>
-                            Target machine
-                          </p>
-                          <p className={cn(
-                            'mt-1 text-[12px] text-slate-600',
-                            isVer2Route && 'inline-flex rounded-md bg-white/78 px-2 py-1 text-slate-600 shadow-[0_8px_18px_rgba(148,163,184,0.16)]'
-                          )}>
-                            {isVer3Route ? 'Recommended first. Compare alternatives only when you need more detail.' : 'Choose manually or keep the recommended target.'}
-                          </p>
+                      {!isVer2Route ? (
+                        <div className="mb-3 flex items-start justify-between gap-3">
+                          <div>
+                            <p className={cn('text-[11px] font-semibold uppercase tracking-[0.12em]', isAltRoute ? 'text-slate-500' : 'text-slate-600')}>
+                              {isVer2Route ? 'System recommendation' : 'Target machine'}
+                            </p>
+                            <p className={cn(
+                              'mt-1 text-[12px] text-slate-600',
+                              isVer2Route && 'max-w-2xl'
+                            )}>
+                              {isVer3Route
+                                ? 'Recommended first. Compare alternatives only when you need more detail.'
+                                : isVer2Route
+                                ? 'Set deployment and I/O in the top row, then choose the platform that fits your application.'
+                                : 'Choose manually or keep the recommended target.'}
+                            </p>
+                          </div>
+                          {expandedMachine ? null : (
+                            <p className={cn(
+                              'text-[12px] text-slate-500',
+                              isVer2Route && 'max-w-[220px] text-right text-[11px] leading-relaxed'
+                            )}>
+                              {isVer3Route ? 'Compare one machine in detail when needed.' : isVer2Route ? 'Use the board below to compare options, then open details only when you need a closer inspection.' : 'Expand a card to view details.'}
+                            </p>
+                          )}
                         </div>
-                        {expandedMachine ? null : (
-                          <p className={cn(
-                            'text-[12px] text-slate-500',
-                            isVer2Route && 'rounded-md bg-white/78 px-2 py-1 text-slate-500 shadow-[0_8px_18px_rgba(148,163,184,0.16)]'
-                          )}>
-                            {isVer3Route ? 'Compare one machine in detail when needed.' : 'Expand a card to view details.'}
-                          </p>
-                        )}
-                      </div>
+                      ) : null}
 
-                      {expandedMachine ? (
+                      {expandedMachine && !isVer2Route ? (
                         isVer3Route ? (
                           <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-[0_12px_26px_rgba(148,163,184,0.12)]">
                             <div className="flex items-start justify-between gap-4">
@@ -1807,7 +1940,7 @@ export default function LayoutMockV2Page() {
                               <button
                                 type="button"
                                 onClick={() => setExpandedMachineId(null)}
-                                className="inline-flex items-center gap-2 rounded-md border border-slate-200 bg-white px-2.5 py-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-700 shadow-sm transition hover:text-[rgb(var(--speedgoat-blue))]"
+                                className={cn(pageButtonClass('secondary', 'xs'), 'gap-2')}
                                 aria-label="Return to machine grid"
                               >
                                 <svg className="h-3.5 w-3.5" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
@@ -1884,14 +2017,14 @@ export default function LayoutMockV2Page() {
                                   <button
                                     type="button"
                                     onClick={() => setSelectedMachineId(expandedMachine.id)}
-                                    className="rounded-md bg-[rgb(var(--speedgoat-blue))] px-3 py-2 text-[12px] font-semibold text-white shadow-sm transition hover:brightness-95"
+                                    className={pageButtonClass('primary')}
                                   >
                                     {selectedDisplayMachine?.id === expandedMachine.id ? `${expandedMachine.displayName} selected` : `Select ${expandedMachine.displayName}`}
                                   </button>
                                   <button
                                     type="button"
                                     onClick={() => scrollToSection('contact-section')}
-                                    className="rounded-md border border-slate-300 bg-white px-3 py-2 text-[12px] font-semibold text-slate-700 shadow-sm transition hover:text-[rgb(var(--speedgoat-blue))]"
+                                    className={pageButtonClass('secondary')}
                                   >
                                     Consult expert
                                   </button>
@@ -1918,7 +2051,7 @@ export default function LayoutMockV2Page() {
                               <button
                                 type="button"
                                 onClick={() => setExpandedMachineId(null)}
-                                className={cn('inline-flex items-center gap-2 rounded-md border px-2.5 py-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] shadow-sm transition', isVer2Route ? 'border-slate-200 bg-white text-slate-700 hover:text-[rgb(var(--speedgoat-blue))]' : 'border-slate-300 bg-white text-slate-700 hover:text-[rgb(var(--speedgoat-blue))]')}
+                                className={cn(pageButtonClass('secondary', 'xs'), 'gap-2')}
                                 aria-label="Return to machine grid"
                               >
                                 <svg className="h-3.5 w-3.5" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
@@ -1965,7 +2098,7 @@ export default function LayoutMockV2Page() {
                                   <button
                                     type="button"
                                     onClick={() => setSelectedMachineId(expandedMachine.id)}
-                                    className="rounded-md bg-[rgb(var(--speedgoat-blue))] px-3 py-2 text-[12px] font-semibold text-white shadow-sm transition hover:brightness-95"
+                                    className={pageButtonClass('primary')}
                                   >
                                     Use this machine
                                   </button>
@@ -1973,7 +2106,7 @@ export default function LayoutMockV2Page() {
                                   <button
                                     type="button"
                                     onClick={() => scrollToSection('contact-section')}
-                                    className="rounded-md border border-slate-300 bg-white px-3 py-2 text-[12px] font-semibold text-slate-700 shadow-sm transition hover:text-[rgb(var(--speedgoat-blue))]"
+                                    className={pageButtonClass('secondary')}
                                   >
                                     Consult expert
                                   </button>
@@ -1983,57 +2116,6 @@ export default function LayoutMockV2Page() {
                             </div>
                           </div>
                         )
-                      ) : isVer2Route && selectedMachineId ? (
-                        /* ── Ver2: Selected machine — image-focused confirmation ── */
-                        (() => {
-                          const selMachine = machineDisplayCards.find((m) => m.id === selectedMachineId) ?? recommendedDisplayMachine
-                          const isRec = selMachine.id === recommendedMachineId
-                          return (
-                            <div className="relative overflow-hidden rounded-xl border border-sky-200/70 bg-[linear-gradient(135deg,rgba(248,250,252,0.96),rgba(241,245,249,0.92))] shadow-[0_16px_30px_rgba(148,163,184,0.18)] backdrop-blur-md">
-                              {/* Large hero image — fills the card */}
-                              <div className="relative min-h-[160px] w-full xl:min-h-[180px]">
-                                <Image
-                                  src={selMachine.image}
-                                  alt={selMachine.displayName}
-                                  fill
-                                  sizes="(min-width: 1280px) 900px, 100vw"
-                                  className={cn('object-contain p-6 transition-transform duration-500', selMachine.previewImageClassName)}
-                                />
-                                {/* Gradient overlay at bottom for text legibility */}
-                                <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-white/90 to-transparent" />
-                              </div>
-
-                              {/* Compact info bar at the bottom */}
-                              <div className="relative -mt-4 flex flex-wrap items-center justify-between gap-3 px-4 pb-3">
-                                <div className="flex items-center gap-3">
-                                  <span className="inline-flex items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-emerald-700">
-                                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-                                    {isRec ? 'Best match' : 'Selected'}
-                                  </span>
-                                  <p className="text-[17px] font-semibold text-slate-900">{selMachine.displayName}</p>
-                                  <span className="hidden text-[12px] text-slate-500 sm:inline">{selMachine.cardDescriptor}</span>
-                                  <span className="hidden rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-medium text-slate-600 sm:inline">{selMachine.expandability} expansion</span>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                  <button
-                                    type="button"
-                                    onClick={() => setExpandedMachineId(selMachine.id)}
-                                    className="rounded-md border border-slate-300 bg-white px-2.5 py-1.5 text-[11px] font-semibold text-slate-700 shadow-sm transition hover:text-[rgb(var(--speedgoat-blue))]"
-                                  >
-                                    Details
-                                  </button>
-                                  <button
-                                    type="button"
-                                    onClick={() => setSelectedMachineId(null)}
-                                    className="rounded-md border border-slate-200 bg-white px-2.5 py-1.5 text-[11px] font-semibold text-slate-700 shadow-sm transition hover:text-[rgb(var(--speedgoat-blue))]"
-                                  >
-                                    Change
-                                  </button>
-                                </div>
-                              </div>
-                            </div>
-                          )
-                        })()
                       ) : isVer3Route ? (
                         <div className="grid gap-2.5 xl:grid-cols-[minmax(0,1.14fr)_minmax(300px,0.86fr)]">
                           <div className="rounded-xl border border-sky-200/60 bg-white p-2.5 shadow-[0_12px_24px_rgba(148,163,184,0.12)]">
@@ -2092,14 +2174,14 @@ export default function LayoutMockV2Page() {
                                   <button
                                     type="button"
                                     onClick={() => setSelectedMachineId(recommendedDisplayMachine.id)}
-                                    className="rounded-md bg-[rgb(var(--speedgoat-blue))] px-3 py-1.5 text-[10px] font-semibold text-white shadow-sm transition hover:brightness-95"
+                                    className={pageButtonClass('primary', 'xs')}
                                   >
                                     {isRecommendedSelected ? `${recommendedDisplayMachine.displayName} selected` : `Select ${recommendedDisplayMachine.displayName}`}
                                   </button>
                                   <button
                                     type="button"
                                     onClick={() => setExpandedMachineId(recommendedDisplayMachine.id)}
-                                    className="rounded-md border border-slate-300 bg-white px-2.5 py-1.5 text-[10px] font-semibold text-slate-700 shadow-sm transition hover:text-[rgb(var(--speedgoat-blue))]"
+                                    className={pageButtonClass('secondary', 'xs')}
                                   >
                                     Compare
                                   </button>
@@ -2168,7 +2250,7 @@ export default function LayoutMockV2Page() {
                                         <button
                                           type="button"
                                           onClick={() => setExpandedMachineId(machine.id)}
-                                          className="rounded-md border border-slate-300 bg-white px-2 py-1 text-[9px] font-semibold text-slate-700 shadow-sm transition hover:text-[rgb(var(--speedgoat-blue))]"
+                                          className={pageButtonClass('secondary', 'xs')}
                                         >
                                           Compare
                                         </button>
@@ -2181,140 +2263,461 @@ export default function LayoutMockV2Page() {
                           </div>
                         </div>
                       ) : isVer2Route ? (
-                        <div className="grid gap-2.5 xl:grid-cols-[minmax(0,1.12fr)_minmax(300px,0.88fr)]">
-                          <div className="rounded-xl border border-sky-200/70 bg-white/88 p-3 shadow-[0_16px_30px_rgba(148,163,184,0.18)] backdrop-blur-md">
-                            <div className="flex items-start justify-between gap-3">
+                        <div className={cn('space-y-1', isVer2ExpandedStage && 'mx-auto w-full max-w-[980px]')}>
+                          {!expandedMachine ? (
+                          <div className="border-b border-slate-200 pb-1.5">
+                            <div className="grid gap-1.5 lg:grid-cols-[200px_132px_minmax(0,1fr)] lg:items-center">
                               <div>
-                                <p className="text-[12px] font-semibold uppercase tracking-[0.14em] text-slate-500">Recommended platform</p>
-                                <p className="mt-1 text-[16px] font-semibold text-slate-900">{recommendedDisplayMachine.displayName}</p>
+                                <p className="mb-0.5 text-[10px] font-semibold uppercase tracking-[0.1em] text-slate-500">Deployment</p>
+                                <div className="inline-flex flex-wrap rounded-lg border border-slate-200 bg-white p-0.5 shadow-sm">
+                                  {DEPLOYMENT_OPTIONS.map((opt) => (
+                                    <button
+                                      key={opt.id}
+                                      type="button"
+                                      onClick={() => setSelectedEnvironment(opt.id)}
+                                      className={cn(
+                                        'rounded-md px-2.5 py-1 text-[11px] font-semibold transition',
+                                        selectedEnvironment === opt.id
+                                          ? 'bg-slate-900 text-white shadow-sm'
+                                          : 'text-slate-500 hover:text-slate-900'
+                                      )}
+                                    >
+                                      {opt.title}
+                                    </button>
+                                  ))}
+                                </div>
                               </div>
-                              <span className="inline-flex items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-emerald-700">
-                                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-                                Best match
-                              </span>
-                            </div>
-                            <div className="mt-2 grid gap-3 lg:grid-cols-[minmax(160px,0.76fr)_minmax(0,1.12fr)] lg:items-center">
-                              <div className="relative min-h-[110px] overflow-hidden rounded-xl border border-slate-200 bg-[linear-gradient(180deg,rgba(248,250,252,0.98),rgba(241,245,249,0.98))]">
-                                <Image
-                                  src={recommendedDisplayMachine.image}
-                                  alt={recommendedDisplayMachine.displayName}
-                                  fill
-                                  sizes="(min-width: 1280px) 360px, 100vw"
-                                  className={cn(
-                                    'object-contain p-2 transition-transform duration-300',
-                                    recommendedDisplayMachine.previewImageClassName,
-                                    isRecommendedSelected && 'scale-[1.1]'
-                                  )}
-                                />
+
+                              <div>
+                                <p className="mb-0.5 text-[10px] font-semibold uppercase tracking-[0.1em] text-slate-500">I/O channels</p>
+                                <div className="inline-flex rounded-lg border border-slate-200 bg-white p-0.5 shadow-sm">
+                                  {IO_VOLUME_OPTIONS.map((opt) => (
+                                    <button
+                                      key={opt.id}
+                                      type="button"
+                                      onClick={() => setSelectedIoVolume(opt.id)}
+                                      className={cn(
+                                        'rounded-md px-2.5 py-1 text-[11px] font-semibold transition',
+                                        selectedIoVolume === opt.id ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-500 hover:text-slate-900'
+                                      )}
+                                    >
+                                      {opt.id === 'lt100' ? '< 100' : '> 100'}
+                                    </button>
+                                  ))}
+                                </div>
                               </div>
-                              <div className="space-y-2">
-                                <div>
-                                  <p className="text-[17px] font-semibold text-slate-900">{recommendedDisplayMachine.displayName}</p>
-                                  <p className="mt-0.5 text-[12px] font-medium text-slate-600">{recommendedDisplayMachine.cardDescriptor}</p>
-                                </div>
-                                <div className="rounded-xl border border-slate-200 bg-slate-50/90 px-3 py-2">
-                                  <p className="text-[11px] leading-relaxed text-slate-700">
-                                    {getRecommendationRationale(primaryRecommendedMachine, selectedApplication, selectedEnvironment, selectedIoVolume)}
-                                  </p>
-                                </div>
-                                <div className="grid gap-2 sm:grid-cols-2">
-                                  <div className="rounded-xl border border-slate-200 bg-white px-3 py-1.5">
-                                    <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">Footprint</p>
-                                    <p className="mt-1 text-[11px] font-semibold text-slate-900">{recommendedDisplayMachine.cardDescriptor}</p>
-                                  </div>
-                                  <div className="rounded-xl border border-slate-200 bg-white px-3 py-1.5">
-                                    <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">I/O capacity</p>
-                                    <p className="mt-1 text-[11px] font-semibold text-slate-900">{getMachineCapacityLabel(recommendedDisplayMachine)}</p>
-                                  </div>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                  <button
-                                    type="button"
-                                    onClick={() => setSelectedMachineId(recommendedDisplayMachine.id)}
-                                    className="rounded-md bg-[rgb(var(--speedgoat-blue))] px-3 py-1.5 text-[11px] font-semibold text-white shadow-sm transition hover:brightness-95"
-                                  >
-                                    {isRecommendedSelected ? `${recommendedDisplayMachine.displayName} selected` : `Select ${recommendedDisplayMachine.displayName}`}
-                                  </button>
-                                  <button
-                                    type="button"
-                                    onClick={() => setExpandedMachineId(recommendedDisplayMachine.id)}
-                                    className="rounded-md border border-slate-300 bg-white px-2.5 py-1.5 text-[11px] font-semibold text-slate-700 shadow-sm transition hover:text-[rgb(var(--speedgoat-blue))]"
-                                  >
-                                    Details
-                                  </button>
+
+                              <div className="lg:justify-self-end">
+                                <p className="mb-0.5 text-[10px] font-semibold uppercase tracking-[0.1em] text-slate-500">Best match</p>
+                                <div className="flex flex-wrap items-center gap-1.5 lg:justify-end">
+                                  <span className="inline-flex items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-700">
+                                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                                    {recommendedDisplayMachine.displayName}
+                                  </span>
+                                  {selectedMachineId && selectedMachineId !== recommendedDisplayMachine.id ? (
+                                    <span className="inline-flex items-center rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 text-[10px] font-semibold text-amber-700">
+                                      Override active
+                                    </span>
+                                  ) : null}
                                 </div>
                               </div>
                             </div>
                           </div>
+                          ) : null}
 
-                          <div className="flex flex-col rounded-xl border border-white/60 bg-white/82 p-2.5 shadow-[0_16px_28px_rgba(148,163,184,0.16)] backdrop-blur-md">
-                            <div className="mb-2 flex items-center justify-between gap-3">
-                              <p className="text-[12px] font-semibold uppercase tracking-[0.14em] text-slate-500">Alternative platforms</p>
-                              <span className="text-[11px] font-medium text-slate-500">{alternativeMachineCards.length} options</span>
-                            </div>
-                            <div className="grid flex-1 auto-rows-fr gap-1">
-                              {alternativeMachineCards.map((machine) => {
-                                const isSelected = selectedMachineId === machine.id
-                                return (
-                                  <div
-                                    key={machine.id}
-                                    className={cn(
-                                      'h-full rounded-xl border bg-white/92 px-2 py-1.5 shadow-[0_8px_16px_rgba(148,163,184,0.12)] transition-all',
-                                      isSelected ? 'border-[rgb(var(--speedgoat-blue))]/30 shadow-[0_12px_24px_rgba(0,105,180,0.12)]' : 'border-slate-200'
+                          {expandedMachine ? (
+                            <div className="space-y-2">
+                              <div className="flex items-center justify-between gap-3 border-b border-slate-200 pb-1.5">
+                                <div className="min-w-0">
+                                  <div className="flex flex-wrap items-center gap-1.5">
+                                    <p className="text-[15px] font-semibold text-slate-900">{expandedMachine.displayName}</p>
+                                    {expandedMachine.id === recommendedMachineId ? (
+                                      <span className="inline-flex items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-[0.1em] text-emerald-700">
+                                        <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                                        Best match
+                                      </span>
+                                    ) : (
+                                      <span className="inline-flex items-center rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-[0.1em] text-amber-700">
+                                        Manual selection
+                                      </span>
                                     )}
-                                  >
-                                    <div className="flex h-full items-center gap-2">
-                                      <button
-                                        type="button"
-                                        onClick={() => setSelectedMachineId(machine.id)}
-                                        className="flex min-w-0 flex-1 items-center gap-2 text-left"
-                                        aria-label={`Select ${machine.displayName}`}
+                                  </div>
+                                </div>
+                                <button
+                                  type="button"
+                                  onClick={handleVer2ChangePlatform}
+                                  className={cn(pageButtonClass('secondary', 'xs'), 'shrink-0 gap-2')}
+                                >
+                                  Change platform
+                                </button>
+                              </div>
+
+                              <div className="grid gap-4 xl:grid-cols-[minmax(0,1.55fr)_300px] xl:items-start">
+                                <div className="min-w-0 space-y-2">
+                                  {expandedStageMachineContext ? (
+                                    <MachineSlotMapImage
+                                      machine={expandedStageMachineContext}
+                                      modules={proposalPreview?.recommendedModules ?? []}
+                                      rowDiffs={proposalPreview?.rowDiffs ?? []}
+                                      showDetails={false}
+                                      fullImage
+                                    />
+                                  ) : (
+                                    <div className="relative min-h-[190px] overflow-hidden rounded-xl border border-slate-200 bg-[linear-gradient(180deg,rgba(248,250,252,0.98),rgba(241,245,249,0.98))]">
+                                      <Image
+                                        src={expandedMachine.image}
+                                        alt={expandedMachine.displayName}
+                                        fill
+                                        sizes="(min-width: 1280px) 620px, 100vw"
+                                        className={cn(
+                                          'object-contain p-3 transition-transform duration-300',
+                                          expandedMachine.previewImageClassName
+                                        )}
+                                      />
+                                    </div>
+                                  )}
+
+                                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 border-t border-slate-200 pt-2 text-[11px]">
+                                    {expandedStageStatusItems.map((item) => (
+                                      <span
+                                        key={item.label}
+                                        className={cn(
+                                          'inline-flex items-center gap-1.5',
+                                          item.tone === 'neutral'
+                                            ? 'text-slate-600'
+                                            : item.tone === 'warning'
+                                            ? 'text-amber-700'
+                                            : 'text-red-700'
+                                        )}
                                       >
-                                        <span className="relative h-[40px] w-[68px] shrink-0 overflow-hidden rounded-lg border border-slate-200 bg-slate-50">
-                                          <Image
-                                            src={machine.image}
-                                            alt={machine.displayName}
-                                            fill
-                                            sizes="68px"
-                                            className={cn(
-                                              'object-contain object-center p-1.5 transition-transform duration-300',
-                                              isSelected && 'scale-[1.16]'
-                                            )}
-                                          />
-                                        </span>
-                                        <div className="min-w-0 flex-1">
-                                          <div className="flex items-center gap-1.5">
-                                            <p className="truncate text-[11px] font-semibold text-slate-900">{machine.displayName}</p>
-                                            <span className="shrink-0 rounded-full bg-slate-100 px-1.5 py-0.5 text-[8px] font-semibold uppercase tracking-[0.12em] text-slate-600">
-                                              {getCompactMachineStatusLabel(machine.id, recommendedMachineId)}
-                                            </span>
-                                          </div>
-                                          <p className="mt-0.5 truncate text-[9px] text-slate-500">{getMachineBestForCompact(machine)}</p>
-                                        </div>
-                                      </button>
-                                      <div className="flex shrink-0 items-center gap-1">
-                                        {isSelected ? (
-                                          <span className="rounded-md bg-[rgb(var(--speedgoat-blue))]/10 px-1.5 py-1 text-[9px] font-semibold text-[rgb(var(--speedgoat-blue))]">
-                                            Selected
+                                        <span
+                                          className={cn(
+                                            'h-1.5 w-1.5 rounded-full',
+                                            item.tone === 'neutral'
+                                              ? 'bg-slate-300'
+                                              : item.tone === 'warning'
+                                              ? 'bg-amber-400'
+                                              : 'bg-red-400'
+                                          )}
+                                        />
+                                        <span className="font-medium">{item.label}</span>
+                                      </span>
+                                    ))}
+                                    {expandedStageModulePreview.length > 0 ? (
+                                      <div className="flex min-w-0 items-center gap-1.5 overflow-x-auto pb-0.5">
+                                        {expandedStageModulePreview.map((moduleId) => (
+                                          <span
+                                            key={`stage-preview-${moduleId}`}
+                                            className="inline-flex shrink-0 items-center rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-[10px] font-semibold text-slate-700"
+                                          >
+                                            {moduleId}
+                                          </span>
+                                        ))}
+                                        {recommendedModules.length > expandedStageModulePreview.length ? (
+                                          <span className="inline-flex shrink-0 items-center rounded-full border border-slate-200 bg-white px-2 py-0.5 text-[10px] font-medium text-slate-500">
+                                            +{recommendedModules.length - expandedStageModulePreview.length} more
                                           </span>
                                         ) : null}
-                                        <button
-                                          type="button"
-                                          onClick={() => {
-                                            setSelectedMachineId(machine.id)
-                                            setExpandedMachineId(machine.id)
-                                          }}
-                                          className="rounded-md border border-slate-300 bg-white px-1.5 py-1 text-[9px] font-semibold text-slate-700 shadow-sm transition hover:text-[rgb(var(--speedgoat-blue))]"
-                                        >
-                                          Details
-                                        </button>
                                       </div>
+                                    ) : null}
+                                  </div>
+                                </div>
+
+                                <div className="flex h-full flex-col space-y-3 xl:border-l xl:border-slate-200 xl:pl-5">
+                                  <div>
+                                    <p className="text-[10px] font-semibold uppercase tracking-[0.1em] text-slate-500">Machine summary</p>
+                                    <p className="mt-1 text-[10px] leading-relaxed text-slate-600">
+                                      {proposalPreview
+                                        ? 'Live from Step 2.'
+                                        : 'Waiting for Step 2 requirements.'}
+                                    </p>
+                                  </div>
+
+                                  <div className="grid gap-x-6 gap-y-2 sm:grid-cols-2">
+                                    <div className="border-t border-slate-200 pt-2">
+                                      <p className="text-[10px] font-semibold uppercase tracking-[0.08em] text-slate-500">Base slots</p>
+                                      <p className="mt-0.5 text-[10px] font-semibold text-slate-900">{expandedMachine.maxSlots}</p>
+                                    </div>
+                                    <div className="border-t border-slate-200 pt-2">
+                                      <p className="text-[10px] font-semibold uppercase tracking-[0.08em] text-slate-500">Expanded slots</p>
+                                      <p className="mt-0.5 text-[10px] font-semibold text-slate-900">{expandedMachine.maxSlotsExpanded}</p>
+                                    </div>
+                                    <div className="border-t border-slate-200 pt-2">
+                                      <p className="text-[10px] font-semibold uppercase tracking-[0.08em] text-slate-500">Best for</p>
+                                      <p className="mt-0.5 text-[10px] font-semibold text-slate-900">{getMachineBestForCompact(expandedMachine)}</p>
+                                    </div>
+                                    <div className="border-t border-slate-200 pt-2">
+                                      <p className="text-[10px] font-semibold uppercase tracking-[0.08em] text-slate-500">I/O capacity</p>
+                                      <p className="mt-0.5 text-[10px] font-semibold text-slate-900">{getMachineCapacityLabel(expandedMachine)}</p>
                                     </div>
                                   </div>
-                                )
-                              })}
+
+                                  <div className="border-t border-slate-200 pt-3">
+                                    <div className="flex items-center justify-between gap-3">
+                                      <p className="text-[10px] font-semibold uppercase tracking-[0.08em] text-slate-500">Mapped modules</p>
+                                      {proposalPreview ? (
+                                        <button
+                                          type="button"
+                                          onClick={() => setIsStep1MappedModulesOpen((prev) => !prev)}
+                                          className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white px-2 py-0.5 text-[10px] font-medium text-slate-600 transition hover:border-slate-300 hover:text-slate-900"
+                                        >
+                                          {recommendedModules.length} item{recommendedModules.length === 1 ? '' : 's'}
+                                          <svg
+                                            className={cn('h-3 w-3 transition-transform', isStep1MappedModulesOpen && 'rotate-180')}
+                                            viewBox="0 0 12 12"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            strokeWidth="1.8"
+                                            aria-hidden="true"
+                                          >
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="m3 4.5 3 3 3-3" />
+                                          </svg>
+                                        </button>
+                                      ) : null}
+                                    </div>
+
+                                    {proposalPreview && expandedVisibleRecommendedModules.length > 0 ? (
+                                      isStep1MappedModulesOpen ? (
+                                        <div className="mt-2 max-h-[156px] space-y-1.5 overflow-y-auto pr-1">
+                                          {expandedVisibleRecommendedModules.map((module) => (
+                                            <div
+                                              key={`step1-${module.moduleId}-${module.interfaceForModule ?? 'base'}`}
+                                              className="flex items-start justify-between gap-3 rounded-lg border border-slate-200 bg-white px-2.5 py-2"
+                                            >
+                                              <div className="min-w-0">
+                                                <p className="text-[11px] font-semibold text-slate-900">{module.moduleId}</p>
+                                                <p className="mt-0.5 text-[10px] leading-relaxed text-slate-600">
+                                                  {module.friendlyName}
+                                                </p>
+                                              </div>
+                                              <span className="inline-flex shrink-0 rounded-full bg-[rgb(var(--speedgoat-blue))]/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.08em] text-[rgb(var(--speedgoat-blue))]">
+                                                x{module.quantity}
+                                              </span>
+                                            </div>
+                                          ))}
+                                          {recommendedModules.length > expandedVisibleRecommendedModules.length ? (
+                                            <p className="text-[10px] text-slate-500">
+                                              +{recommendedModules.length - expandedVisibleRecommendedModules.length} more mapped module
+                                              {recommendedModules.length - expandedVisibleRecommendedModules.length === 1 ? '' : 's'}
+                                            </p>
+                                          ) : null}
+                                        </div>
+                                      ) : (
+                                        <p className="mt-1.5 text-[10px] leading-relaxed text-slate-500">
+                                          Open to inspect mapped module assignments.
+                                        </p>
+                                      )
+                                    ) : (
+                                      <p className="mt-1.5 text-[10px] leading-relaxed text-slate-500">
+                                        Add I/O requirements to generate readable module assignments.
+                                      </p>
+                                    )}
+                                  </div>
+
+                                  <div className="border-t border-slate-200 pt-3">
+                                    <p className="text-[10px] font-semibold uppercase tracking-[0.08em] text-slate-500">Why this setup fits</p>
+                                    <p className="mt-1 text-[10px] leading-relaxed text-slate-700">
+                                      {getMachineReason(expandedMachine, selectedApplication, selectedEnvironment, selectedIoVolume)}
+                                    </p>
+                                  </div>
+
+                                  {stageMachineWarnings[0] && !stageNeedsExpansion && !stageOverCapacity ? (
+                                    <p className="inline-flex items-start gap-2 text-[10px] leading-relaxed text-amber-700">
+                                      <span className="mt-[5px] h-1.5 w-1.5 shrink-0 rounded-full bg-amber-400" />
+                                      <span>{stageMachineWarnings[0]}</span>
+                                    </p>
+                                  ) : null}
+
+                                  <button
+                                    type="button"
+                                    onClick={() => scrollToSection('contact-section')}
+                                    className={cn(pageButtonClass('secondary'), 'group mt-auto self-end gap-1.5')}
+                                  >
+                                    <span className="inline-flex h-4 w-4 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition group-hover:bg-sky-50 group-hover:text-[rgb(var(--speedgoat-blue))]">
+                                      <svg className="h-2.5 w-2.5" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M2.5 6h6.5M6.5 3l3 3-3 3" />
+                                      </svg>
+                                    </span>
+                                    Consult expert
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          ) : (
+                            <>
+                              <div className="flex items-center justify-between gap-3 border-b border-slate-200 pb-1.5">
+                                <div className="min-w-0">
+                                  <p className="text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-500">Target machine</p>
+                                  <p className="mt-0.5 text-[10px] text-slate-600">Select a platform to open the full machine view.</p>
+                                </div>
+                                <p className="shrink-0 text-[9px] text-slate-500">Selection opens the live machine stage.</p>
+                              </div>
+
+                              <div className="grid gap-2 xl:grid-cols-[minmax(0,1.16fr)_minmax(250px,0.84fr)]">
+                            <div className="min-w-0 xl:border-r xl:border-slate-200 xl:pr-3">
+                              <div className="flex items-start justify-between gap-3">
+                                <div>
+                                  <p className="text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-500">Recommended platform</p>
+                                  <p className="mt-0.5 text-[15px] font-semibold text-slate-900">{recommendedDisplayMachine.displayName}</p>
+                                </div>
+                                <span className="inline-flex items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-[0.12em] text-emerald-700">
+                                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                                  Best match
+                                </span>
+                              </div>
+
+                              <div className="mt-1.5 grid gap-1.5 lg:grid-cols-[minmax(124px,0.62fr)_minmax(0,1.26fr)] lg:items-center">
+                                <button
+                                  type="button"
+                                  onClick={() => handleVer2MachineSelection(recommendedDisplayMachine.id)}
+                                  className="relative min-h-[76px] overflow-hidden rounded-md bg-slate-50/80"
+                                  aria-label={`Select ${recommendedDisplayMachine.displayName}`}
+                                >
+                                  <Image
+                                    src={recommendedDisplayMachine.image}
+                                    alt={recommendedDisplayMachine.displayName}
+                                    fill
+                                    sizes="(min-width: 1280px) 320px, 100vw"
+                                    className={cn(
+                                      'object-contain p-1.5 transition-transform duration-300',
+                                      recommendedDisplayMachine.previewImageClassName,
+                                      isRecommendedSelected && 'scale-[1.06]'
+                                    )}
+                                  />
+                                </button>
+
+                                <div className="space-y-1.5">
+                                  <p
+                                    className="text-[10px] font-medium text-slate-600"
+                                    style={{
+                                      display: '-webkit-box',
+                                      WebkitLineClamp: 2,
+                                      WebkitBoxOrient: 'vertical',
+                                      overflow: 'hidden',
+                                    }}
+                                  >
+                                    {recommendedDisplayMachine.cardDescriptor}
+                                  </p>
+
+                                  <div className="px-0.5">
+                                    <p
+                                      className="text-[10px] leading-relaxed text-slate-700"
+                                      style={{
+                                        display: '-webkit-box',
+                                        WebkitLineClamp: 2,
+                                        WebkitBoxOrient: 'vertical',
+                                        overflow: 'hidden',
+                                      }}
+                                    >
+                                      {getRecommendationRationale(primaryRecommendedMachine, selectedApplication, selectedEnvironment, selectedIoVolume)}
+                                    </p>
+                                  </div>
+
+                                  <div className="grid gap-1.5 sm:grid-cols-2">
+                                    <div className="border-t border-slate-200 pt-1.5">
+                                      <p className="text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-500">Footprint</p>
+                                      <p className="mt-0.5 text-[10px] font-semibold text-slate-800">{getMachineBestForCompact(recommendedDisplayMachine)}</p>
+                                    </div>
+                                    <div className="border-t border-slate-200 pt-1.5">
+                                      <p className="text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-500">I/O capacity</p>
+                                      <p className="mt-0.5 text-[10px] font-semibold text-slate-800">{getMachineCapacityLabel(recommendedDisplayMachine)}</p>
+                                    </div>
+                                  </div>
+
+                                  <div className="flex flex-wrap items-center gap-1.5">
+                                    <button
+                                      type="button"
+                                      onClick={() => handleVer2MachineSelection(recommendedDisplayMachine.id)}
+                                      className={pageButtonClass('primary')}
+                                    >
+                                      {isRecommendedSelected ? `${recommendedDisplayMachine.displayName} selected` : `Select ${recommendedDisplayMachine.displayName}`}
+                                    </button>
+                                    <button
+                                      type="button"
+                                      onClick={() => handleVer2MachineSelection(recommendedDisplayMachine.id)}
+                                      className={pageButtonClass('secondary')}
+                                    >
+                                      Details
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className="min-w-0 xl:pl-1">
+                              <div className="mb-1.5 flex items-center justify-between gap-3">
+                                <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">Alternative platforms</p>
+                                <span className="text-[9px] font-medium text-slate-500">{alternativeMachineCards.length} options</span>
+                              </div>
+
+                              <div>
+                                {alternativeMachineCards.map((machine) => {
+                                  const isSelected = selectedMachineId === machine.id
+
+                                  return (
+                                    <div
+                                      key={machine.id}
+                                      className={cn(
+                                        'px-0.5 py-1 transition-all',
+                                        isSelected
+                                          ? 'bg-[rgb(var(--speedgoat-blue))]/4'
+                                          : ''
+                                      )}
+                                    >
+                                      <div className={cn('flex items-center gap-2 border-b border-slate-200 pb-1.5', machine.id === alternativeMachineCards[alternativeMachineCards.length - 1]?.id && 'border-b-0 pb-0')}>
+                                        <button
+                                          type="button"
+                                          onClick={() => handleVer2MachineSelection(machine.id)}
+                                          className="flex min-w-0 flex-1 items-center gap-2 text-left"
+                                          aria-label={`Select ${machine.displayName}`}
+                                        >
+                                          <span className="relative h-[28px] w-[46px] shrink-0 overflow-hidden rounded-md bg-slate-50">
+                                            <Image
+                                              src={machine.image}
+                                              alt={machine.displayName}
+                                              fill
+                                              sizes="48px"
+                                              className={cn(
+                                                'object-contain object-center p-0.5 transition-transform duration-300',
+                                                isSelected && 'scale-[1.12]'
+                                              )}
+                                            />
+                                          </span>
+
+                                          <span className="min-w-0 flex-1">
+                                            <span className="flex flex-wrap items-center gap-1.5">
+                                              <span className="truncate text-[10px] font-semibold text-slate-900">{machine.displayName}</span>
+                                              <span className="rounded-full bg-slate-100 px-1 py-0.5 text-[7px] font-semibold uppercase tracking-[0.12em] text-slate-600">
+                                                {getCompactMachineStatusLabel(machine.id, recommendedMachineId)}
+                                              </span>
+                                            </span>
+                                            <span className="mt-0.5 block truncate text-[9px] text-slate-600">{getMachineBestForCompact(machine)}</span>
+                                          </span>
+                                        </button>
+
+                                        <div className="flex shrink-0 items-center gap-1.5">
+                                          {isSelected ? (
+                                            <span className="rounded-md bg-[rgb(var(--speedgoat-blue))]/10 px-1 py-0.5 text-[8px] font-semibold text-[rgb(var(--speedgoat-blue))]">
+                                              Selected
+                                            </span>
+                                          ) : null}
+                                          <button
+                                            type="button"
+                                            onClick={() => handleVer2MachineSelection(machine.id)}
+                                            className={pageButtonClass('secondary', 'xs')}
+                                          >
+                                            Details
+                                          </button>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  )
+                                })}
+                              </div>
                             </div>
                           </div>
+                        </>
+                          )}
                         </div>
                       ) : (
                         <div className={cn('grid auto-rows-fr grid-cols-3 gap-2', isVer2Route && 'gap-1.5')}>
@@ -2349,7 +2752,10 @@ export default function LayoutMockV2Page() {
                                       setSelectedMachineId(machine.id)
                                       setExpandedMachineId(machine.id)
                                     }}
-                                    className={cn('inline-flex h-7 w-7 items-center justify-center rounded-md border shadow-sm transition', isVer2Route ? 'border-white/12 bg-white/10 text-white/72 hover:text-white' : 'border-slate-300/80 bg-white/90 text-slate-600 hover:text-[rgb(var(--speedgoat-blue))]')}
+                                    className={cn(
+                                      PAGE_ICON_BUTTON_CLASS,
+                                      isVer2Route && 'border-white/12 bg-white/10 text-white/72 hover:border-white/20 hover:bg-white/14 hover:text-white'
+                                    )}
                                     aria-label={`Expand ${machine.displayName}`}
                                   >
                                     <svg className="h-3.5 w-3.5" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
@@ -2392,38 +2798,60 @@ export default function LayoutMockV2Page() {
                       )}
 
                       {/* Fit note */}
-                      <div className={cn('mt-1.5 flex min-h-[36px] items-center justify-between gap-3 rounded-lg border px-3 py-1', isAltRoute ? 'border-white/60 bg-white/76' : 'border-slate-200/60 bg-white/50 backdrop-blur-sm')}>
-                        <p className={cn('min-w-0 text-[12px] leading-relaxed', isAltRoute ? 'text-slate-700' : 'text-slate-700')}>
-                          {isVer3Route
-                            ? decisionSummary
-                            : activeMachine
-                            ? getMachineReason(activeMachine, selectedApplication, selectedEnvironment, selectedIoVolume)
-                            : null}
-                        </p>
-                        {!isAltRoute && (
-                        <button
-                          type="button"
-                          onClick={() => scrollToSection('contact-section')}
-                          className="shrink-0 rounded-md border border-slate-300 bg-white/80 px-3 py-1.5 text-[11px] font-semibold text-slate-700 shadow-sm transition hover:bg-white hover:text-[rgb(var(--speedgoat-blue))]"
+                      {!isVer2ExpandedStage && (
+                      <div className={cn('mt-1 border-t border-slate-200 pt-1', isVer2ExpandedStage && 'w-full max-w-[620px]')}>
+                        <div
+                          className={cn(
+                            'flex min-h-[24px] items-center justify-between gap-2',
+                            isVer2Route && 'rounded-lg bg-slate-50/72 px-2.5 py-1.5',
+                            isVer2ExpandedStage && 'sm:grid sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center'
+                          )}
                         >
-                          Consult expert
-                        </button>
-                        )}
+                          <p
+                            className="min-w-0 text-[11px] leading-relaxed text-slate-700"
+                            style={
+                              isVer2Route
+                                ? {
+                                    display: '-webkit-box',
+                                    WebkitLineClamp: 1,
+                                    WebkitBoxOrient: 'vertical',
+                                    overflow: 'hidden',
+                                  }
+                                : undefined
+                            }
+                          >
+                            {isVer3Route
+                              ? decisionSummary
+                              : activeMachine
+                              ? getMachineReason(activeMachine, selectedApplication, selectedEnvironment, selectedIoVolume)
+                              : null}
+                          </p>
+                          {!isAltRoute && (
+                          <button
+                            type="button"
+                            onClick={() => scrollToSection('contact-section')}
+                            className="group inline-flex shrink-0 items-center gap-1.5 rounded-full bg-[rgb(var(--speedgoat-blue))] px-3.5 py-1.5 text-[11px] font-semibold text-white shadow-[0_10px_22px_rgba(0,105,180,0.2)] transition hover:brightness-95"
+                          >
+                            <span className="inline-flex h-4 w-4 items-center justify-center rounded-full bg-white/18 text-white transition group-hover:bg-white/22">
+                              <svg className="h-2.5 w-2.5" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M2.5 6h6.5M6.5 3l3 3-3 3" />
+                              </svg>
+                            </span>
+                            Consult expert
+                          </button>
+                          )}
+                        </div>
                       </div>
+                      )}
                     </div>
 
                     {/* Consult expert — bottom-right of step 1 (compact alt variants) */}
-                    {isAltRoute && (
+                    {isAltRoute && !isVer2ExpandedStage && (
                       <div className="mt-2 flex justify-end">
                         <button
                           type="button"
                           onClick={() => scrollToSection('contact-section')}
-                          className={cn(
-                            'rounded-md px-3 py-1.5 text-[11px] font-semibold shadow-sm transition hover:text-[rgb(var(--speedgoat-blue))]',
-                            isVer3Route
-                              ? 'border border-slate-200 bg-white text-slate-600 hover:bg-slate-50'
-                              : 'border border-white/60 bg-white/72 text-slate-600 backdrop-blur-md hover:bg-white'
-                          )}
+                          className={pageButtonClass('secondary')}
                         >
                           Consult expert
                         </button>
@@ -2439,8 +2867,20 @@ export default function LayoutMockV2Page() {
               eyebrow="Step 2"
               title="Configure your I/O"
             >
-              <div className="space-y-4">
-                <div className="grid gap-5 xl:grid-cols-[minmax(0,1.72fr)_minmax(240px,0.7fr)]">
+              <div className="space-y-3">
+                {isVer2Route ? (
+                  <div className="flex flex-col gap-1.5 pt-1 md:flex-row md:items-center md:justify-between md:gap-4">
+                    <p className="min-w-0 text-sm text-slate-600">
+                      Edit the I/O rows below to populate the selected machine above in real time.
+                    </p>
+                    <p className="shrink-0 text-[11px] text-slate-500">
+                      {activeMachine ? `${activeMachine.name} · ` : ''}
+                      {selectedMachineId && selectedMachineId !== recommendedMachineId ? 'Manual platform active' : 'Best-match platform active'}
+                      {proposalPreview ? ` · ${stageModuleCount} mapped module${stageModuleCount === 1 ? '' : 's'}` : ''}
+                    </p>
+                  </div>
+                ) : null}
+                <div className={cn('grid gap-4', !isVer2Route && 'xl:grid-cols-[minmax(0,1.88fr)_280px]')}>
                   <div className="min-w-0">
                     <ConfiguratorWIP
                       onSummaryChange={setConfiguratorSummary}
@@ -2450,24 +2890,25 @@ export default function LayoutMockV2Page() {
                     />
                   </div>
 
-                  <div className="xl:border-l xl:border-slate-200 xl:pl-4">
-                    <div className="space-y-3">
+                  {!isVer2Route ? (
+                  <div className="xl:sticky xl:top-24 xl:self-start">
+                    <div className="space-y-3 rounded-2xl border border-slate-200 bg-white p-3 shadow-[0_8px_22px_rgba(15,23,42,0.04)]">
                       <div>
-                        <p className="text-[12px] font-semibold uppercase tracking-[0.14em] text-slate-600">Selected target machine</p>
-                        <p className="mt-1 min-h-[24px] text-sm font-semibold text-slate-900">
+                        <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">Selected target machine</p>
+                        <p className="mt-1 text-sm font-semibold text-slate-900">
                           {activeMachine?.name}
                           {activeMachine?.id !== primaryRecommendedMachine?.id ? (
                             <span className="ml-1.5 text-[12px] font-medium text-amber-600">(override)</span>
                           ) : null}
                         </p>
-                        <p className="mt-1 min-h-[72px] text-[12px] leading-relaxed text-slate-500">
+                        <p className="mt-1 text-[12px] leading-relaxed text-slate-500">
                           {activeMachine ? getMachineReason(activeMachine, selectedApplication, selectedEnvironment, selectedIoVolume) : null}
                         </p>
                       </div>
 
-                      <div className="min-h-[138px] rounded-xl border border-slate-200 bg-slate-50/70 p-3">
-                        <p className="text-[12px] font-semibold uppercase tracking-[0.14em] text-slate-600">Proposed I/O emphasis</p>
-                        <div className="mt-2 min-h-[34px] flex flex-wrap gap-1.5">
+                      <div className="rounded-xl border border-slate-200 bg-slate-50/70 p-3">
+                        <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">Proposed I/O emphasis</p>
+                        <div className="mt-2 flex flex-wrap gap-1.5">
                           {selectedInterfaces.map((interfaceId) => {
                             const interfaceOption = INTERFACE_OPTIONS.find((option) => option.id === interfaceId)
                             if (!interfaceOption) return null
@@ -2481,12 +2922,12 @@ export default function LayoutMockV2Page() {
                             )
                           })}
                         </div>
-                        <p className="mt-2 min-h-[54px] text-[12px] leading-relaxed text-slate-500">
+                        <p className="mt-2 text-[12px] leading-relaxed text-slate-500">
                           This is the preselection bias for the I/O proposal. It changes when you change application, environment, I/O volume, or machine.
                         </p>
                       </div>
 
-                      <div className="relative aspect-[16/10] overflow-hidden rounded-md border border-[rgb(var(--speedgoat-blue))]/12 bg-[linear-gradient(180deg,rgba(244,247,250,1),rgba(233,239,245,1))]">
+                      <div className="relative aspect-[4/3] overflow-hidden rounded-xl border border-[rgb(var(--speedgoat-blue))]/12 bg-[linear-gradient(180deg,rgba(244,247,250,1),rgba(233,239,245,1))]">
                         <div className="pointer-events-none absolute inset-x-6 top-4 h-10 rounded-full bg-[rgb(var(--speedgoat-blue))]/10 blur-2xl" />
                         {activeMachine ? (
                           <Image
@@ -2496,16 +2937,16 @@ export default function LayoutMockV2Page() {
                             fill
                             sizes="320px"
                             className={cn(
-                              'object-contain p-1.5 transition-transform duration-500 ease-out',
+                              'object-contain p-1 transition-transform duration-500 ease-out',
                               activeMachine.previewImageClassName
                             )}
                           />
                         ) : null}
                       </div>
 
-                      <div className="min-h-[240px] rounded-xl border border-slate-200 bg-slate-50/70 p-3">
+                      <div className="rounded-xl border border-slate-200 bg-slate-50/70 p-3">
                         <div className="flex items-center justify-between gap-3">
-                          <p className="text-[12px] font-semibold uppercase tracking-[0.14em] text-slate-600">Suggested modules</p>
+                          <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">Suggested modules</p>
                           {proposalPreview ? (
                             <span className="text-[12px] font-medium text-slate-600">
                               {recommendedModules.length} item{recommendedModules.length === 1 ? '' : 's'}
@@ -2514,7 +2955,7 @@ export default function LayoutMockV2Page() {
                         </div>
 
                         {proposalPreview && visibleRecommendedModules.length > 0 ? (
-                          <div className="mt-2 min-h-[150px] space-y-2">
+                          <div className="mt-2 space-y-2">
                             {visibleRecommendedModules.map((module) => (
                               <div
                                 key={`${module.moduleId}-${module.interfaceForModule ?? 'base'}`}
@@ -2539,8 +2980,8 @@ export default function LayoutMockV2Page() {
                             ) : null}
                           </div>
                         ) : (
-                          <p className="mt-2 min-h-[150px] text-[12px] leading-relaxed text-slate-500">
-                            Add I/O requirements on the left to see suggested hardware modules.
+                          <p className="mt-2 text-[12px] leading-relaxed text-slate-500">
+                            Add I/O requirements to generate a module proposal.
                           </p>
                         )}
                       </div>
@@ -2564,7 +3005,7 @@ export default function LayoutMockV2Page() {
 
                       {proposalPreview?.unresolved.length ? (
                         <div className="rounded-xl border border-amber-200 bg-amber-50/80 p-3">
-                          <p className="text-[12px] font-semibold uppercase tracking-[0.14em] text-amber-800">Unresolved requirements</p>
+                          <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-amber-800">Unresolved requirements</p>
                           <p className="mt-1 text-[12px] leading-relaxed text-amber-800">
                             {proposalPreview.unresolved.length} requirement
                             {proposalPreview.unresolved.length === 1 ? '' : 's'} could not be mapped cleanly to hardware.
@@ -2572,76 +3013,69 @@ export default function LayoutMockV2Page() {
                         </div>
                       ) : null}
 
-                      <div className="divide-y divide-slate-100 text-sm">
-                        <div className="flex items-center justify-between gap-3 py-1.5">
-                          <span className="text-slate-600">Configured signals</span>
-                          <span className="font-semibold text-slate-900">{configuratorSummary.totalSignals}</span>
-                        </div>
-                        <div className="flex items-center justify-between gap-3 py-1.5">
-                          <span className="text-slate-600">Configured rows</span>
-                          <span className="font-semibold text-slate-900">{configuratorSummary.rowCount}</span>
-                        </div>
-                        <div className="flex items-center justify-between gap-3 py-1.5">
-                          <span className="text-slate-600">Timing proxy</span>
-                          <span className="font-semibold text-slate-900">{selectedPerformance.title}</span>
-                        </div>
-                      </div>
-
-                      {configuredCategoryEntries.length > 0 ? (
-                        <div className="rounded-xl border border-slate-200 bg-slate-50/70 p-3">
-                          <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">Configured categories</p>
-                          <div className="mt-2 space-y-1.5">
-                            {configuredCategoryEntries.map(([category, count]) => (
-                              <div key={category} className="flex items-center justify-between gap-3 text-sm">
-                                <span className="text-slate-600">{category}</span>
-                                <span className="font-semibold text-slate-900">{count}</span>
-                              </div>
-                            ))}
+                      <div className="rounded-xl border border-slate-200 bg-slate-50/70 p-3">
+                        <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">Configuration summary</p>
+                        <div className="mt-2 space-y-1.5 text-sm">
+                          <div className="flex items-center justify-between gap-3">
+                            <span className="text-slate-600">Configured signals</span>
+                            <span className="font-semibold text-slate-900">{configuratorSummary.totalSignals}</span>
+                          </div>
+                          <div className="flex items-center justify-between gap-3">
+                            <span className="text-slate-600">Configured rows</span>
+                            <span className="font-semibold text-slate-900">{configuratorSummary.rowCount}</span>
+                          </div>
+                          <div className="flex items-center justify-between gap-3">
+                            <span className="text-slate-600">Timing proxy</span>
+                            <span className="font-semibold text-slate-900">{selectedPerformance.title}</span>
                           </div>
                         </div>
-                      ) : null}
+                        {configuredCategoryEntries.length > 0 ? (
+                          <div className="mt-3 border-t border-slate-200 pt-3">
+                            <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">Configured categories</p>
+                            <div className="mt-2 flex flex-wrap gap-1.5">
+                              {configuredCategoryEntries.map(([category, count]) => (
+                                <span
+                                  key={category}
+                                  className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white px-2 py-1 text-[11px] text-slate-700"
+                                >
+                                  <span>{category}</span>
+                                  <span className="font-semibold text-slate-900">{count}</span>
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        ) : null}
+                      </div>
                     </div>
                   </div>
+                  ) : null}
                 </div>
 
               </div>
             </SectionCard>
 
             <div id="contact-section" className="scroll-mt-28">
-              <CompactCard className={cn(PANEL_CLASS, 'p-4 md:p-5')}>
-                <div className="relative">
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">Let us help you</p>
-                  <h2 className="mt-1.5 text-lg font-semibold text-slate-900 md:text-xl">
-                    Find the right solution for your project
-                  </h2>
-                    <div className="mt-3 grid gap-3 sm:grid-cols-3">
-                    <div className="rounded-xl border border-slate-200 bg-slate-50/70 p-3">
-                      <p className="text-[13px] font-semibold text-slate-900">Request configuration example</p>
-                      <p className="mt-1.5 text-[12px] leading-relaxed text-slate-600">
-                        Get a proposal for a real-time target machine configured to your needs.
-                      </p>
-                      <CompactButton type="button" className="mt-3" onClick={openAdvancedConfigurator}>
-                        Request example
-                      </CompactButton>
-                    </div>
-                    <div className="rounded-xl border border-slate-200 bg-slate-50/70 p-3">
-                      <p className="text-[13px] font-semibold text-slate-900">Review system choice</p>
-                      <p className="mt-1.5 text-[12px] leading-relaxed text-slate-600">
-                        Jump back to the system recommendation and refine the application context.
-                      </p>
-                      <CompactButton type="button" variant="ghost" className="mt-3" onClick={() => scrollToSection('systems-section')}>
-                        Review
-                      </CompactButton>
-                    </div>
-                    <div className="rounded-xl border border-slate-200 bg-slate-50/70 p-3">
-                      <p className="text-[13px] font-semibold text-slate-900">Have questions?</p>
-                      <p className="mt-1.5 text-[12px] leading-relaxed text-slate-600">
-                        Talk to our experts about your project and application requirements.
-                      </p>
-                      <CompactButton type="button" variant="ghost" className="mt-3" onClick={() => scrollToSection('contact-section')}>
-                        Contact us
-                      </CompactButton>
-                    </div>
+              <CompactCard className={cn(PANEL_CLASS, 'p-4')}>
+                <div className="relative flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+                  <div className="max-w-2xl">
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Need help?</p>
+                    <h2 className="mt-1 text-lg font-semibold text-slate-900">
+                      Validate the recommended setup with Speedgoat
+                    </h2>
+                    <p className="mt-1 text-sm text-slate-600">
+                      Use the current selection as a working proposal, then request an example configuration or review the system choice.
+                    </p>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    <button type="button" onClick={openAdvancedConfigurator} className={pageButtonClass('primary', 'md')}>
+                      Request example
+                    </button>
+                    <button type="button" onClick={() => scrollToSection('systems-section')} className={pageButtonClass('secondary', 'md')}>
+                      Review system choice
+                    </button>
+                    <button type="button" onClick={() => scrollToSection('contact-section')} className={pageButtonClass('ghost', 'md')}>
+                      Contact us
+                    </button>
                   </div>
                 </div>
               </CompactCard>

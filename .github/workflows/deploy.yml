@@ -40,10 +40,7 @@ jobs:
           NEXT_PUBLIC_BUILD_DATE: ${{ github.event.head_commit.timestamp }}
           NEXT_PUBLIC_BUILD_REF: ${{ github.ref_name }}
           NEXT_PUBLIC_SHOW_FPGA_DEV: '1'
-        run: npm run build
-
-      - name: Add .nojekyll
-        run: touch out/.nojekyll
+        run: npm run build:pages
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
